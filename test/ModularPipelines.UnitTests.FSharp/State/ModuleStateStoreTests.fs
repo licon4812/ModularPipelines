@@ -424,21 +424,21 @@ type ModuleStateStoreTests() =
                 oldState <- old
                 newState <- n)
 
-        _store.add_StateChanged(handler)
-
-        _store.RegisterModule(
-            StoreTestModule(),
-            typeof<StoreTestModule>,
-            ImmutableHashSet<Type>.Empty,
-            ImmutableList<Type>.Empty,
-            false,
-            Array.empty,
-            ModulePriority.Normal,
-            ExecutionType.Default
-        )
-        |> ignore
-
         try
+            _store.add_StateChanged(handler)
+
+            _store.RegisterModule(
+                StoreTestModule(),
+                typeof<StoreTestModule>,
+                ImmutableHashSet<Type>.Empty,
+                ImmutableList<Type>.Empty,
+                false,
+                Array.empty,
+                ModulePriority.Normal,
+                ExecutionType.Default
+            )
+            |> ignore
+
             _store.TransitionToQueued(typeof<StoreTestModule>) |> ignore
         finally
             _store.remove_StateChanged(handler)
