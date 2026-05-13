@@ -34,7 +34,7 @@ type private JsonResultRepository() =
             task {
                 let file = sharedFolder.GetFile(m.GetType().FullName)
                 use! fileStream = System.Threading.Tasks.Task.FromResult(file.GetStream())
-                return! JsonSerializer.DeserializeAsync(fileStream)
+                return! JsonSerializer.DeserializeAsync<ModuleResult<'T>>(fileStream)
             }
 
 type private RepoModule1() =
@@ -62,19 +62,30 @@ type ResultsRepositoryTests() =
                 .BuildHostAsync()
             |> Async.AwaitTask
 
-        do! host.ExecutePipelineAsync() |> Async.AwaitTask |> Async.Ignore
+        do! (host.ExecutePipelineAsync() |> Async.AwaitTask |> Async.Ignore)
 
         let resultRegistry = host.RootServices.GetRequiredService<IModuleResultRegistry>()
         let module1Result = resultRegistry.GetResult(typeof<RepoModule1>)
         let module2Result = resultRegistry.GetResult(typeof<RepoModule2>)
 
-        do! check(Assert.That(module1Result.ModuleStatus = Status.Successful).IsTrue())
-        do! check(Assert.That(module2Result.ModuleStatus = Status.Successful).IsTrue())
+        do! check(Assert.That(module1Result.ModuleStatus).IsEqualTo(Status.Successful))
+        do! check(Assert.That(module2Result.ModuleStatus).IsEqualTo(Status.Successful))
     }
 
     [<Test>]
     [<TUnit.Core.NotInParallel(nameof ResultsRepositoryTests, Order = 2)>]
     member _.RunTwoFromHistory() = async {
+        let! seedHost =
+            TestPipelineHostBuilder
+                .Create()
+                .AddResultsRepository<JsonResultRepository>()
+                .AddModule<RepoModule1>()
+                .AddModule<RepoModule2>()
+                .BuildHostAsync()
+            |> Async.AwaitTask
+
+        do! (seedHost.ExecutePipelineAsync() |> Async.AwaitTask |> Async.Ignore)
+
         let! host =
             TestPipelineHostBuilder
                 .Create()
@@ -85,12 +96,12 @@ type ResultsRepositoryTests() =
                 .BuildHostAsync()
             |> Async.AwaitTask
 
-        do! host.ExecutePipelineAsync() |> Async.AwaitTask |> Async.Ignore
+        do! (host.ExecutePipelineAsync() |> Async.AwaitTask |> Async.Ignore)
 
         let resultRegistry = host.RootServices.GetRequiredService<IModuleResultRegistry>()
         let module1Result = resultRegistry.GetResult(typeof<RepoModule1>)
         let module2Result = resultRegistry.GetResult(typeof<RepoModule2>)
 
-        do! check(Assert.That(module1Result.ModuleStatus = Status.UsedHistory).IsTrue())
-        do! check(Assert.That(module2Result.ModuleStatus = Status.UsedHistory).IsTrue())
+        do! check(Assert.That(module1Result.ModuleStatus).IsEqualTo(Status.UsedHistory))
+        do! check(Assert.That(module2Result.ModuleStatus).IsEqualTo(Status.UsedHistory))
     }
