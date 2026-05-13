@@ -439,6 +439,7 @@ type ModuleStateStoreTests() =
         |> ignore
 
         _store.TransitionToQueued(typeof<StoreTestModule>) |> ignore
+        _store.remove_StateChanged(handler)
 
         do! check(Assert.That(eventFired).IsTrue())
         do! check(Assert.That(oldState.Phase).IsTypeOf<ModuleExecutionPhase.Pending>())

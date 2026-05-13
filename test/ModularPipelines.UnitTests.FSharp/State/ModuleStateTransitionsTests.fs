@@ -34,7 +34,7 @@ type ModuleStateTransitionsTests() =
     let createSnapshot phase =
         ModuleStateSnapshot(
             ModuleType = typeof<string>,
-            Module = Unchecked.defaultof<IModule>,
+            Module = null,
             Phase = phase,
             RequiresSequentialExecution = false,
             RequiredLockKeys = Array.empty,
