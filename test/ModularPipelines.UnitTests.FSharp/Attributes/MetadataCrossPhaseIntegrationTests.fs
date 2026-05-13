@@ -33,7 +33,7 @@ module MetadataCrossPhaseIntegrationTests =
             member _.OnModuleStartAsync(context: IModuleHookContext) =
                 let value = context.GetMetadata<string>(key)
                 let valueText = if value = null then "null" else value
-                eventLog.Add($"Start:ReadMetadata:{key}={valueText}")
+                eventLog.Add(sprintf "Start:ReadMetadata:%s=%s" key valueText)
                 Task.CompletedTask
 
     type ReadMetadataOnEndAttribute(key: string) =
@@ -43,7 +43,7 @@ module MetadataCrossPhaseIntegrationTests =
             member _.OnModuleEndAsync(context: IModuleHookContext, _: IModuleResult) =
                 let value = context.GetMetadata<string>(key)
                 let valueText = if value = null then "null" else value
-                eventLog.Add($"End:ReadMetadata:{key}={valueText}")
+                eventLog.Add(sprintf "End:ReadMetadata:%s=%s" key valueText)
                 Task.CompletedTask
 
     [<SetMetadataOnRegistration("config", "value-from-registration")>]
