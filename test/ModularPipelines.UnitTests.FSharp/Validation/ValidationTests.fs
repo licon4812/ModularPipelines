@@ -27,7 +27,7 @@ type private AnotherModule() =
 type private SelfReferencingModule() =
     inherit Module<string>()
     override _.ExecuteAsync(_, _) =
-        System.Threading.Tasks.Task.FromResult<string>(null)
+        System.Threading.Tasks.Task.FromResult("success")
 
 [<ModularPipelines.Attributes.DependsOn(typeof<ModuleB>)>]
 type private ModuleA() =
