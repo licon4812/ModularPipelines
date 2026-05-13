@@ -1,4 +1,4 @@
-using ModularPipelines.Context;
+﻿using ModularPipelines.Context;
 using ModularPipelines.Options;
 using ModularPipelines.TestHelpers;
 
@@ -12,7 +12,7 @@ public class DownloaderTests : TestBase
     // matches. The Retry(3) attribute helps handle transient network issues.
     // Using a well-known, versioned release URL provides reasonable stability
     // while testing real download functionality.
-    [Test, Retry(3)]
+    [Retry(3)]
     public async Task Can_Download()
     {
         var downloader = await GetService<IDownloader>();

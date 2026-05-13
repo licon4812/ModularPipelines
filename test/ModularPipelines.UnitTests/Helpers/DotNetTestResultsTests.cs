@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Context;
 using ModularPipelines.DotNet.Extensions;
@@ -89,20 +89,17 @@ public class DotNetTestResultsTests : TestBase
         }
     }
 
-    [Test]
     public async Task Has_Errored()
     {
         await Assert.ThrowsAsync<ModuleFailedException>(async () => await RunModule<DotNetTestWithFailureModule>());
     }
 
-    [Test]
     public async Task Has_Not_Errored()
     {
         await Assert.That(RunModule<DotNetTestWithoutFailureModule>)
             .ThrowsNothing();
     }
 
-    [Test]
     public async Task Can_Parse_Trx_Manually()
     {
         await RunModule<DotNetTestWithoutFailureModule>();
@@ -111,7 +108,6 @@ public class DotNetTestResultsTests : TestBase
         await Assert.That(parsedResults.UnitTestResults).HasCount().EqualTo(4);
     }
 
-    [Test]
     public async Task Can_Parse_Trx_Using_Helper()
     {
         var host = await TestPipelineHostBuilder.Create()

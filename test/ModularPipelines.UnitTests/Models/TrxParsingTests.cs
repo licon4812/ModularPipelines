@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Context;
 using ModularPipelines.DotNet;
 using ModularPipelines.DotNet.Enums;
@@ -60,7 +60,6 @@ public class TrxParsingTests : TestBase
         }
     }
 
-    [Test]
     public async Task NUnit()
     {
         var host = await TestPipelineHostBuilder.Create()

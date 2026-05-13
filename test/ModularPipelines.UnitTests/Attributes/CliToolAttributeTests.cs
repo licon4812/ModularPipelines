@@ -1,4 +1,4 @@
-using ModularPipelines.Attributes;
+﻿using ModularPipelines.Attributes;
 using ModularPipelines.Options;
 using System.Reflection;
 
@@ -6,7 +6,6 @@ namespace ModularPipelines.UnitTests.Attributes;
 
 public class CliToolAttributeTests
 {
-    [Test]
     public async Task CliToolAttribute_StoresToolName()
     {
         var attribute = new CliToolAttribute("git");
@@ -14,7 +13,6 @@ public class CliToolAttributeTests
         await Assert.That(attribute.Tool).IsEqualTo("git");
     }
 
-    [Test]
     public async Task CliToolAttribute_CanBeAppliedToClass()
     {
         var attribute = typeof(TestGitOptions).GetCustomAttribute<CliToolAttribute>();
@@ -23,7 +21,6 @@ public class CliToolAttributeTests
         await Assert.That(attribute!.Tool).IsEqualTo("git");
     }
 
-    [Test]
     public async Task CliToolAttribute_ThrowsOnNullOrWhitespace()
     {
         await Assert.That(() => new CliToolAttribute(null!)).Throws<ArgumentException>();
@@ -31,7 +28,6 @@ public class CliToolAttributeTests
         await Assert.That(() => new CliToolAttribute("   ")).Throws<ArgumentException>();
     }
 
-    [Test]
     public async Task CliToolAttribute_IsInheritedByDerivedClasses()
     {
         var attribute = typeof(TestGitCommitOptions).GetCustomAttribute<CliToolAttribute>(inherit: true);

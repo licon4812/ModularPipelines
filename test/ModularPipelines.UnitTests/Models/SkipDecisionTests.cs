@@ -1,10 +1,9 @@
-using ModularPipelines.Models;
+﻿using ModularPipelines.Models;
 
 namespace ModularPipelines.UnitTests.Models;
 
 public class SkipDecisionTests
 {
-    [Test]
     public async Task True_Implicit_Cast()
     {
         SkipDecision skipDecision = true;
@@ -16,7 +15,6 @@ public class SkipDecisionTests
         }
     }
 
-    [Test]
     public async Task String_Implicit_Cast()
     {
         SkipDecision skipDecision = "Foo!";
@@ -28,7 +26,6 @@ public class SkipDecisionTests
         }
     }
 
-    [Test]
     public async Task False_Implicit_Cast()
     {
         SkipDecision skipDecision = false;
@@ -40,7 +37,6 @@ public class SkipDecisionTests
         }
     }
 
-    [Test]
     public async Task Skip()
     {
         var skipDecision = SkipDecision.Skip("Blah!");
@@ -52,7 +48,6 @@ public class SkipDecisionTests
         }
     }
 
-    [Test]
     public async Task DoNotSkip()
     {
         var skipDecision = SkipDecision.DoNotSkip;
@@ -64,7 +59,6 @@ public class SkipDecisionTests
         }
     }
 
-    [Test]
     [Arguments(true)]
     [Arguments(false)]
     public async Task Of(bool shouldSkip)

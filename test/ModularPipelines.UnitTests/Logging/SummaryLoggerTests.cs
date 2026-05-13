@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ModularPipelines.Context;
@@ -74,7 +74,6 @@ public class SummaryLoggerTests
         }
     }
 
-    [Test]
     public async Task SummaryApi_Info_LogsCorrectly()
     {
         var stringBuilder = new StringBuilder();
@@ -93,7 +92,6 @@ public class SummaryLoggerTests
         await Assert.That(stringBuilder.ToString()).Contains("Info message");
     }
 
-    [Test]
     public async Task SummaryApi_Success_LogsCorrectly()
     {
         var stringBuilder = new StringBuilder();
@@ -112,7 +110,6 @@ public class SummaryLoggerTests
         await Assert.That(stringBuilder.ToString()).Contains("Success message");
     }
 
-    [Test]
     public async Task SummaryApi_Warning_LogsCorrectly()
     {
         var stringBuilder = new StringBuilder();
@@ -131,7 +128,6 @@ public class SummaryLoggerTests
         await Assert.That(stringBuilder.ToString()).Contains("Warning message");
     }
 
-    [Test]
     public async Task SummaryApi_Error_LogsCorrectly()
     {
         var stringBuilder = new StringBuilder();
@@ -150,7 +146,6 @@ public class SummaryLoggerTests
         await Assert.That(stringBuilder.ToString()).Contains("Error message");
     }
 
-    [Test]
     public async Task SummaryApi_KeyValue_LogsCorrectly()
     {
         var stringBuilder = new StringBuilder();
@@ -169,7 +164,6 @@ public class SummaryLoggerTests
         await Assert.That(stringBuilder.ToString()).Contains("Version: 1.2.3");
     }
 
-    [Test]
     public async Task SummaryApi_Category_LogsCorrectly()
     {
         var stringBuilder = new StringBuilder();
@@ -196,7 +190,6 @@ public class SummaryLoggerTests
 
     #region GetEntries Tests
 
-    [Test]
     public async Task GetEntries_ReturnsAllEntries()
     {
         var logger = new SummaryLogger(new NullLogger<SummaryLogger>());
@@ -210,7 +203,6 @@ public class SummaryLoggerTests
         await Assert.That(entries.Count).IsEqualTo(3);
     }
 
-    [Test]
     public async Task GetEntries_WithCategory_FiltersCorrectly()
     {
         var logger = new SummaryLogger(new NullLogger<SummaryLogger>());
@@ -226,7 +218,6 @@ public class SummaryLoggerTests
         await Assert.That(deployEntries.Count).IsEqualTo(1);
     }
 
-    [Test]
     public async Task GetOutput_FormatsCorrectly()
     {
         var logger = new SummaryLogger(new NullLogger<SummaryLogger>());
@@ -244,7 +235,6 @@ public class SummaryLoggerTests
         await Assert.That(output).Contains("[ERR] Error message");
     }
 
-    [Test]
     public async Task GetOutput_GroupsByCategory()
     {
         var logger = new SummaryLogger(new NullLogger<SummaryLogger>());
@@ -266,7 +256,6 @@ public class SummaryLoggerTests
 
     #region Log Level Tests
 
-    [Test]
     public async Task Log_WithLevel_AddsCorrectEntry()
     {
         var logger = new SummaryLogger(new NullLogger<SummaryLogger>());
@@ -280,7 +269,6 @@ public class SummaryLoggerTests
         await Assert.That(entries[0].Message).IsEqualTo("Test warning");
     }
 
-    [Test]
     public async Task Log_WithLevelAndCategory_AddsCorrectEntry()
     {
         var logger = new SummaryLogger(new NullLogger<SummaryLogger>());
@@ -299,7 +287,6 @@ public class SummaryLoggerTests
 
     #region Thread Safety Tests
 
-    [Test]
     public async Task ConcurrentLogging_IsThreadSafe()
     {
         var logger = new SummaryLogger(new NullLogger<SummaryLogger>());

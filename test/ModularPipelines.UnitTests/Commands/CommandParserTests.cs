@@ -1,4 +1,4 @@
-using ModularPipelines.Attributes;
+﻿using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.DotNet.Options;
 using ModularPipelines.Models;
@@ -9,14 +9,12 @@ namespace ModularPipelines.UnitTests.Commands;
 
 public class CommandParserTests : TestBase
 {
-    [Test]
     public async Task Empty_Options_Parse_As_Expected()
     {
         var result = await GetResult(new MySuperSecretToolOptions());
         await Assert.That(result.CommandInput).IsEqualTo("mysupersecrettool do this then that");
     }
 
-    [Test]
     public async Task KeyValues_Parse_As_Expected()
     {
         var result = await GetResult(new MySuperSecretToolOptions
@@ -31,7 +29,6 @@ public class CommandParserTests : TestBase
         await Assert.That(result.CommandInput).IsEqualTo("mysupersecrettool do this then that --build-arg Arg1=Value1 --build-arg Arg2=Value2 --build-arg Arg3=Value3");
     }
 
-    [Test]
     public async Task Boolean_Switch_Parse_As_Expected_When_True()
     {
         var result = await GetResult(new MySuperSecretToolOptions
@@ -41,7 +38,6 @@ public class CommandParserTests : TestBase
         await Assert.That(result.CommandInput).IsEqualTo("mysupersecrettool do this then that --force");
     }
 
-    [Test]
     [Arguments(null)]
     [Arguments(false)]
     public async Task Boolean_Switch_Parse_As_Expected_When_Not_True(bool? force)
@@ -53,7 +49,6 @@ public class CommandParserTests : TestBase
         await Assert.That(result.CommandInput).IsEqualTo("mysupersecrettool do this then that");
     }
 
-    [Test]
     public async Task String_Array_Switch_Parse_As_Expected()
     {
         var result = await GetResult(new MySuperSecretToolOptions
@@ -68,7 +63,6 @@ public class CommandParserTests : TestBase
         await Assert.That(result.CommandInput).IsEqualTo("mysupersecrettool do this then that --filename file1.txt --filename foo.txt --filename bar.json");
     }
 
-    [Test]
     public async Task String_Switch_Parse_As_Expected()
     {
         var result = await GetResult(new MySuperSecretToolOptions
@@ -80,7 +74,6 @@ public class CommandParserTests : TestBase
                                                     """);
     }
 
-    [Test]
     public async Task Int_Switch_Parse_As_Expected()
     {
         var result = await GetResult(new MySuperSecretToolOptions
@@ -90,7 +83,6 @@ public class CommandParserTests : TestBase
         await Assert.That(result.CommandInput).IsEqualTo("mysupersecrettool do this then that --grace-period 123");
     }
 
-    [Test]
     public async Task Enum_Value_Switch_Parse_As_Expected()
     {
         var result = await GetResult(new MySuperSecretToolOptions
@@ -100,7 +92,6 @@ public class CommandParserTests : TestBase
         await Assert.That(result.CommandInput).IsEqualTo("mysupersecrettool do this then that --verbosity quiet");
     }
 
-    [Test]
     public async Task Positional_Parameter_Before_Switches_Parse_As_Expected()
     {
         var result = await GetResult(new MySuperSecretToolOptions
@@ -113,7 +104,6 @@ public class CommandParserTests : TestBase
                                                     """);
     }
 
-    [Test]
     public async Task Positional_Parameter_After_Switches_Parse_As_Expected()
     {
         var result = await GetResult(new MySuperSecretToolOptions
@@ -126,7 +116,6 @@ public class CommandParserTests : TestBase
                                                     """);
     }
 
-    [Test]
     public async Task Multiple_Positional_Arguments_With_Interleaved_Command()
     {
         var result = await GetResult(new PlaceholderToolOptions("ThisPackage", "MyProject.csproj")
@@ -136,7 +125,6 @@ public class CommandParserTests : TestBase
         await Assert.That(result.CommandInput).IsEqualTo("dotnet add MyProject.csproj package ThisPackage --source nuget.org");
     }
 
-    [Test]
     public async Task Single_Positional_Argument_Immediately_After_Command()
     {
         var result = await GetResult(new PlaceholderToolOptions3
@@ -147,7 +135,6 @@ public class CommandParserTests : TestBase
         await Assert.That(result.CommandInput).IsEqualTo("dotnet add MyProject.csproj");
     }
 
-    [Test]
     public async Task DotNet_Nuget_Delete_With_Two_Positional_Arguments()
     {
         var result = await GetResult(new DotNetNugetDeleteOptions
@@ -158,7 +145,6 @@ public class CommandParserTests : TestBase
         await Assert.That(result.CommandInput).IsEqualTo("dotnet nuget delete MyPackageName 1.0.0");
     }
 
-    [Test]
     public async Task DotNet_Nuget_Delete_With_Source_Option()
     {
         var result = await GetResult(new DotNetNugetDeleteOptions
@@ -170,7 +156,6 @@ public class CommandParserTests : TestBase
         await Assert.That(result.CommandInput).IsEqualTo("dotnet nuget delete MyPackageName 1.0.0 --source https://api.nuget.org/v3/index.json");
     }
 
-    [Test]
     public async Task DotNet_Nuget_Delete_With_ApiKey_Option()
     {
         var result = await GetResult(new DotNetNugetDeleteOptions

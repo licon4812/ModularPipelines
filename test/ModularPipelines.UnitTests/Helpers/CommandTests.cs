@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using ModularPipelines.Context;
 using ModularPipelines.Exceptions;
 using ModularPipelines.Models;
@@ -33,7 +33,6 @@ public class CommandTests : TestBase
         }
     }
 
-    [Test]
     public async Task Has_Not_Errored()
     {
         var moduleResult = await await RunModule<CommandEchoModule>();
@@ -41,7 +40,6 @@ public class CommandTests : TestBase
         await ModuleResultAssertions.AssertSuccessWithValue(moduleResult);
     }
 
-    [Test]
     public async Task Standard_Output_Equals_Foo_Bar()
     {
         var moduleResult = await await RunModule<CommandEchoModule>();
@@ -49,7 +47,6 @@ public class CommandTests : TestBase
         await ModuleResultAssertions.AssertCommandOutput(moduleResult, TestConstants.TestString);
     }
 
-    [Test]
     public async Task Standard_Output_Equals_Foo_Bar_With_Timeout()
     {
         var moduleResult = await await RunModule<CommandEchoTimeoutModule>();

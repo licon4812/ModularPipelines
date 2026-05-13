@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Attributes.Events;
 using ModularPipelines.Configuration;
 using ModularPipelines.Context;
@@ -93,7 +93,6 @@ public class LifecycleEventIntegrationTests : TestBase
         EventLog.Clear();
     }
 
-    [Test]
     public async Task SuccessfulModule_InvokesStartAndEndEvents()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -105,7 +104,6 @@ public class LifecycleEventIntegrationTests : TestBase
         await Assert.That(EventLog).Contains("End:SuccessfulModule");
     }
 
-    [Test]
     public async Task FailingModule_InvokesStartAndFailedEvents()
     {
         try
@@ -127,7 +125,6 @@ public class LifecycleEventIntegrationTests : TestBase
         await Assert.That(EventLog.Any(e => e.StartsWith("Failed:FailingModule:"))).IsTrue();
     }
 
-    [Test]
     public async Task SkippingModule_InvokesStartAndSkippedEvents()
     {
         var result = await TestPipelineHostBuilder.Create()

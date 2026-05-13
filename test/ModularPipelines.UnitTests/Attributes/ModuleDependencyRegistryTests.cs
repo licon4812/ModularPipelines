@@ -1,4 +1,4 @@
-using ModularPipelines.Context;
+﻿using ModularPipelines.Context;
 using ModularPipelines.Engine.Dependencies;
 using ModularPipelines.Modules;
 
@@ -24,7 +24,6 @@ public class ModuleDependencyRegistryTests
             => Task.FromResult<string?>("C");
     }
 
-    [Test]
     public async Task AddDynamicDependency_AddsDependency()
     {
         var registry = new ModuleDependencyRegistry();
@@ -35,7 +34,6 @@ public class ModuleDependencyRegistryTests
         await Assert.That(dependencies).Contains(typeof(ModuleB));
     }
 
-    [Test]
     public async Task AddDynamicDependency_MultipleDependencies_AddsAll()
     {
         var registry = new ModuleDependencyRegistry();
@@ -49,7 +47,6 @@ public class ModuleDependencyRegistryTests
         await Assert.That(dependencies).Contains(typeof(ModuleC));
     }
 
-    [Test]
     public async Task RemoveDependency_RemovesDependency()
     {
         var registry = new ModuleDependencyRegistry();
@@ -61,7 +58,6 @@ public class ModuleDependencyRegistryTests
         await Assert.That(dependencies).IsEmpty();
     }
 
-    [Test]
     public async Task GetDynamicDependencies_NoDependencies_ReturnsEmpty()
     {
         var registry = new ModuleDependencyRegistry();

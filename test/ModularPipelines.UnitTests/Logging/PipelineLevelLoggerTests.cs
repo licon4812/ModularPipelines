@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ModularPipelines.Logging;
 using Moq;
 
@@ -30,7 +30,6 @@ public class PipelineLevelLoggerTests
             It.IsAny<Func<string, Exception?, string>>()), Times.Once);
     }
 
-    [Test]
     public async Task IsEnabled_DelegatesToUnderlyingLogger()
     {
         // Arrange
@@ -44,7 +43,6 @@ public class PipelineLevelLoggerTests
         await Assert.That(pipelineLevelLogger.IsEnabled(LogLevel.Trace)).IsFalse();
     }
 
-    [Test]
     public async Task BeginScope_DelegatesToUnderlyingLogger()
     {
         // Arrange

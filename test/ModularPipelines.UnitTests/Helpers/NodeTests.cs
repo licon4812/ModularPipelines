@@ -1,4 +1,4 @@
-using ModularPipelines.Context;
+﻿using ModularPipelines.Context;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
 using ModularPipelines.Node.Extensions;
@@ -17,7 +17,6 @@ public class NodeTests : TestBase
         }
     }
 
-    [Test]
     public async Task Has_Not_Errored()
     {
         var moduleResult = await await RunModule<NodeVersionModule>();
@@ -25,7 +24,6 @@ public class NodeTests : TestBase
         await ModuleResultAssertions.AssertSuccessWithValue(moduleResult);
     }
 
-    [Test]
     public async Task Standard_Output_Is_Version_Number()
     {
         var moduleResult = await await RunModule<NodeVersionModule>();

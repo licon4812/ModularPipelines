@@ -1,4 +1,4 @@
-using ModularPipelines.Attributes;
+﻿using ModularPipelines.Attributes;
 using ModularPipelines.Helpers.Internal;
 
 namespace ModularPipelines.UnitTests.Attributes;
@@ -14,7 +14,6 @@ public class CliAttributeTests
         return _argumentBuilder.BuildArguments(model, optionsObject);
     }
 
-    [Test]
     public async Task CliCommand_Returns_Tool_And_SubCommands()
     {
         var attribute = new CliCommandAttribute("helm", "install");
@@ -23,7 +22,6 @@ public class CliAttributeTests
         await Assert.That(parts).IsEquivalentTo(new[] { "helm", "install" });
     }
 
-    [Test]
     public async Task CliCommand_Returns_Only_Tool_When_No_SubCommands()
     {
         var attribute = new CliCommandAttribute("helm");
@@ -32,7 +30,6 @@ public class CliAttributeTests
         await Assert.That(parts).IsEquivalentTo(new[] { "helm" });
     }
 
-    [Test]
     public async Task CliCommand_Returns_Multiple_SubCommands()
     {
         var attribute = new CliCommandAttribute("kubectl", "get", "pods");
@@ -41,7 +38,6 @@ public class CliAttributeTests
         await Assert.That(parts).IsEquivalentTo(new[] { "kubectl", "get", "pods" });
     }
 
-    [Test]
     public async Task CliFlag_Returns_Name_When_ShortForm_Not_Preferred()
     {
         var attribute = new CliFlagAttribute("--debug") { ShortForm = "-d" };
@@ -49,7 +45,6 @@ public class CliAttributeTests
         await Assert.That(attribute.GetEffectiveName()).IsEqualTo("--debug");
     }
 
-    [Test]
     public async Task CliFlag_Returns_ShortForm_When_Preferred()
     {
         var attribute = new CliFlagAttribute("--debug") { ShortForm = "-d", PreferShortForm = true };
@@ -57,7 +52,6 @@ public class CliAttributeTests
         await Assert.That(attribute.GetEffectiveName()).IsEqualTo("-d");
     }
 
-    [Test]
     public async Task CliFlag_Returns_Name_When_ShortForm_Null_And_Preferred()
     {
         var attribute = new CliFlagAttribute("--debug") { PreferShortForm = true };
@@ -65,7 +59,6 @@ public class CliAttributeTests
         await Assert.That(attribute.GetEffectiveName()).IsEqualTo("--debug");
     }
 
-    [Test]
     [Arguments(OptionFormat.SpaceSeparated, " ")]
     [Arguments(OptionFormat.EqualsSeparated, "=")]
     [Arguments(OptionFormat.ColonSeparated, ":")]
@@ -77,7 +70,6 @@ public class CliAttributeTests
         await Assert.That(attribute.GetSeparator()).IsEqualTo(expected);
     }
 
-    [Test]
     public async Task CliOption_CustomSeparator_Overrides_Format()
     {
         var attribute = new CliOptionAttribute("--namespace")
@@ -89,7 +81,6 @@ public class CliAttributeTests
         await Assert.That(attribute.GetSeparator()).IsEqualTo("::");
     }
 
-    [Test]
     public async Task CliOption_Returns_Name_When_ShortForm_Not_Preferred()
     {
         var attribute = new CliOptionAttribute("--namespace") { ShortForm = "-n" };
@@ -97,7 +88,6 @@ public class CliAttributeTests
         await Assert.That(attribute.GetEffectiveName()).IsEqualTo("--namespace");
     }
 
-    [Test]
     public async Task CliOption_Returns_ShortForm_When_Preferred()
     {
         var attribute = new CliOptionAttribute("--namespace") { ShortForm = "-n", PreferShortForm = true };
@@ -105,7 +95,6 @@ public class CliAttributeTests
         await Assert.That(attribute.GetEffectiveName()).IsEqualTo("-n");
     }
 
-    [Test]
     public async Task CliArgument_Defaults_To_AfterOptions_Placement()
     {
         var attribute = new CliArgumentAttribute(0);
@@ -113,7 +102,6 @@ public class CliAttributeTests
         await Assert.That(attribute.Placement).IsEqualTo(ArgumentPlacement.AfterOptions);
     }
 
-    [Test]
     public async Task CliArgument_Position_Is_Set_Correctly()
     {
         var attribute = new CliArgumentAttribute(2);
@@ -121,7 +109,6 @@ public class CliAttributeTests
         await Assert.That(attribute.Position).IsEqualTo(2);
     }
 
-    [Test]
     public async Task Parser_Handles_CliFlag()
     {
         var options = new TestCliOptionsWithFlag { Debug = true };
@@ -130,7 +117,6 @@ public class CliAttributeTests
         await Assert.That(list).IsEquivalentTo(new[] { "--debug" });
     }
 
-    [Test]
     public async Task Parser_Omits_CliFlag_When_False()
     {
         var options = new TestCliOptionsWithFlag { Debug = false };
@@ -139,7 +125,6 @@ public class CliAttributeTests
         await Assert.That(list).Count().IsEqualTo(0);
     }
 
-    [Test]
     public async Task Parser_Omits_CliFlag_When_Null()
     {
         var options = new TestCliOptionsWithFlag { Debug = null };
@@ -148,7 +133,6 @@ public class CliAttributeTests
         await Assert.That(list).Count().IsEqualTo(0);
     }
 
-    [Test]
     public async Task Parser_Handles_CliOption_With_Space_Separator()
     {
         var options = new TestCliOptionsWithOption { Namespace = "default" };
@@ -157,7 +141,6 @@ public class CliAttributeTests
         await Assert.That(list).IsEquivalentTo(new[] { "--namespace", "default" });
     }
 
-    [Test]
     public async Task Parser_Handles_CliOption_With_Equals_Separator()
     {
         var options = new TestCliOptionsWithEqualsSeparator { Set = "key=value" };
@@ -166,7 +149,6 @@ public class CliAttributeTests
         await Assert.That(list).IsEquivalentTo(new[] { "--set=key=value" });
     }
 
-    [Test]
     public async Task Parser_Handles_CliOption_With_Multiple_Values()
     {
         var options = new TestCliOptionsWithMultipleValues { Values = ["file1.yaml", "file2.yaml"] };
@@ -175,7 +157,6 @@ public class CliAttributeTests
         await Assert.That(list).IsEquivalentTo(new[] { "--values", "file1.yaml", "--values", "file2.yaml" });
     }
 
-    [Test]
     public async Task Parser_Handles_CliArgument_After_Options()
     {
         var options = new TestCliOptionsWithArgumentAfterOptions
@@ -188,7 +169,6 @@ public class CliAttributeTests
         await Assert.That(list).IsEquivalentTo(new[] { "--debug", "myrelease" });
     }
 
-    [Test]
     public async Task Parser_Handles_CliArgument_Before_Options()
     {
         var options = new TestCliOptionsWithArgumentBeforeOptions
@@ -201,7 +181,6 @@ public class CliAttributeTests
         await Assert.That(list).IsEquivalentTo(new[] { "/some/path", "--debug" });
     }
 
-    [Test]
     public async Task Parser_Omits_Null_CliArgument()
     {
         var options = new TestCliOptionsWithOptionalArgument { ReleaseName = null, Debug = true };
@@ -210,7 +189,6 @@ public class CliAttributeTests
         await Assert.That(list).IsEquivalentTo(new[] { "--debug" });
     }
 
-    [Test]
     public async Task Parser_Orders_Multiple_Arguments_By_Position()
     {
         var options = new TestCliOptionsWithMultipleArguments
@@ -223,7 +201,6 @@ public class CliAttributeTests
         await Assert.That(list).IsEquivalentTo(new[] { "myrelease", "bitnami/nginx" });
     }
 
-    [Test]
     public async Task Parser_Handles_Mixed_Flags_Options_And_Arguments()
     {
         var options = new TestCliOptionsComplete

@@ -1,4 +1,4 @@
-using ModularPipelines.Context;
+﻿using ModularPipelines.Context;
 using ModularPipelines.Git.Extensions;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
@@ -91,7 +91,6 @@ public class ZipTests : TestBase
         }
     }
 
-    [Test]
     [NotInParallel(nameof(ZipTests), Order = 1)]
     public async Task Has_Not_Errored()
     {
@@ -100,7 +99,6 @@ public class ZipTests : TestBase
         await ModuleResultAssertions.AssertSuccess(moduleResult);
     }
 
-    [Test]
     [NotInParallel(nameof(ZipTests), Order = 2)]
     public async Task Zip_File_Exists()
     {
@@ -134,7 +132,6 @@ public class ZipTests : TestBase
         }
     }
 
-    [Test]
     [NotInParallel(nameof(ZipTests), Order = 3)]
     public async Task UnZip_Has_Not_Errored()
     {
@@ -143,7 +140,6 @@ public class ZipTests : TestBase
         await ModuleResultAssertions.AssertSuccess(moduleResult);
     }
 
-    [Test]
     [NotInParallel(nameof(ZipTests), Order = 4)]
     public async Task UnZipped_Folder_Exists()
     {

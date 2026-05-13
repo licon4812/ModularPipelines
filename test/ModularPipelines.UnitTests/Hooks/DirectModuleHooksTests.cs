@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Configuration;
 using ModularPipelines.Context;
 using ModularPipelines.Engine;
@@ -234,7 +234,6 @@ public class DirectModuleHooksTests : TestBase
 
     #region Tests
 
-    [Test]
     public async Task OnBeforeExecuteAsync_CalledBeforeExecuteAsync()
     {
         var module = await RunModule<HookTrackingModule>();
@@ -247,7 +246,6 @@ public class DirectModuleHooksTests : TestBase
         await Assert.That(beforeIndex).IsLessThan(executeIndex);
     }
 
-    [Test]
     public async Task OnAfterExecuteAsync_CalledAfterExecuteAsync()
     {
         var module = await RunModule<HookTrackingModule>();
@@ -260,7 +258,6 @@ public class DirectModuleHooksTests : TestBase
         await Assert.That(executeIndex).IsLessThan(afterIndex);
     }
 
-    [Test]
     public async Task OnSkippedAsync_CalledWhenModuleSkipped()
     {
         var module = await RunModule<SkippableHookTrackingModule>();
@@ -271,7 +268,6 @@ public class DirectModuleHooksTests : TestBase
         await Assert.That(module.ReceivedSkipDecision!.Reason).IsEqualTo("Test skip reason");
     }
 
-    [Test]
     public async Task OnFailedAsync_CalledWhenModuleFails()
     {
         var module = await RunModule<FailingHookTrackingModule>();
@@ -282,7 +278,6 @@ public class DirectModuleHooksTests : TestBase
         await Assert.That(module.ReceivedFailureException).IsTypeOf<InvalidOperationException>();
     }
 
-    [Test]
     public async Task OnAfterExecuteAsync_CalledWhenModuleFails()
     {
         var module = await RunModule<FailingHookTrackingModule>();
@@ -301,7 +296,6 @@ public class DirectModuleHooksTests : TestBase
         await Assert.That(module.ReceivedAfterResult.ExceptionOrDefault).IsTypeOf<InvalidOperationException>();
     }
 
-    [Test]
     public async Task DirectHooks_CalledBeforeConfigHooks()
     {
         var module = await RunModule<HookableAndDirectHookModule>();
@@ -315,7 +309,6 @@ public class DirectModuleHooksTests : TestBase
         await Assert.That(directBeforeIndex).IsLessThan(configBeforeIndex);
     }
 
-    [Test]
     public async Task OnBeforeExecuteAsync_ExceptionPreventsExecution()
     {
         var module = await RunModule<BeforeHookFailingModule>();
@@ -324,7 +317,6 @@ public class DirectModuleHooksTests : TestBase
         await Assert.That(module.HooksCalled).DoesNotContain("ExecuteAsync");
     }
 
-    [Test]
     public async Task OnAfterExecuteAsync_ExceptionLogged_ResultPreserved()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -342,7 +334,6 @@ public class DirectModuleHooksTests : TestBase
         await Assert.That(moduleResult.ValueOrDefault).IsEqualTo("Success");
     }
 
-    [Test]
     public async Task Module_WithNoOverrides_ExecutesNormally()
     {
         // A module that doesn't override any hooks should work fine

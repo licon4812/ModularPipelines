@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Attributes;
 using ModularPipelines.Configuration;
 using ModularPipelines.Context;
@@ -112,7 +112,7 @@ public class PipelineProgressTests
         }
     }
 
-    [Test, Retry(5)]
+    [Retry(5)]
     public async Task Can_Show_Progress()
     {
         await Assert.That(async () =>

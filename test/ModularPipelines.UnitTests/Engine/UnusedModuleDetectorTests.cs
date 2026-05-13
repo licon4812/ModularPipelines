@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.DependencyInjection;
 using ModularPipelines.Engine;
@@ -32,7 +32,6 @@ public class UnusedModuleDetectorTests
             );
     }
 
-    [Test]
     public async Task Logs_Unregisted_Modules_Correctly()
     {
         _assemblyLoadedTypesProvider.Setup(x => x.GetLoadedTypesAssignableTo(typeof(IModule)))

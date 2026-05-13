@@ -1,4 +1,4 @@
-using ModularPipelines.Attributes;
+﻿using ModularPipelines.Attributes;
 using ModularPipelines.Helpers.Internal;
 using ModularPipelines.Options;
 
@@ -6,7 +6,6 @@ namespace ModularPipelines.UnitTests.Helpers;
 
 public class ToolResolverTests
 {
-    [Test]
     public async Task ResolveTool_FromDirectAttribute_ReturnsTool()
     {
         var resolver = new ToolResolver();
@@ -16,7 +15,6 @@ public class ToolResolverTests
         await Assert.That(tool).IsEqualTo("mytool");
     }
 
-    [Test]
     public async Task ResolveTool_FromInheritedAttribute_ReturnsTool()
     {
         var resolver = new ToolResolver();
@@ -26,7 +24,6 @@ public class ToolResolverTests
         await Assert.That(tool).IsEqualTo("git");
     }
 
-    [Test]
     public async Task ResolveTool_FromDeeplyInheritedAttribute_ReturnsTool()
     {
         var resolver = new ToolResolver();
@@ -36,7 +33,6 @@ public class ToolResolverTests
         await Assert.That(tool).IsEqualTo("docker");
     }
 
-    [Test]
     public async Task ResolveTool_NoAttribute_ReturnsNull()
     {
         var resolver = new ToolResolver();
@@ -46,7 +42,6 @@ public class ToolResolverTests
         await Assert.That(tool).IsNull();
     }
 
-    [Test]
     public async Task ResolveTool_FromInstance_ReturnsToolFromAttribute()
     {
         var resolver = new ToolResolver();

@@ -1,4 +1,4 @@
-using ModularPipelines.Context;
+﻿using ModularPipelines.Context;
 using ModularPipelines.Engine;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
@@ -66,7 +66,6 @@ public class DependencyTreeFormatterTests
 
     #endregion
 
-    [Test]
     public async Task FormatTree_SingleModule_NoDependencies_ReturnsTreeWithSingleNode()
     {
         // Arrange
@@ -83,7 +82,6 @@ public class DependencyTreeFormatterTests
         await Assert.That(output).Contains("ModuleA");
     }
 
-    [Test]
     public async Task FormatTree_LinearChain_ReturnsTreeWithCorrectHierarchy()
     {
         // Arrange: A -> B -> C (A is root, B depends on A, C depends on B)
@@ -108,7 +106,6 @@ public class DependencyTreeFormatterTests
         await Assert.That(output).Contains("ModuleC");
     }
 
-    [Test]
     public async Task FormatTree_MultipleRoots_ReturnsTreeWithAllRoots()
     {
         // Arrange: Two independent modules
@@ -127,7 +124,6 @@ public class DependencyTreeFormatterTests
         await Assert.That(output).Contains("ModuleB");
     }
 
-    [Test]
     public async Task FormatTree_SharedModule_MarkedAsReference_OnSecondOccurrence()
     {
         // Arrange: A -> Shared, B -> Shared (diamond pattern)
@@ -151,7 +147,6 @@ public class DependencyTreeFormatterTests
         await Assert.That(output).Contains("(↑)");
     }
 
-    [Test]
     public async Task FormatTree_DiamondDependency_ShowsReferenceMarkerForSharedLeaf()
     {
         // Arrange: A -> B -> D, A -> C -> D (diamond)
@@ -181,7 +176,6 @@ public class DependencyTreeFormatterTests
         await Assert.That(output).Contains("(↑)");
     }
 
-    [Test]
     public async Task FormatTree_EmptyCollection_OnlyContainsHeader()
     {
         // Arrange
@@ -198,7 +192,6 @@ public class DependencyTreeFormatterTests
         await Assert.That(output).DoesNotContain("└");
     }
 
-    [Test]
     public async Task FormatTree_AlreadyPrintedRoot_SkipsIt()
     {
         // Arrange: Same module appearing as root twice shouldn't duplicate

@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Attributes;
 using ModularPipelines.Configuration;
 using ModularPipelines.Context;
@@ -83,7 +83,6 @@ public class ModuleHistoryTests
         }
     }
 
-    [Test]
     public async Task Ignore_Category_Without_History_Repository()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -98,7 +97,6 @@ public class ModuleHistoryTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.Skipped);
     }
 
-    [Test]
     public async Task Ignore_By_Non_Runnable_Category_Without_History_Repository()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -113,7 +111,6 @@ public class ModuleHistoryTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.Skipped);
     }
 
-    [Test]
     public async Task Skip_From_Run_Condition_Without_History_Repository()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -127,7 +124,6 @@ public class ModuleHistoryTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.Skipped);
     }
 
-    [Test]
     public async Task Skip_From_Method_Without_History_Repository()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -141,7 +137,6 @@ public class ModuleHistoryTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.Skipped);
     }
 
-    [Test]
     public async Task Ignore_Category_With_NotFound_History_Repository()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -157,7 +152,6 @@ public class ModuleHistoryTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.Skipped);
     }
 
-    [Test]
     public async Task Ignore_By_Non_Runnable_Category_With_NotFound_History_Repository()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -173,7 +167,6 @@ public class ModuleHistoryTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.Skipped);
     }
 
-    [Test]
     public async Task Skip_From_Run_Condition_With_NotFound_History_Repository()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -188,7 +181,6 @@ public class ModuleHistoryTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.Skipped);
     }
 
-    [Test]
     public async Task Skip_From_Method_With_NotFound_History_Repository()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -203,7 +195,6 @@ public class ModuleHistoryTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.Skipped);
     }
 
-    [Test]
     public async Task Ignore_Category_With_Good_History_Repository()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -219,7 +210,6 @@ public class ModuleHistoryTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.UsedHistory);
     }
 
-    [Test]
     public async Task Ignore_By_Non_Runnable_Category_With_Good_History_Repository()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -235,7 +225,6 @@ public class ModuleHistoryTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.UsedHistory);
     }
 
-    [Test]
     public async Task Skip_From_Run_Condition_With_Good_History_Repository()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -250,7 +239,6 @@ public class ModuleHistoryTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.UsedHistory);
     }
 
-    [Test]
     public async Task Skip_From_Method_With_Good_History_Repository()
     {
         var host = await TestPipelineHostBuilder.Create()

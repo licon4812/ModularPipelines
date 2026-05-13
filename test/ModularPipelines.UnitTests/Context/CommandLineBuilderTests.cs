@@ -1,4 +1,4 @@
-using ModularPipelines.Attributes;
+﻿using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.Models;
 using ModularPipelines.Options;
@@ -8,7 +8,6 @@ namespace ModularPipelines.UnitTests.Context;
 
 public class CommandLineBuilderTests : TestBase
 {
-    [Test]
     public async Task Build_FromGenericOptions_ReturnsCorrectCommandLine()
     {
         var builder = await GetService<ICommandLineBuilder>();
@@ -24,7 +23,6 @@ public class CommandLineBuilderTests : TestBase
         await Assert.That(result.Arguments).IsEquivalentTo(new[] { "hello", "world" });
     }
 
-    [Test]
     public async Task Build_FromGenericOptions_WithRunSettings_AddsDoubleDash()
     {
         var builder = await GetService<ICommandLineBuilder>();
@@ -41,7 +39,6 @@ public class CommandLineBuilderTests : TestBase
         await Assert.That(result.Arguments).IsEquivalentTo(new[] { "test", "--", "--filter", "Category=Unit" });
     }
 
-    [Test]
     public async Task Build_FromAttributeBasedOptions_ResolvesToolAndSubcommands()
     {
         var builder = await GetService<ICommandLineBuilder>();
@@ -62,7 +59,6 @@ public class CommandLineBuilderTests : TestBase
         await Assert.That(result.Arguments).Contains("/path/to/output");
     }
 
-    [Test]
     public async Task Build_WithPositionalArguments_PlacesCorrectly()
     {
         var builder = await GetService<ICommandLineBuilder>();
@@ -87,7 +83,6 @@ public class CommandLineBuilderTests : TestBase
         await Assert.That(fileIndex).IsLessThan(configIndex);
     }
 
-    [Test]
     public async Task Build_ReturnsImmutableCommandLine()
     {
         var builder = await GetService<ICommandLineBuilder>();
@@ -103,7 +98,6 @@ public class CommandLineBuilderTests : TestBase
         await Assert.That(result.Arguments).IsTypeOf<System.Collections.ObjectModel.ReadOnlyCollection<string>>();
     }
 
-    [Test]
     public async Task Build_ToString_FormatsCorrectly()
     {
         var builder = await GetService<ICommandLineBuilder>();
@@ -118,7 +112,6 @@ public class CommandLineBuilderTests : TestBase
         await Assert.That(result.ToString()).IsEqualTo("git status -s");
     }
 
-    [Test]
     public async Task Build_SkipsDuplicateToolInArguments()
     {
         var builder = await GetService<ICommandLineBuilder>();

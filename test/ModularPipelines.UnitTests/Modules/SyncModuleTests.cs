@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ModularPipelines.Configuration;
 using ModularPipelines.Context;
@@ -23,7 +23,6 @@ public class SyncModuleTests : TestBase
         }
     }
 
-    [Test]
     public async Task SyncModule_Executes_And_Returns_Value()
     {
         var module = await RunModule<SimpleSyncModule>();
@@ -42,7 +41,6 @@ public class SyncModuleTests : TestBase
         }
     }
 
-    [Test]
     public async Task SyncModule_Can_Return_Null()
     {
         var module = await RunModule<SyncModuleReturningNull>();
@@ -66,7 +64,6 @@ public class SyncModuleTests : TestBase
         }
     }
 
-    [Test]
     public async Task SyncModule_Can_Return_Complex_Types()
     {
         var module = await RunModule<SyncModuleWithComplexType>();
@@ -90,7 +87,6 @@ public class SyncModuleTests : TestBase
         }
     }
 
-    [Test]
     public async Task SyncModule_Exception_Is_Captured()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -133,7 +129,6 @@ public class SyncModuleTests : TestBase
         }
     }
 
-    [Test]
     public async Task SyncModule_OnBeforeExecute_Is_Called()
     {
         var module = await RunModule<SyncModuleWithBeforeHook>();
@@ -162,7 +157,6 @@ public class SyncModuleTests : TestBase
         }
     }
 
-    [Test]
     public async Task SyncModule_OnAfterExecute_Is_Called()
     {
         var module = await RunModule<SyncModuleWithAfterHook>();
@@ -192,7 +186,6 @@ public class SyncModuleTests : TestBase
         }
     }
 
-    [Test]
     public async Task SyncModule_OnFailed_Is_Called_On_Exception()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -240,7 +233,6 @@ public class SyncModuleTests : TestBase
         }
     }
 
-    [Test]
     public async Task SyncModule_OnSkipped_Is_Called_When_Skipped()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -280,7 +272,6 @@ public class SyncModuleTests : TestBase
         }
     }
 
-    [Test]
     public async Task SyncModule_Can_Depend_On_Another_SyncModule()
     {
         var (dependency, dependent) = await RunModules<SyncDependencyModule, SyncDependentModule>();
@@ -311,7 +302,6 @@ public class SyncModuleTests : TestBase
         }
     }
 
-    [Test]
     public async Task SyncModule_Can_Depend_On_AsyncModule()
     {
         var (asyncModule, syncModule) = await RunModules<AsyncDependencyModule, SyncDependsOnAsync>();
@@ -342,7 +332,6 @@ public class SyncModuleTests : TestBase
         }
     }
 
-    [Test]
     public async Task AsyncModule_Can_Depend_On_SyncModule()
     {
         var (syncModule, asyncModule) = await RunModules<SyncModuleForAsyncToDepend, AsyncDependsOnSync>();
@@ -370,7 +359,6 @@ public class SyncModuleTests : TestBase
         }
     }
 
-    [Test]
     public async Task SyncModule_Respects_Configuration()
     {
         var module = await RunModule<SyncModuleWithTimeout>();
@@ -399,7 +387,6 @@ public class SyncModuleTests : TestBase
         }
     }
 
-    [Test]
     public async Task SyncModule_Respects_Retry_Configuration()
     {
         var module = await RunModule<SyncModuleWithRetry>();
@@ -423,7 +410,6 @@ public class SyncModuleTests : TestBase
         }
     }
 
-    [Test]
     public async Task SyncModule_Receives_CancellationToken()
     {
         var module = await RunModule<SyncModuleCheckingCancellation>();
@@ -449,7 +435,6 @@ public class SyncModuleTests : TestBase
         }
     }
 
-    [Test]
     public async Task SyncModule_Can_Access_Context()
     {
         var module = await RunModule<SyncModuleAccessingContext>();
@@ -463,7 +448,6 @@ public class SyncModuleTests : TestBase
 
     #region Test Helper Tests
 
-    [Test]
     public async Task SimpleSyncTestModule_Helper_Works()
     {
         var module = await RunModule<SyncTrueModule>();
@@ -473,7 +457,6 @@ public class SyncModuleTests : TestBase
         await Assert.That(result.ValueOrDefault).IsTrue();
     }
 
-    [Test]
     public async Task SyncNullModule_Helper_Works()
     {
         var module = await RunModule<SyncNullModule>();

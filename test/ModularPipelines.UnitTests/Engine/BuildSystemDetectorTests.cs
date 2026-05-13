@@ -1,4 +1,4 @@
-using ModularPipelines.Context;
+﻿using ModularPipelines.Context;
 using ModularPipelines.Enums;
 using ModularPipelines.TestHelpers;
 using Moq;
@@ -17,13 +17,11 @@ public class BuildSystemDetectorTests : TestBase
         _buildSystemDetector = new BuildSystemDetector(_environmentVariables.Object);
     }
 
-    [Test]
     public async Task When_No_Known_BuildAgent_Variable_Then_IsKnownBuildAgent_Returns_False()
     {
         await Assert.That(_buildSystemDetector.IsKnownBuildAgent).IsFalse();
     }
 
-    [Test]
     [Arguments("TF_BUILD")]
     [Arguments("TEAMCITY_VERSION")]
     [Arguments("GITHUB_ACTIONS")]
@@ -40,7 +38,6 @@ public class BuildSystemDetectorTests : TestBase
         await Assert.That(_buildSystemDetector.IsKnownBuildAgent).IsTrue();
     }
 
-    [Test]
     public async Task Each_Property_Returns_Result()
     {
         using (Assert.Multiple())
@@ -56,7 +53,6 @@ public class BuildSystemDetectorTests : TestBase
         }
     }
 
-    [Test]
     [Arguments("TF_BUILD", BuildSystem.AzurePipelines)]
     [Arguments("TEAMCITY_VERSION", BuildSystem.TeamCity)]
     [Arguments("GITHUB_ACTIONS", BuildSystem.GitHubActions)]

@@ -1,10 +1,9 @@
-using ModularPipelines.Exceptions;
+﻿using ModularPipelines.Exceptions;
 
 namespace ModularPipelines.UnitTests.Plugins;
 
 public class PluginVersionMismatchExceptionTests
 {
-    [Test]
     public async Task Message_ContainsPluginName()
     {
         var ex = new PluginVersionMismatchException(
@@ -15,7 +14,6 @@ public class PluginVersionMismatchExceptionTests
         await Assert.That(ex.Message).Contains("ModularPipelines.CustomTool");
     }
 
-    [Test]
     public async Task Message_ContainsRequiredVersion()
     {
         var ex = new PluginVersionMismatchException(
@@ -26,7 +24,6 @@ public class PluginVersionMismatchExceptionTests
         await Assert.That(ex.Message).Contains("4.x");
     }
 
-    [Test]
     public async Task Message_ContainsActualVersion()
     {
         var ex = new PluginVersionMismatchException(
@@ -37,7 +34,6 @@ public class PluginVersionMismatchExceptionTests
         await Assert.That(ex.Message).Contains("5.2.0");
     }
 
-    [Test]
     public async Task Message_HandlesNullVersion()
     {
         var ex = new PluginVersionMismatchException(
@@ -48,7 +44,6 @@ public class PluginVersionMismatchExceptionTests
         await Assert.That(ex.Message).Contains("unknown");
     }
 
-    [Test]
     public async Task Properties_AreSetCorrectly()
     {
         var version = new Version(5, 2, 0);

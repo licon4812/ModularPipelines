@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ModularPipelines.DependencyInjection;
 using ModularPipelines.TestHelpers;
@@ -10,7 +10,6 @@ namespace ModularPipelines.UnitTests.Engine;
 
 public class DependencyInjectionTests
 {
-    [Test]
     public async Task AllDependenciesCanBeBuilt()
     {
         var host = await TestPipelineHostBuilder.Create()

@@ -1,4 +1,4 @@
-using ModularPipelines.Context;
+﻿using ModularPipelines.Context;
 using ModularPipelines.FileSystem;
 using ModularPipelines.TestHelpers;
 using File = ModularPipelines.FileSystem.File;
@@ -7,7 +7,6 @@ namespace ModularPipelines.UnitTests.FileSystem;
 
 public class FileSystemContextTests : TestBase
 {
-    [Test]
     public async Task Move_File()
     {
         var context = await GetService<IFileSystemContext>();
@@ -27,7 +26,6 @@ public class FileSystemContextTests : TestBase
         }
     }
 
-    [Test]
     public async Task Copy_File()
     {
         var context = await GetService<IFileSystemContext>();
@@ -48,7 +46,6 @@ public class FileSystemContextTests : TestBase
         }
     }
 
-    [Test]
     public async Task File_Delete()
     {
         var context = await GetService<IFileSystemContext>();
@@ -60,7 +57,6 @@ public class FileSystemContextTests : TestBase
         await Assert.That(context.FileExists(file)).IsFalse();
     }
 
-    [Test]
     public async Task File_Data_Populated()
     {
         var context = await GetService<IFileSystemContext>();
@@ -75,7 +71,6 @@ public class FileSystemContextTests : TestBase
         }
     }
 
-    [Test]
     public async Task Move_Folder()
     {
         var context = await GetService<IFileSystemContext>();
@@ -99,7 +94,6 @@ public class FileSystemContextTests : TestBase
         }
     }
 
-    [Test]
     public async Task Copy_Folder()
     {
         var context = await GetService<IFileSystemContext>();
@@ -120,7 +114,6 @@ public class FileSystemContextTests : TestBase
         }
     }
 
-    [Test]
     public async Task Folder_Delete()
     {
         var context = await GetService<IFileSystemContext>();
@@ -132,7 +125,6 @@ public class FileSystemContextTests : TestBase
         await Assert.That(context.FolderExists(folder)).IsFalse();
     }
 
-    [Test]
     public async Task Folder_Data_Populated()
     {
         var context = await GetService<IFileSystemContext>();

@@ -1,4 +1,4 @@
-using ModularPipelines.Context;
+﻿using ModularPipelines.Context;
 using ModularPipelines.Engine;
 using ModularPipelines.Exceptions;
 using ModularPipelines.Modules;
@@ -160,7 +160,6 @@ public class CircularDependencyDetectionTests
 
     #region DependencyGraphValidator Unit Tests
 
-    [Test]
     public async Task ValidateNoCycles_WithDirectCycle_ThrowsCircularDependencyException()
     {
         var moduleTypes = new[] { typeof(DirectCycleModuleA), typeof(DirectCycleModuleB) };
@@ -169,7 +168,6 @@ public class CircularDependencyDetectionTests
             .Throws<CircularDependencyException>();
     }
 
-    [Test]
     public async Task ValidateNoCycles_WithTripleCycle_ThrowsCircularDependencyException()
     {
         var moduleTypes = new[] { typeof(TripleCycleModuleA), typeof(TripleCycleModuleB), typeof(TripleCycleModuleC) };
@@ -178,7 +176,6 @@ public class CircularDependencyDetectionTests
             .Throws<CircularDependencyException>();
     }
 
-    [Test]
     public async Task ValidateNoCycles_WithLinearChain_DoesNotThrow()
     {
         var moduleTypes = new[] { typeof(LinearModuleA), typeof(LinearModuleB), typeof(LinearModuleC) };
@@ -187,7 +184,6 @@ public class CircularDependencyDetectionTests
             .ThrowsNothing();
     }
 
-    [Test]
     public async Task ValidateNoCycles_WithIndependentModules_DoesNotThrow()
     {
         var moduleTypes = new[] { typeof(IndependentModuleA), typeof(IndependentModuleB) };
@@ -196,7 +192,6 @@ public class CircularDependencyDetectionTests
             .ThrowsNothing();
     }
 
-    [Test]
     public async Task ValidateNoCycles_WithEmptyCollection_DoesNotThrow()
     {
         var moduleTypes = Array.Empty<Type>();
@@ -205,7 +200,6 @@ public class CircularDependencyDetectionTests
             .ThrowsNothing();
     }
 
-    [Test]
     public async Task ValidateNoCycles_WithComplexGraphContainingCycle_ThrowsCircularDependencyException()
     {
         var moduleTypes = new[] { typeof(ComplexGraphRoot), typeof(ComplexGraphCycleA), typeof(ComplexGraphCycleB) };
@@ -214,7 +208,6 @@ public class CircularDependencyDetectionTests
             .Throws<CircularDependencyException>();
     }
 
-    [Test]
     public async Task ValidateNoCycles_ExceptionContainsCycleTypes()
     {
         var moduleTypes = new[] { typeof(DirectCycleModuleA), typeof(DirectCycleModuleB) };
@@ -231,7 +224,6 @@ public class CircularDependencyDetectionTests
         }
     }
 
-    [Test]
     public async Task ValidateNoCycles_ExceptionMessageShowsCyclePath()
     {
         var moduleTypes = new[] { typeof(DirectCycleModuleA), typeof(DirectCycleModuleB) };
@@ -253,7 +245,6 @@ public class CircularDependencyDetectionTests
 
     #region Integration Tests with Pipeline Registration
 
-    [Test]
     public async Task AddModulesFromAssembly_WithCircularDependency_ThrowsAtRegistrationTime()
     {
         // This test verifies that circular dependencies are detected during registration,
@@ -272,7 +263,6 @@ public class CircularDependencyDetectionTests
 
     #region CircularDependencyException Tests
 
-    [Test]
     public async Task CreateWithCyclePath_FormatsMessageCorrectly()
     {
         var cyclePath = new List<Type> { typeof(DirectCycleModuleA), typeof(DirectCycleModuleB), typeof(DirectCycleModuleA) };
@@ -284,7 +274,6 @@ public class CircularDependencyDetectionTests
         await Assert.That(exception.CycleTypes).IsEqualTo(cyclePath);
     }
 
-    [Test]
     public async Task CreateWithCyclePath_HighlightsStartAndEndOfCycle()
     {
         var cyclePath = new List<Type>

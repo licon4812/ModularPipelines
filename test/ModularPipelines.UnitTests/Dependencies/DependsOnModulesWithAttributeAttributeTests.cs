@@ -1,4 +1,4 @@
-using ModularPipelines.Attributes;
+﻿using ModularPipelines.Attributes;
 using ModularPipelines.TestHelpers;
 
 namespace ModularPipelines.UnitTests.Dependencies;
@@ -8,7 +8,6 @@ namespace ModularPipelines.UnitTests.Dependencies;
 /// </summary>
 public class DependsOnModulesWithAttributeAttributeTests : TestBase
 {
-    [Test]
     public async Task ShouldDependOn_ModuleHasAttribute_ReturnsTrue()
     {
         var attr = new DependsOnModulesWithAttributeAttribute<CriticalAttribute>();
@@ -19,7 +18,6 @@ public class DependsOnModulesWithAttributeAttributeTests : TestBase
         await Assert.That(result).IsTrue();
     }
 
-    [Test]
     public async Task ShouldDependOn_ModuleLacksAttribute_ReturnsFalse()
     {
         var attr = new DependsOnModulesWithAttributeAttribute<CriticalAttribute>();
@@ -30,7 +28,6 @@ public class DependsOnModulesWithAttributeAttributeTests : TestBase
         await Assert.That(result).IsFalse();
     }
 
-    [Test]
     public async Task ShouldDependOn_ModuleHasInheritedAttribute_ReturnsTrue()
     {
         var attr = new DependsOnModulesWithAttributeAttribute<InheritableAttribute>();
@@ -41,7 +38,6 @@ public class DependsOnModulesWithAttributeAttributeTests : TestBase
         await Assert.That(result).IsTrue();
     }
 
-    [Test]
     public async Task ShouldDependOn_ModuleHasDifferentAttribute_ReturnsFalse()
     {
         var attr = new DependsOnModulesWithAttributeAttribute<CriticalAttribute>();
@@ -52,7 +48,6 @@ public class DependsOnModulesWithAttributeAttributeTests : TestBase
         await Assert.That(result).IsFalse();
     }
 
-    [Test]
     public async Task ShouldDependOn_ModuleHasMultipleAttributesIncludingMatch_ReturnsTrue()
     {
         var attr = new DependsOnModulesWithAttributeAttribute<CriticalAttribute>();
@@ -63,7 +58,6 @@ public class DependsOnModulesWithAttributeAttributeTests : TestBase
         await Assert.That(result).IsTrue();
     }
 
-    [Test]
     public async Task ShouldDependOn_CheckingForSerializableAttribute_ReturnsTrue()
     {
         var attr = new DependsOnModulesWithAttributeAttribute<SerializableAttribute>();
@@ -74,7 +68,6 @@ public class DependsOnModulesWithAttributeAttributeTests : TestBase
         await Assert.That(result).IsTrue();
     }
 
-    [Test]
     public async Task ShouldDependOn_CheckingForSerializableAttribute_ReturnsFalse()
     {
         var attr = new DependsOnModulesWithAttributeAttribute<SerializableAttribute>();

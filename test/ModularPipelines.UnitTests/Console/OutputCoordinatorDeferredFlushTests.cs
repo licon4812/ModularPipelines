@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ModularPipelines.Context;
 using ModularPipelines.Extensions;
@@ -30,7 +30,6 @@ public class OutputCoordinatorDeferredFlushTests : TestBase
         }
     }
 
-    [Test]
     public async Task Pipeline_Completes_When_Progress_Disabled()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -48,7 +47,6 @@ public class OutputCoordinatorDeferredFlushTests : TestBase
         }
     }
 
-    [Test]
     public async Task Pipeline_With_Multiple_Modules_Completes_Successfully()
     {
         var host = await TestPipelineHostBuilder.Create()

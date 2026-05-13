@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Configuration;
 using ModularPipelines.Context;
 using ModularPipelines.Engine;
@@ -118,7 +118,6 @@ public class ComposableModuleTests
         }
     }
 
-    [Test]
     public async Task Skippable_Module_Is_Skipped_When_Condition_True()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -133,7 +132,6 @@ public class ComposableModuleTests
         await Assert.That(moduleResult.SkipDecisionOrDefault.Reason).IsEqualTo("Skipped via composition");
     }
 
-    [Test]
     public async Task Skippable_Module_Executes_When_Condition_False()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -147,7 +145,6 @@ public class ComposableModuleTests
         await Assert.That(moduleResult.SkipDecisionOrDefault?.ShouldSkip ?? false).IsFalse();
     }
 
-    [Test]
     public async Task Timeoutable_Module_Has_Custom_Timeout()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -162,7 +159,6 @@ public class ComposableModuleTests
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(ModularPipelines.Enums.Status.Successful);
     }
 
-    [Test]
     public async Task Multi_Behavior_Module_Calls_Hooks()
     {
         MultiBehaviorModule.Reset();
@@ -175,7 +171,6 @@ public class ComposableModuleTests
         await Assert.That(MultiBehaviorModule.AfterHookCalled).IsTrue();
     }
 
-    [Test]
     public async Task AlwaysRun_Module_Has_Correct_Configuration()
     {
         var host = await TestPipelineHostBuilder.Create()

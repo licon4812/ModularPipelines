@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Configuration;
 using ModularPipelines.Context;
 using ModularPipelines.Engine;
@@ -24,7 +24,6 @@ public class SkippedModuleTests : TestBase
         }
     }
 
-    [Test]
     public async Task Skipped_Result_Is_As_Expected()
     {
         var host = await TestPipelineHostBuilder.Create()

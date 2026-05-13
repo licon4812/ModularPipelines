@@ -1,4 +1,4 @@
-using ModularPipelines.Context;
+﻿using ModularPipelines.Context;
 using ModularPipelines.Context.Domains;
 using ModularPipelines.Logging;
 
@@ -9,7 +9,6 @@ namespace ModularPipelines.UnitTests.Context;
 /// </summary>
 public class ContextHierarchyTests
 {
-    [Test]
     public async Task IModuleContext_ShouldInheritFromIPipelineContext()
     {
         // IModuleContext should inherit from IPipelineContext
@@ -17,7 +16,6 @@ public class ContextHierarchyTests
             .Contains(typeof(IPipelineContext));
     }
 
-    [Test]
     public async Task IPipelineHookContext_ShouldInheritFromIPipelineContext()
     {
         // IPipelineHookContext should inherit from IPipelineContext
@@ -25,7 +23,6 @@ public class ContextHierarchyTests
             .Contains(typeof(IPipelineContext));
     }
 
-    [Test]
     public async Task IPipelineContext_ShouldHaveExpectedDomainProperties()
     {
         var contextType = typeof(IPipelineContext);
@@ -86,7 +83,6 @@ public class ContextHierarchyTests
             .Because("Services should be of type IServicesContext");
     }
 
-    [Test]
     public async Task IModuleContext_ShouldHaveGetModuleMethods()
     {
         var moduleContextType = typeof(IModuleContext);
@@ -101,7 +97,6 @@ public class ContextHierarchyTests
             .Because("IModuleContext should have GetModuleIfRegistered method(s)");
     }
 
-    [Test]
     public async Task IModuleContext_ShouldHaveSubModuleMethods()
     {
         var moduleContextType = typeof(IModuleContext);

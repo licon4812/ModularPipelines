@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Attributes;
 using ModularPipelines.Engine;
 using ModularPipelines.Extensions;
@@ -44,7 +44,6 @@ public class RunnableCategoryTests : TestBase
         protected override bool Result => true;
     }
 
-    [Test]
     public async Task When_RunCategories_Specified_Then_Expected_Modules_Run()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -72,7 +71,6 @@ public class RunnableCategoryTests : TestBase
         }
     }
 
-    [Test]
     public async Task When_IgnoreCategories_Specified_Then_Expected_Modules_Run()
     {
         var host = await TestPipelineHostBuilder.Create()

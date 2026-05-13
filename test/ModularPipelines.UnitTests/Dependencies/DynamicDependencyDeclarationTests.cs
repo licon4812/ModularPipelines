@@ -1,4 +1,4 @@
-using ModularPipelines.Attributes;
+﻿using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.Enums;
 using ModularPipelines.Exceptions;
@@ -227,7 +227,6 @@ public class DynamicDependencyDeclarationTests : TestBase
 
     #region Required Dependency Tests
 
-    [Test]
     public async Task Programmatic_Required_Dependency_Works_When_Registered()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()
@@ -238,7 +237,6 @@ public class DynamicDependencyDeclarationTests : TestBase
         await Assert.That(pipelineSummary.Status).IsEqualTo(Status.Successful);
     }
 
-    [Test]
     public async Task Programmatic_Required_Dependency_Throws_When_Not_Registered()
     {
         await Assert.That(async () => await TestPipelineHostBuilder.Create()
@@ -247,7 +245,6 @@ public class DynamicDependencyDeclarationTests : TestBase
             .ThrowsException();
     }
 
-    [Test]
     public async Task Programmatic_Type_Dependency_Works()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()
@@ -262,7 +259,6 @@ public class DynamicDependencyDeclarationTests : TestBase
 
     #region Optional Dependency Tests
 
-    [Test]
     public async Task Optional_Dependency_Works_When_Registered()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()
@@ -273,7 +269,6 @@ public class DynamicDependencyDeclarationTests : TestBase
         await Assert.That(pipelineSummary.Status).IsEqualTo(Status.Successful);
     }
 
-    [Test]
     public async Task Optional_Dependency_Does_Not_Fail_When_Not_Registered()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()
@@ -287,7 +282,6 @@ public class DynamicDependencyDeclarationTests : TestBase
 
     #region Conditional Dependency Tests
 
-    [Test]
     public async Task Conditional_Dependency_Works_When_Condition_True_And_Registered()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()
@@ -298,7 +292,6 @@ public class DynamicDependencyDeclarationTests : TestBase
         await Assert.That(pipelineSummary.Status).IsEqualTo(Status.Successful);
     }
 
-    [Test]
     public async Task Conditional_Dependency_Throws_When_Condition_True_And_Not_Registered()
     {
         await Assert.That(async () => await TestPipelineHostBuilder.Create()
@@ -307,7 +300,6 @@ public class DynamicDependencyDeclarationTests : TestBase
             .ThrowsException();
     }
 
-    [Test]
     public async Task Conditional_Dependency_Not_Added_When_Condition_False()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()
@@ -317,7 +309,6 @@ public class DynamicDependencyDeclarationTests : TestBase
         await Assert.That(pipelineSummary.Status).IsEqualTo(Status.Successful);
     }
 
-    [Test]
     [TUnit.Core.NotInParallel(Order = 1)]
     public async Task Conditional_Predicate_Dependency_Works_When_Predicate_Returns_True()
     {
@@ -331,7 +322,6 @@ public class DynamicDependencyDeclarationTests : TestBase
         await Assert.That(pipelineSummary.Status).IsEqualTo(Status.Successful);
     }
 
-    [Test]
     [TUnit.Core.NotInParallel(Order = 2)]
     public async Task Conditional_Predicate_Dependency_Not_Added_When_Predicate_Returns_False()
     {
@@ -348,7 +338,6 @@ public class DynamicDependencyDeclarationTests : TestBase
 
     #region Lazy Dependency Tests
 
-    [Test]
     public async Task Lazy_Dependency_Does_Not_Fail_When_Not_Registered()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()
@@ -358,7 +347,6 @@ public class DynamicDependencyDeclarationTests : TestBase
         await Assert.That(pipelineSummary.Status).IsEqualTo(Status.Successful);
     }
 
-    [Test]
     public async Task Lazy_Dependency_Works_When_Registered()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()
@@ -373,7 +361,6 @@ public class DynamicDependencyDeclarationTests : TestBase
 
     #region Combined Dependency Tests
 
-    [Test]
     public async Task Combined_Attribute_And_Programmatic_Dependencies_Work()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()
@@ -385,7 +372,6 @@ public class DynamicDependencyDeclarationTests : TestBase
         await Assert.That(pipelineSummary.Status).IsEqualTo(Status.Successful);
     }
 
-    [Test]
     public async Task Combined_Dependencies_Work_With_Only_Attribute_Dependency_Registered()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()
@@ -396,7 +382,6 @@ public class DynamicDependencyDeclarationTests : TestBase
         await Assert.That(pipelineSummary.Status).IsEqualTo(Status.Successful);
     }
 
-    [Test]
     public async Task Chained_Dependency_Declarations_Work()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()
@@ -409,7 +394,6 @@ public class DynamicDependencyDeclarationTests : TestBase
         await Assert.That(pipelineSummary.Status).IsEqualTo(Status.Successful);
     }
 
-    [Test]
     public async Task Chained_Dependency_Declarations_Work_With_Only_Required_Registered()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()
@@ -424,7 +408,6 @@ public class DynamicDependencyDeclarationTests : TestBase
 
     #region DependencyDeclaration Unit Tests
 
-    [Test]
     public async Task DependencyDeclaration_DependsOn_Returns_Same_Instance_For_Chaining()
     {
         var declaration = new DependencyDeclaration();
@@ -434,7 +417,6 @@ public class DynamicDependencyDeclarationTests : TestBase
         await Assert.That(result).IsSameReferenceAs(declaration);
     }
 
-    [Test]
     public async Task DependencyDeclaration_DependsOnOptional_Returns_Same_Instance_For_Chaining()
     {
         var declaration = new DependencyDeclaration();
@@ -444,7 +426,6 @@ public class DynamicDependencyDeclarationTests : TestBase
         await Assert.That(result).IsSameReferenceAs(declaration);
     }
 
-    [Test]
     public async Task DependencyDeclaration_DependsOnIf_Returns_Same_Instance_For_Chaining()
     {
         var declaration = new DependencyDeclaration();
@@ -454,7 +435,6 @@ public class DynamicDependencyDeclarationTests : TestBase
         await Assert.That(result).IsSameReferenceAs(declaration);
     }
 
-    [Test]
     public async Task DependencyDeclaration_DependsOnLazy_Returns_Same_Instance_For_Chaining()
     {
         var declaration = new DependencyDeclaration();
@@ -464,7 +444,6 @@ public class DynamicDependencyDeclarationTests : TestBase
         await Assert.That(result).IsSameReferenceAs(declaration);
     }
 
-    [Test]
     public async Task DependencyDeclaration_Throws_For_Non_Module_Type()
     {
         var declaration = new DependencyDeclaration();
@@ -474,7 +453,6 @@ public class DynamicDependencyDeclarationTests : TestBase
             .And.HasMessageContaining("is not a Module");
     }
 
-    [Test]
     public async Task DependencyDeclaration_Required_Has_Correct_DependencyType()
     {
         var declaration = new DependencyDeclaration();
@@ -487,7 +465,6 @@ public class DynamicDependencyDeclarationTests : TestBase
         await Assert.That(deps[0].IsOptional).IsEqualTo(false);
     }
 
-    [Test]
     public async Task DependencyDeclaration_Optional_Has_Correct_DependencyType()
     {
         var declaration = new DependencyDeclaration();
@@ -500,7 +477,6 @@ public class DynamicDependencyDeclarationTests : TestBase
         await Assert.That(deps[0].IsOptional).IsEqualTo(true);
     }
 
-    [Test]
     public async Task DependencyDeclaration_Lazy_Has_Correct_DependencyType()
     {
         var declaration = new DependencyDeclaration();
@@ -513,7 +489,6 @@ public class DynamicDependencyDeclarationTests : TestBase
         await Assert.That(deps[0].IsOptional).IsEqualTo(true);
     }
 
-    [Test]
     public async Task DependencyDeclaration_Conditional_Has_Correct_DependencyType()
     {
         var declaration = new DependencyDeclaration();
@@ -526,7 +501,6 @@ public class DynamicDependencyDeclarationTests : TestBase
         await Assert.That(deps[0].IsOptional).IsEqualTo(false);
     }
 
-    [Test]
     public async Task DependencyDeclaration_Conditional_False_Does_Not_Add_Dependency()
     {
         var declaration = new DependencyDeclaration();

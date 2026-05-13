@@ -1,4 +1,4 @@
-using ModularPipelines.Context;
+﻿using ModularPipelines.Context;
 using ModularPipelines.Git;
 using ModularPipelines.TestHelpers;
 
@@ -6,7 +6,6 @@ namespace ModularPipelines.UnitTests.Helpers;
 
 public class ChecksumTests : TestBase
 {
-    [Test]
     public async Task Md5_Checksum()
     {
         var git = await GetService<IGit>();

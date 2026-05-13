@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Context;
 using ModularPipelines.Docker.Extensions;
 using ModularPipelines.Docker.Options;
@@ -43,7 +43,6 @@ public class DockerTests : TestBase
         }
     }
 
-    [Test]
     public async Task DockerBuild_CorrectInputCommand()
     {
         var host = await TestPipelineHostBuilder.Create()

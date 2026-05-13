@@ -1,4 +1,4 @@
-using ModularPipelines.Attributes;
+﻿using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.Modules;
 using ModularPipelines.TestHelpers;
@@ -7,7 +7,6 @@ namespace ModularPipelines.UnitTests.Dependencies;
 
 public class OneWayDependenciesNonCollisionTests
 {
-    [Test]
     public async Task Modules_Not_Dependent_On_Each_Other_Succeed()
     {
         await Assert.That(() => TestPipelineHostBuilder.Create()

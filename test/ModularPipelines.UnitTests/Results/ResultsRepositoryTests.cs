@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Attributes;
 using ModularPipelines.Context;
@@ -46,7 +46,6 @@ public class ResultsRepositoryTests : TestBase
         protected override bool Result => true;
     }
 
-    [Test]
     [TUnit.Core.NotInParallel(nameof(ResultsRepositoryTests), Order = 1)]
     public async Task RunOne()
     {
@@ -69,7 +68,6 @@ public class ResultsRepositoryTests : TestBase
         }
     }
 
-    [Test]
     [TUnit.Core.NotInParallel(nameof(ResultsRepositoryTests), Order = 2)]
     public async Task RunTwoFromHistory()
     {

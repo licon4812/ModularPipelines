@@ -1,4 +1,4 @@
-using ModularPipelines.FileSystem;
+﻿using ModularPipelines.FileSystem;
 
 namespace ModularPipelines.UnitTests.FileSystem;
 
@@ -22,7 +22,6 @@ public class SystemFileSystemProviderTests : IDisposable
         }
     }
 
-    [Test]
     public async Task ReadAllTextAsync_ReadsFileContents()
     {
         var filePath = Path.Combine(_tempDir, "test.txt");
@@ -33,7 +32,6 @@ public class SystemFileSystemProviderTests : IDisposable
         await Assert.That(result).IsEqualTo("Hello World");
     }
 
-    [Test]
     public async Task WriteAllTextAsync_WritesFileContents()
     {
         var filePath = Path.Combine(_tempDir, "write-test.txt");
@@ -44,7 +42,6 @@ public class SystemFileSystemProviderTests : IDisposable
         await Assert.That(result).IsEqualTo("Test Content");
     }
 
-    [Test]
     public async Task FileExists_ReturnsTrueForExistingFile()
     {
         var filePath = Path.Combine(_tempDir, "exists.txt");
@@ -55,7 +52,6 @@ public class SystemFileSystemProviderTests : IDisposable
         await Assert.That(result).IsTrue();
     }
 
-    [Test]
     public async Task FileExists_ReturnsFalseForNonExistingFile()
     {
         var filePath = Path.Combine(_tempDir, "does-not-exist.txt");
@@ -65,7 +61,6 @@ public class SystemFileSystemProviderTests : IDisposable
         await Assert.That(result).IsFalse();
     }
 
-    [Test]
     public async Task CreateDirectory_CreatesNewDirectory()
     {
         var dirPath = Path.Combine(_tempDir, "new-dir");
@@ -75,7 +70,6 @@ public class SystemFileSystemProviderTests : IDisposable
         await Assert.That(Directory.Exists(dirPath)).IsTrue();
     }
 
-    [Test]
     public async Task DeleteDirectory_RemovesDirectoryRecursively()
     {
         var dirPath = Path.Combine(_tempDir, "to-delete");
@@ -87,7 +81,6 @@ public class SystemFileSystemProviderTests : IDisposable
         await Assert.That(Directory.Exists(dirPath)).IsFalse();
     }
 
-    [Test]
     public async Task Combine_JoinsPaths()
     {
         var result = _provider.Combine("folder", "subfolder", "file.txt");

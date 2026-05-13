@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.Enums;
@@ -118,7 +118,6 @@ public class ExecutionHintTests : TestBase
         _maxCpuConcurrency = 0;
     }
 
-    [Test]
     public async Task ExecutionHintAttribute_CanBeAppliedToModule()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -128,7 +127,6 @@ public class ExecutionHintTests : TestBase
         await Assert.That(result.Status).IsEqualTo(Status.Successful);
     }
 
-    [Test]
     public async Task ModulesWithoutExecutionHint_UseDefaultType()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -138,7 +136,6 @@ public class ExecutionHintTests : TestBase
         await Assert.That(result.Status).IsEqualTo(Status.Successful);
     }
 
-    [Test]
     public async Task AllExecutionTypes_ExecuteSuccessfully()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -151,7 +148,6 @@ public class ExecutionHintTests : TestBase
         await Assert.That(result.Status).IsEqualTo(Status.Successful);
     }
 
-    [Test]
     public async Task CpuIntensiveModules_AreThrottled()
     {
         // Set max CPU-intensive modules to 2

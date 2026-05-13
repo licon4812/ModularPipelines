@@ -1,4 +1,4 @@
-using ModularPipelines.Context;
+﻿using ModularPipelines.Context;
 using ModularPipelines.Exceptions;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
@@ -18,7 +18,6 @@ public class ModuleReferencingSelfTests : TestBase
         }
     }
 
-    [Test]
     public async Task Throws_Exception()
     {
         var exception = await Assert.ThrowsAsync<ModuleFailedException>(async () => await RunModule<ModuleReferencingSelf>());

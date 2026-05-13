@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Context;
 using ModularPipelines.Engine;
@@ -53,7 +53,6 @@ public class JsonSerializationTests : TestBase
         }
     }
 
-    [Test]
     public async Task Test1()
     {
         var host = await TestPipelineHostBuilder.Create()

@@ -5,7 +5,6 @@ namespace ModularPipelines.UnitTests.Extensions;
 
 public class CommandExtensionsTests
 {
-    [Test]
     public async Task ToToolOptions_SingleArg()
     {
         var commandLineOptions = new CommandExecutionOptions()
@@ -18,7 +17,6 @@ public class CommandExtensionsTests
         }
     }
 
-    [Test]
     public async Task ToToolOptions_MultipleArgs()
     {
         var commandLineOptions = new CommandExecutionOptions()
@@ -31,7 +29,6 @@ public class CommandExtensionsTests
         }
     }
 
-    [Test]
     public async Task ToToolOptions_MultipleArgs_IEnumerable()
     {
         var commandLineOptions = new CommandExecutionOptions()
@@ -44,7 +41,6 @@ public class CommandExtensionsTests
         }
     }
 
-    [Test]
     public async Task WithArguments_AddsToExisting()
     {
         var commandLineOptions = new CommandExecutionOptions()

@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.Extensions;
@@ -49,7 +49,6 @@ public class ModuleRegistrationApiTests : TestBase
 
     #region AddModules<T1, T2> Tests
 
-    [Test]
     public async Task AddModules_TwoModules_RegistersBothModules()
     {
         // Arrange & Act
@@ -65,7 +64,6 @@ public class ModuleRegistrationApiTests : TestBase
         await Assert.That(result.Modules.Any(m => m.GetType() == typeof(ModuleB))).IsTrue();
     }
 
-    [Test]
     public async Task AddModules_ThreeModules_RegistersAllModules()
     {
         // Arrange & Act
@@ -79,7 +77,6 @@ public class ModuleRegistrationApiTests : TestBase
         await Assert.That(result.Modules.Count).IsEqualTo(3);
     }
 
-    [Test]
     public async Task AddModules_FourModules_RegistersAllModules()
     {
         // Arrange & Act
@@ -93,7 +90,6 @@ public class ModuleRegistrationApiTests : TestBase
         await Assert.That(result.Modules.Count).IsEqualTo(4);
     }
 
-    [Test]
     public async Task AddModules_FiveModules_RegistersAllModules()
     {
         // Arrange & Act
@@ -107,7 +103,6 @@ public class ModuleRegistrationApiTests : TestBase
         await Assert.That(result.Modules.Count).IsEqualTo(5);
     }
 
-    [Test]
     public async Task AddModules_SixModules_RegistersAllModules()
     {
         // Arrange & Act
@@ -125,7 +120,6 @@ public class ModuleRegistrationApiTests : TestBase
 
     #region Chaining Tests
 
-    [Test]
     public async Task AddModules_CanChainWithAddModule()
     {
         // Arrange & Act
@@ -139,7 +133,6 @@ public class ModuleRegistrationApiTests : TestBase
         await Assert.That(result.Modules.Count).IsEqualTo(3);
     }
 
-    [Test]
     public async Task AddModules_CanChainMultipleCalls()
     {
         // Arrange & Act
@@ -157,7 +150,6 @@ public class ModuleRegistrationApiTests : TestBase
 
     #region AddModulesFromAssemblyContainingType Tests
 
-    [Test]
     public async Task AddModulesFromAssemblyContainingType_RegistersModulesFromAssembly()
     {
         // Arrange - test assembly scanning by verifying service registration
@@ -181,7 +173,6 @@ public class ModuleRegistrationApiTests : TestBase
         await Assert.That(registeredTypes).Contains(typeof(ExceptionModule));
     }
 
-    [Test]
     public async Task AddModulesFromAssembly_RegistersModulesFromAssembly()
     {
         // Arrange
@@ -196,7 +187,6 @@ public class ModuleRegistrationApiTests : TestBase
         await Assert.That(moduleRegistrations.Count).IsGreaterThanOrEqualTo(3);
     }
 
-    [Test]
     public async Task AddModulesFromAssemblyContainingType_CanChainWithAddModule()
     {
         // Arrange & Act
@@ -211,7 +201,6 @@ public class ModuleRegistrationApiTests : TestBase
         await Assert.That(result.Modules.Count).IsEqualTo(3);
     }
 
-    [Test]
     public async Task AddModulesFromAssembly_FiltersOutOpenGenericTypes()
     {
         // Arrange - this test verifies open generic types like ThrowingSyncTestModule<T> are filtered out

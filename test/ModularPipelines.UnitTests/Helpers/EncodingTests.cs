@@ -1,4 +1,4 @@
-using ModularPipelines.Context;
+﻿using ModularPipelines.Context;
 using ModularPipelines.Modules;
 using ModularPipelines.TestHelpers;
 using ModularPipelines.TestHelpers.Assertions;
@@ -58,7 +58,6 @@ public class EncodingTests : TestBase
 
     #region Bidirectional Encoding Tests (Base64, Hex)
 
-    [Test]
     [DisplayName("Base64: ToBase64String does not error and produces correct output")]
     public async Task To_Base64_Works_Correctly()
     {
@@ -68,7 +67,6 @@ public class EncodingTests : TestBase
         await Assert.That(moduleResult.ValueOrDefault).IsEqualTo("Rm9vIGJhciE=");
     }
 
-    [Test]
     [DisplayName("Base64: FromBase64String does not error and produces correct output")]
     public async Task From_Base64_Works_Correctly()
     {
@@ -78,7 +76,6 @@ public class EncodingTests : TestBase
         await Assert.That(moduleResult.ValueOrDefault).IsEqualTo(TestInput);
     }
 
-    [Test]
     [DisplayName("Hex: ToHex does not error and produces correct output")]
     public async Task To_Hex_Works_Correctly()
     {
@@ -88,7 +85,6 @@ public class EncodingTests : TestBase
         await Assert.That(moduleResult.ValueOrDefault).IsEqualTo("466f6f2062617221");
     }
 
-    [Test]
     [DisplayName("Hex: FromHex does not error and produces correct output")]
     public async Task From_Hex_Works_Correctly()
     {

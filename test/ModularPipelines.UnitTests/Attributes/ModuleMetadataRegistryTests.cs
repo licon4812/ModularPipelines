@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using ModularPipelines.Context;
 using ModularPipelines.Engine.Dependencies;
 using ModularPipelines.Modules;
@@ -17,7 +17,6 @@ public class ModuleMetadataRegistryTests
     private static ModuleMetadataRegistry CreateRegistry()
         => new(Microsoft.Extensions.Options.Options.Create(new ModuleRegistrationOptions()));
 
-    [Test]
     public async Task SetMetadata_GetMetadata_ReturnsValue()
     {
         var registry = CreateRegistry();
@@ -28,7 +27,6 @@ public class ModuleMetadataRegistryTests
         await Assert.That(result).IsEqualTo("value");
     }
 
-    [Test]
     public async Task GetMetadata_NotSet_ReturnsNull()
     {
         var registry = CreateRegistry();
@@ -37,7 +35,6 @@ public class ModuleMetadataRegistryTests
         await Assert.That(result).IsNull();
     }
 
-    [Test]
     public async Task SetMetadata_OverwritesExisting()
     {
         var registry = CreateRegistry();

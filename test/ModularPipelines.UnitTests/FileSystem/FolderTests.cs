@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -17,7 +17,6 @@ namespace ModularPipelines.UnitTests.FileSystem;
 
 public class FolderTests : TestBase
 {
-    [Test]
     public async Task CleanFiles()
     {
         var folder = CreateRandomFolder();
@@ -44,7 +43,6 @@ public class FolderTests : TestBase
         }
     }
 
-    [Test]
     public async Task CleanFolders()
     {
         var folder = CreateRandomFolder();
@@ -61,7 +59,6 @@ public class FolderTests : TestBase
         await Assert.That(folder.ListFolders().ToList()).HasCount().EqualTo(0);
     }
 
-    [Test]
     public async Task FindFile()
     {
         var git = await GetService<IGit>();
@@ -71,7 +68,6 @@ public class FolderTests : TestBase
         await Assert.That(readme!.Exists).IsTrue();
     }
 
-    [Test]
     public async Task FindFileLogs()
     {
         var stringBuilder = new StringBuilder();
@@ -90,7 +86,6 @@ public class FolderTests : TestBase
         await Assert.That(actualLogResult).Contains("x => x.Name == \"README.md\"");
     }
 
-    [Test]
     public async Task FindFolder()
     {
         var git = await GetService<IGit>();
@@ -100,7 +95,6 @@ public class FolderTests : TestBase
         await Assert.That(src!.Exists).IsTrue();
     }
 
-    [Test]
     public async Task Delete()
     {
         var folder = CreateRandomFolder();
@@ -110,7 +104,6 @@ public class FolderTests : TestBase
         await Assert.That(folder.Exists).IsFalse();
     }
 
-    [Test]
     public async Task MoveTo()
     {
         var folder = CreateRandomFolder();
@@ -142,7 +135,6 @@ public class FolderTests : TestBase
         }
     }
 
-    [Test]
     public async Task CopyTo()
     {
         var folder = CreateRandomFolder();
@@ -173,7 +165,6 @@ public class FolderTests : TestBase
         }
     }
 
-    [Test]
     public async Task Data_Is_Populated()
     {
         var folder = CreateRandomFolder();
@@ -194,7 +185,6 @@ public class FolderTests : TestBase
         }
     }
 
-    [Test]
     public async Task CreateFolder()
     {
         var folder = new Folder(Path.GetRandomFileName());
@@ -205,7 +195,6 @@ public class FolderTests : TestBase
         await Assert.That(folder.Exists).IsTrue();
     }
 
-    [Test]
     public async Task CreateFile()
     {
         var folder = CreateRandomFolder();
@@ -217,7 +206,6 @@ public class FolderTests : TestBase
         await Assert.That(file.Exists).IsTrue();
     }
 
-    [Test]
     public async Task CreateSubfolder()
     {
         var folder = CreateRandomFolder();
@@ -235,7 +223,6 @@ public class FolderTests : TestBase
         }
     }
 
-    [Test]
     public async Task Null_FileInfo_Implicit_Cast()
     {
         DirectoryInfo? directoryInfo = null;
@@ -244,7 +231,6 @@ public class FolderTests : TestBase
         await Assert.That(file).IsNull();
     }
 
-    [Test]
     public async Task Null_String_Implicit_Cast()
     {
         string? fileInfo = null;
@@ -253,7 +239,6 @@ public class FolderTests : TestBase
         await Assert.That(file).IsNull();
     }
 
-    [Test]
     public async Task FileInfo_Implicit_Cast()
     {
         var directoryInfo = new DirectoryInfo(Path.GetTempFileName());
@@ -262,7 +247,6 @@ public class FolderTests : TestBase
         await Assert.That(file).IsNotNull();
     }
 
-    [Test]
     public async Task String_Implicit_Cast()
     {
         var path = Path.GetTempFileName();
@@ -271,7 +255,6 @@ public class FolderTests : TestBase
         await Assert.That(file).IsNotNull();
     }
 
-    [Test]
     [WindowsOnlyTest]
     public async Task Attributes()
     {
@@ -283,7 +266,6 @@ public class FolderTests : TestBase
         await Assert.That(folder.Attributes.HasFlag(FileAttributes.Hidden)).IsTrue();
     }
 
-    [Test]
     public async Task EqualityTrue()
     {
         var path = Path.GetRandomFileName();
@@ -299,7 +281,6 @@ public class FolderTests : TestBase
         }
     }
 
-    [Test]
     public async Task EqualityFalse()
     {
         var folder = new Folder(Path.GetRandomFileName());
@@ -314,28 +295,24 @@ public class FolderTests : TestBase
         }
     }
 
-    [Test]
     public async Task AssertExists()
     {
         var folder = (Folder?) CreateRandomFolder();
         await Assert.That(() => folder.AssertExists()).ThrowsNothing();
     }
 
-    [Test]
     public async Task AssertExists_ThrowsWhenNotExists()
     {
         Folder folder = ModularPipelines.FileSystem.File.GetNewTemporaryFilePath().Path!;
         await Assert.That(() => folder.AssertExists()).Throws<DirectoryNotFoundException>();
     }
 
-    [Test]
     public async Task AssertExists_ThrowsWhenNull()
     {
         var folder = null as Folder;
         await Assert.That(() => folder.AssertExists()).Throws<DirectoryNotFoundException>();
     }
 
-    [Test]
     public async Task Searching_Files_With_Nested_Folders_Does_Not_Throw()
     {
         // Create a controlled folder structure to test FindFile without searching massive real folders
@@ -351,7 +328,6 @@ public class FolderTests : TestBase
             exclude => exclude.Name.StartsWith('.'))).ThrowsNothing();
     }
 
-    [Test]
     public async Task GetFiles_With_Pattern_Does_Not_Throw()
     {
         var folder = CreateRandomFolder();
@@ -362,7 +338,6 @@ public class FolderTests : TestBase
             .ThrowsNothing();
     }
 
-    [Test]
     public async Task Searching_Folders_With_Nested_Structure_Does_Not_Throw()
     {
         // Create a controlled folder structure to test FindFolder without searching massive real folders

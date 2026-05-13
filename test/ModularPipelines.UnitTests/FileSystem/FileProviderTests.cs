@@ -1,4 +1,4 @@
-using ModularPipelines.FileSystem;
+﻿using ModularPipelines.FileSystem;
 using Moq;
 using File = ModularPipelines.FileSystem.File;
 
@@ -6,7 +6,6 @@ namespace ModularPipelines.UnitTests.FileSystem;
 
 public class FileProviderTests
 {
-    [Test]
     public async Task ReadAsync_UsesProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -20,7 +19,6 @@ public class FileProviderTests
         await Assert.That(result).IsEqualTo("mocked content");
     }
 
-    [Test]
     public async Task WriteAsync_UsesProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -31,7 +29,6 @@ public class FileProviderTests
         mockProvider.Verify(p => p.WriteAllTextAsync(It.IsAny<string>(), "test content", It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    [Test]
     public async Task Delete_UsesProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -42,7 +39,6 @@ public class FileProviderTests
         mockProvider.Verify(p => p.DeleteFile(It.IsAny<string>()), Times.Once);
     }
 
-    [Test]
     public async Task CopyTo_ReturnsFileWithSameProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -58,7 +54,6 @@ public class FileProviderTests
         mockProvider.Verify(p => p.DeleteFile(It.IsAny<string>()), Times.Once);
     }
 
-    [Test]
     public async Task MoveTo_ReturnsFileWithSameProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -74,7 +69,6 @@ public class FileProviderTests
         mockProvider.Verify(p => p.DeleteFile(It.IsAny<string>()), Times.Once);
     }
 
-    [Test]
     public async Task DefaultConstructor_UsesSystemProvider()
     {
         var tempFile = Path.GetTempFileName();
@@ -90,7 +84,6 @@ public class FileProviderTests
         }
     }
 
-    [Test]
     public async Task ReadBytesAsync_UsesProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -105,7 +98,6 @@ public class FileProviderTests
         await Assert.That(result).IsEqualTo(expectedBytes);
     }
 
-    [Test]
     public async Task WriteAsync_Bytes_UsesProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -117,7 +109,6 @@ public class FileProviderTests
         mockProvider.Verify(p => p.WriteAllBytesAsync(It.IsAny<string>(), contents, It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    [Test]
     public async Task WriteAsync_Lines_UsesProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -129,7 +120,6 @@ public class FileProviderTests
         mockProvider.Verify(p => p.WriteAllLinesAsync(It.IsAny<string>(), lines, It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    [Test]
     public async Task AppendAsync_UsesProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -140,7 +130,6 @@ public class FileProviderTests
         mockProvider.Verify(p => p.AppendAllTextAsync(It.IsAny<string>(), "appended content", It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    [Test]
     public async Task AppendAsync_Lines_UsesProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -152,7 +141,6 @@ public class FileProviderTests
         mockProvider.Verify(p => p.AppendAllLinesAsync(It.IsAny<string>(), lines, It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    [Test]
     public async Task Create_UsesProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -167,7 +155,6 @@ public class FileProviderTests
         mockProvider.Verify(p => p.Create(It.IsAny<string>()), Times.Once);
     }
 
-    [Test]
     public async Task GetStream_UsesProvider()
     {
         // We need to return a FileStream, but we can't easily mock one
@@ -186,7 +173,6 @@ public class FileProviderTests
         }
     }
 
-    [Test]
     public async Task CopyToAsync_UsesProviderStreams()
     {
         var mockProvider = new Mock<IFileSystemProvider>();

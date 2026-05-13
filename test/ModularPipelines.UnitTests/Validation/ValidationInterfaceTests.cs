@@ -1,4 +1,4 @@
-using ModularPipelines.Context;
+﻿using ModularPipelines.Context;
 using ModularPipelines.Validation;
 using System.Reflection;
 
@@ -9,7 +9,6 @@ namespace ModularPipelines.UnitTests.Validation;
 /// </summary>
 public class ValidationInterfaceTests
 {
-    [Test]
     public async Task IPipelineValidationService_ShouldBeInternal()
     {
         var assembly = typeof(IModuleContext).Assembly;
@@ -21,7 +20,6 @@ public class ValidationInterfaceTests
             .Because("IPipelineValidationService should be internal (implementation detail)");
     }
 
-    [Test]
     public async Task IPipelineValidator_ShouldRemainPublic()
     {
         // IPipelineValidator is a user extension point - custom validators can implement it
@@ -31,7 +29,6 @@ public class ValidationInterfaceTests
             .Because("IPipelineValidator should be public for custom implementations");
     }
 
-    [Test]
     public async Task IPipelineValidator_ShouldHaveOrderAndValidateMembers()
     {
         var validatorType = typeof(IPipelineValidator);

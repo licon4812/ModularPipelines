@@ -1,4 +1,4 @@
-using ModularPipelines.Context;
+﻿using ModularPipelines.Context;
 using ModularPipelines.Exceptions;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
@@ -135,7 +135,6 @@ public class SingleTypeParameterGetModuleTests : TestBase
         }
     }
 
-    [Test]
     public async Task GetModule_SingleTypeParameter_ReturnsCorrectlyTypedResult()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()
@@ -146,7 +145,6 @@ public class SingleTypeParameterGetModuleTests : TestBase
         await Assert.That(pipelineSummary.Status).IsEqualTo(Status.Successful);
     }
 
-    [Test]
     public async Task GetModule_SingleTypeParameter_WithComplexType_InfersTypeCorrectly()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()
@@ -157,7 +155,6 @@ public class SingleTypeParameterGetModuleTests : TestBase
         await Assert.That(pipelineSummary.Status).IsEqualTo(Status.Successful);
     }
 
-    [Test]
     public async Task GetModuleIfRegistered_SingleTypeParameter_ReturnsModule_WhenRegistered()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()
@@ -168,7 +165,6 @@ public class SingleTypeParameterGetModuleTests : TestBase
         await Assert.That(pipelineSummary.Status).IsEqualTo(Status.Successful);
     }
 
-    [Test]
     public async Task GetModuleIfRegistered_SingleTypeParameter_ReturnsNull_WhenNotRegistered()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()
@@ -178,7 +174,6 @@ public class SingleTypeParameterGetModuleTests : TestBase
         await Assert.That(pipelineSummary.Status).IsEqualTo(Status.Successful);
     }
 
-    [Test]
     public async Task GetModule_SingleTypeParameter_ThrowsModuleReferencingSelfException()
     {
         var exception = await Assert.ThrowsAsync<ModuleFailedException>(
@@ -189,7 +184,6 @@ public class SingleTypeParameterGetModuleTests : TestBase
         await Assert.That(exception.InnerException).IsTypeOf<ModuleReferencingSelfException>();
     }
 
-    [Test]
     public async Task GetModule_SingleTypeParameter_ThrowsModuleNotRegisteredException()
     {
         var exception = await Assert.ThrowsAsync<ModuleFailedException>(

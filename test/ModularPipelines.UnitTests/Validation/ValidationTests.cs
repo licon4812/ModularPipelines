@@ -1,4 +1,4 @@
-using ModularPipelines.Context;
+﻿using ModularPipelines.Context;
 using ModularPipelines.Exceptions;
 using ModularPipelines.Extensions;
 using ModularPipelines.Modules;
@@ -76,7 +76,6 @@ public class ValidationTests
             => Task.FromResult<string?>("success");
     }
 
-    [Test]
     public async Task ValidateAsync_WithValidConfiguration_ReturnsNoErrors()
     {
         // Arrange
@@ -92,7 +91,6 @@ public class ValidationTests
         await Assert.That(result.Errors.Count).IsEqualTo(0);
     }
 
-    [Test]
     public async Task ValidateAsync_WithNoModules_ReturnsError()
     {
         // Arrange
@@ -106,7 +104,6 @@ public class ValidationTests
         await Assert.That(result.Errors.Any(e => e.Category == ValidationErrorCategory.ModuleConfiguration)).IsTrue();
     }
 
-    [Test]
     public async Task BuildAsync_WithValidConfiguration_ReturnsPipeline()
     {
         // Arrange
@@ -124,7 +121,6 @@ public class ValidationTests
         await pipeline.DisposeAsync();
     }
 
-    [Test]
     public async Task BuildAsync_WithNoModules_ThrowsValidationException()
     {
         // Arrange
@@ -137,7 +133,6 @@ public class ValidationTests
         });
     }
 
-    [Test]
     public async Task ValidateAsync_WithMissingRequiredDependency_ReturnsNoError_BecauseAutoRegistered()
     {
         // Arrange
@@ -154,7 +149,6 @@ public class ValidationTests
         await Assert.That(hasDependencyError).IsFalse();
     }
 
-    [Test]
     public async Task ValidateAsync_WithOptionalMissingDependency_ReturnsNoError()
     {
         // Arrange
@@ -172,7 +166,6 @@ public class ValidationTests
         await Assert.That(hasDependencyError).IsFalse();
     }
 
-    [Test]
     public async Task RunAsync_AfterBuildAsync_ExecutesPipeline()
     {
         // Arrange
@@ -191,7 +184,6 @@ public class ValidationTests
         await pipeline.DisposeAsync();
     }
 
-    [Test]
     public async Task ValidationResult_WithError_HasErrorsIsTrue()
     {
         // Arrange
@@ -204,7 +196,6 @@ public class ValidationTests
         await Assert.That(result.Errors.Count).IsEqualTo(1);
     }
 
-    [Test]
     public async Task ValidationResult_Success_IsValid()
     {
         // Arrange
@@ -215,7 +206,6 @@ public class ValidationTests
         await Assert.That(result.IsValid).IsEqualTo(true);
     }
 
-    [Test]
     public async Task ValidationResult_Merge_CombinesErrors()
     {
         // Arrange
@@ -231,7 +221,6 @@ public class ValidationTests
         await Assert.That(result1.Errors.Count).IsEqualTo(2);
     }
 
-    [Test]
     public async Task ValidationError_ToString_IncludesCategory()
     {
         // Arrange
@@ -245,7 +234,6 @@ public class ValidationTests
         await Assert.That(str.Contains("Test message")).IsEqualTo(true);
     }
 
-    [Test]
     public async Task ValidationError_ToString_WithSourceType_IncludesTypeName()
     {
         // Arrange
@@ -261,7 +249,6 @@ public class ValidationTests
         await Assert.That(str.Contains("SimpleModule")).IsEqualTo(true);
     }
 
-    [Test]
     public async Task ValidateAsync_WithNegativeRetryCount_ReturnsError()
     {
         // Arrange
@@ -279,7 +266,6 @@ public class ValidationTests
             e.Message.Contains("DefaultRetryCount"))).IsTrue();
     }
 
-    [Test]
     public async Task ValidateAsync_WithConflictingCategories_ReturnsError()
     {
         // Arrange
@@ -298,7 +284,6 @@ public class ValidationTests
             e.Message.Contains("Category1"))).IsTrue();
     }
 
-    [Test]
     public async Task ValidateAsync_WithSelfReferencingModule_ReturnsError()
     {
         // Arrange
@@ -316,7 +301,6 @@ public class ValidationTests
             e.Message.Contains("cannot reference itself"))).IsTrue();
     }
 
-    [Test]
     public async Task ValidateAsync_WithCircularDependency_ReturnsError()
     {
         // Arrange - ModuleA -> ModuleB -> ModuleC -> ModuleA (circular)
@@ -333,7 +317,6 @@ public class ValidationTests
             (e.Message.Contains("Circular dependency") || e.Message.Contains("Dependency collision")))).IsTrue();
     }
 
-    [Test]
     public async Task BuildAsync_WithSelfReferencingModule_ThrowsValidationException()
     {
         // Arrange
@@ -347,7 +330,6 @@ public class ValidationTests
         });
     }
 
-    [Test]
     public async Task BuildAsync_WithCircularDependency_ThrowsValidationException()
     {
         // Arrange - ModuleA -> ModuleB -> ModuleC -> ModuleA (circular)

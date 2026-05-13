@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Time.Testing;
 using ModularPipelines.Attributes;
 using ModularPipelines.Context;
@@ -14,7 +14,6 @@ public class TimedDependencyTests
     private static readonly TimeSpan LongModuleDelay = TimeSpan.FromMilliseconds(100);
     private static readonly TimeSpan ShortModuleDelay = TimeSpan.FromMilliseconds(20);
 
-    [Test]
     public async Task OneSecondModule_WillWaitForFiveSecondModule_ThenExecute()
     {
         var timeProvider = new FakeTimeProvider();

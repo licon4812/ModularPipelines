@@ -1,4 +1,4 @@
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using ModularPipelines.Context;
 using ModularPipelines.TestHelpers;
 using static ModularPipelines.UnitTests.Helpers.SerializationTestModels;
@@ -27,7 +27,6 @@ public class XmlTests : TestBase
             };
     }
 
-    [Test]
     public async Task Can_Serialize_With_Null()
     {
         var xml = await GetService<IXml>();
@@ -41,7 +40,6 @@ public class XmlTests : TestBase
                                        """);
     }
 
-    [Test]
     public async Task Can_Serialize_With_Array()
     {
         var xml = await GetService<IXml>();
@@ -60,7 +58,6 @@ public class XmlTests : TestBase
                                               """);
     }
 
-    [Test]
     public async Task Can_Serialize_With_Options()
     {
         var xml = await GetService<IXml>();
@@ -74,7 +71,6 @@ public class XmlTests : TestBase
                                        """);
     }
 
-    [Test]
     public async Task Can_Deserialize()
     {
         var xml = await GetService<IXml>();
@@ -88,7 +84,6 @@ public class XmlTests : TestBase
         await Assert.That(result).IsEqualTo(XmlModel.CreateDefault());
     }
 
-    [Test]
     public async Task Can_Deserialize_With_Options()
     {
         var xml = await GetService<IXml>();

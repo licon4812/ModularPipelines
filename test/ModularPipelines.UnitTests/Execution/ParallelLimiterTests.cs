@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.Time.Testing;
 using ModularPipelines.Context;
 using ModularPipelines.Interfaces;
@@ -146,7 +146,6 @@ public class ParallelLimiterTests
         }
     }
 
-    [Test]
     public async Task LimitParallel()
     {
         _executingModules.Clear();

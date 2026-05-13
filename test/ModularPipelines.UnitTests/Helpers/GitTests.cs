@@ -1,4 +1,4 @@
-using ModularPipelines.Context;
+﻿using ModularPipelines.Context;
 using ModularPipelines.Git;
 using ModularPipelines.Git.Extensions;
 using ModularPipelines.Git.Options;
@@ -22,7 +22,6 @@ public class GitTests : TestBase
         }
     }
 
-    [Test]
     public async Task Has_Not_Errored()
     {
         var moduleResult = await await RunModule<GitVersionModule>();
@@ -30,7 +29,6 @@ public class GitTests : TestBase
         await ModuleResultAssertions.AssertSuccessWithValue(moduleResult);
     }
 
-    [Test]
     public async Task Standard_Output_Starts_With_Git_Version()
     {
         var moduleResult = await await RunModule<GitVersionModule>();
@@ -42,7 +40,6 @@ public class GitTests : TestBase
         }
     }
 
-    [Test]
     public async Task GitRootDirectory()
     {
         var git = await GetService<IGit>();
@@ -54,7 +51,6 @@ public class GitTests : TestBase
         }
     }
 
-    [Test]
     public async Task DefaultBranchName()
     {
         var git = await GetService<IGit>();

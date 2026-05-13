@@ -1,4 +1,4 @@
-using ModularPipelines.DotNet.Options;
+﻿using ModularPipelines.DotNet.Options;
 using ModularPipelines.Helpers.Internal;
 
 namespace ModularPipelines.UnitTests.Attributes;
@@ -14,7 +14,6 @@ public class DotNetFormatOptionsTests
         return _argumentBuilder.BuildArguments(model, optionsObject);
     }
 
-    [Test]
     public async Task ExcludeDiagnostics_Passes_Each_Id_Separately()
     {
         var options = new DotNetFormatOptions

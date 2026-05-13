@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Configuration;
 using ModularPipelines.Context;
 using ModularPipelines.Engine;
@@ -108,7 +108,6 @@ public class RetryTests : TestBase
         }
     }
 
-    [Test]
     public async Task When_Successful_Do_Not_Retry()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -132,7 +131,6 @@ public class RetryTests : TestBase
         }
     }
 
-    [Test]
     public async Task When_Error_Then_Retry()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -156,7 +154,6 @@ public class RetryTests : TestBase
         }
     }
 
-    [Test]
     public async Task When_Error_With_Custom_RetryPolicy_Then_Retry()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -176,7 +173,6 @@ public class RetryTests : TestBase
         }
     }
 
-    [Test]
     public async Task When_Error_And_Zero_Retry_Count_Then_Do_Not_Retry()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -200,7 +196,6 @@ public class RetryTests : TestBase
         }
     }
 
-    [Test]
     public async Task When_Retry_With_Timeout_Then_Honour_Overall_Timeout()
     {
         var moduleFailedException = await Assert.ThrowsAsync<ModuleFailedException>(async () => await TestPipelineHostBuilder.Create()

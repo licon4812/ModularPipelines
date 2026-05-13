@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ModularPipelines.Attributes.Events;
 using ModularPipelines.Context;
 using ModularPipelines.Engine.Attributes;
@@ -41,7 +41,6 @@ public class AttributeEventInvokerTests
         }
     }
 
-    [Test]
     public async Task InvokeAsync_CallsAllHandlers()
     {
         var handler1 = new SuccessfulHandler();
@@ -56,7 +55,6 @@ public class AttributeEventInvokerTests
         await Assert.That(handler2.WasCalled).IsTrue();
     }
 
-    [Test]
     public async Task InvokeAsync_HandlerThrows_ContinueOnErrorFalse_Propagates()
     {
         var handler = new FailingHandler();
@@ -69,7 +67,6 @@ public class AttributeEventInvokerTests
             .WithMessage("Test exception");
     }
 
-    [Test]
     public async Task InvokeAsync_HandlerThrows_ContinueOnErrorTrue_Continues()
     {
         var failingHandler = new FailingHandlerWithContinue();

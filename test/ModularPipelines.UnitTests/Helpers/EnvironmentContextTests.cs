@@ -1,11 +1,10 @@
-using ModularPipelines.Context;
+﻿using ModularPipelines.Context;
 using ModularPipelines.TestHelpers;
 
 namespace ModularPipelines.UnitTests.Helpers;
 
 public class EnvironmentContextTests : TestBase
 {
-    [Test]
     public async Task Can_Read_Environment_Variables()
     {
         var guid = Guid.NewGuid().ToString("N");
@@ -18,7 +17,6 @@ public class EnvironmentContextTests : TestBase
         await Assert.That(result).IsEqualTo(TestConstants.TestString);
     }
 
-    [Test]
     public async Task Can_List_Environment_Variables()
     {
         var guid = Guid.NewGuid().ToString("N");
@@ -33,7 +31,6 @@ public class EnvironmentContextTests : TestBase
         await Assert.That(result[guid]).IsEqualTo(TestConstants.TestString);
     }
 
-    [Test]
     public async Task Can_Set_Environment_Variables()
     {
         var guid = Guid.NewGuid().ToString("N");
@@ -46,7 +43,6 @@ public class EnvironmentContextTests : TestBase
         await Assert.That(result).IsEqualTo(TestConstants.TestString);
     }
 
-    [Test]
     public async Task Can_Add_To_Path()
     {
         var context = await GetService<IEnvironmentContext>();
@@ -63,7 +59,6 @@ public class EnvironmentContextTests : TestBase
         await Assert.That(path).Contains(directoryToAdd);
     }
 
-    [Test]
     public async Task Assert_Values_Populated()
     {
         var context = await GetService<IEnvironmentContext>();

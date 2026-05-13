@@ -1,4 +1,4 @@
-// test/ModularPipelines.UnitTests/Attributes/ModuleRegistrationContextTests.cs
+﻿// test/ModularPipelines.UnitTests/Attributes/ModuleRegistrationContextTests.cs
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,7 +26,6 @@ public class ModuleRegistrationContextTests
             => Task.FromResult<string?>("B");
     }
 
-    [Test]
     public async Task ModuleType_ReturnsCorrectType()
     {
         var context = CreateContext(typeof(ModuleA));
@@ -34,7 +33,6 @@ public class ModuleRegistrationContextTests
         await Assert.That(context.ModuleType).IsEqualTo(typeof(ModuleA));
     }
 
-    [Test]
     public async Task AddDependency_AddsToDependencyRegistry()
     {
         var dependencyRegistry = new ModuleDependencyRegistry();
@@ -46,7 +44,6 @@ public class ModuleRegistrationContextTests
         await Assert.That(dependencies).Contains(typeof(ModuleB));
     }
 
-    [Test]
     public async Task IsModuleRegistered_RegisteredModule_ReturnsTrue()
     {
         var registeredModules = new List<Type> { typeof(ModuleA), typeof(ModuleB) };
@@ -55,7 +52,6 @@ public class ModuleRegistrationContextTests
         await Assert.That(context.IsModuleRegistered<ModuleB>()).IsTrue();
     }
 
-    [Test]
     public async Task IsModuleRegistered_UnregisteredModule_ReturnsFalse()
     {
         var registeredModules = new List<Type> { typeof(ModuleA) };
@@ -64,7 +60,6 @@ public class ModuleRegistrationContextTests
         await Assert.That(context.IsModuleRegistered<ModuleB>()).IsFalse();
     }
 
-    [Test]
     public async Task SetMetadata_GetMetadata_RoundTrips()
     {
         var metadataRegistry = new ModuleMetadataRegistry(Microsoft.Extensions.Options.Options.Create(new ModuleRegistrationOptions()));

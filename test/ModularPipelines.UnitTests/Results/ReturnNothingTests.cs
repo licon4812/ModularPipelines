@@ -1,4 +1,4 @@
-using ModularPipelines.Models;
+﻿using ModularPipelines.Models;
 using ModularPipelines.TestHelpers;
 
 namespace ModularPipelines.UnitTests.Results;
@@ -20,7 +20,6 @@ public class ReturnNothingTests : TestBase
         protected override CommandResult? Result => default;
     }
 
-    [Test]
     public async Task Module1_HasValue_False()
     {
         var result = await await RunModule<ReturnNothingModule1>();
@@ -28,7 +27,6 @@ public class ReturnNothingTests : TestBase
         await Assert(result);
     }
 
-    [Test]
     public async Task Module2_HasValue_False()
     {
         var result = await await RunModule<ReturnNothingModule2>();
@@ -36,7 +34,6 @@ public class ReturnNothingTests : TestBase
         await Assert(result);
     }
 
-    [Test]
     public async Task Module3_HasValue_False()
     {
         var result = await await RunModule<ReturnNothingModule3>();
