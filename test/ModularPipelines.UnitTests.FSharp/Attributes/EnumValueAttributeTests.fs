@@ -3,6 +3,7 @@ namespace ModularPipelines.UnitTests.Attributes
 open ModularPipelines.Attributes
 open ModularPipelines.Helpers.Internal
 open TUnit.Assertions
+open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
@@ -35,5 +36,5 @@ type EnumValueAttributeTests() =
         let list = this.BuildArguments(options)
         do! check(Assert.That(list |> Seq.contains "--number").IsTrue())
         do! check(Assert.That(list |> Seq.contains expected).IsTrue())
-        do! check(Assert.That<string array>(list |> Seq.toArray).IsEquivalentTo([| "--number"; expected |]))
+        do! check(Assert.That((list |> Seq.toArray) = [| "--number"; expected |]).IsTrue())
     }

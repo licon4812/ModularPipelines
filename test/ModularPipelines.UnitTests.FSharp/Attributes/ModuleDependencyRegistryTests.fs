@@ -6,21 +6,22 @@ open ModularPipelines.Context
 open ModularPipelines.Engine.Dependencies
 open ModularPipelines.Modules
 open TUnit.Assertions
+open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
 module ModuleDependencyRegistryTests =
-    type private ModuleA() =
+    type ModuleA() =
         inherit Module<string>()
         override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) =
             Task.FromResult<string>("A")
 
-    type private ModuleB() =
+    type ModuleB() =
         inherit Module<string>()
         override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) =
             Task.FromResult<string>("B")
 
-    type private ModuleC() =
+    type ModuleC() =
         inherit Module<string>()
         override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) =
             Task.FromResult<string>("C")
@@ -40,7 +41,7 @@ type ModuleDependencyRegistryTests() =
         registry.AddDynamicDependency(typeof<ModuleDependencyRegistryTests.ModuleA>, typeof<ModuleDependencyRegistryTests.ModuleB>)
         registry.AddDynamicDependency(typeof<ModuleDependencyRegistryTests.ModuleA>, typeof<ModuleDependencyRegistryTests.ModuleC>)
         let dependencies = registry.GetDynamicDependencies(typeof<ModuleDependencyRegistryTests.ModuleA>)
-        do! check(Assert.That(dependencies |> Seq.length).IsEqualTo(2))
+        do! check(Assert.That((dependencies |> Seq.length) = 2).IsTrue())
         do! check(Assert.That(dependencies |> Seq.contains typeof<ModuleDependencyRegistryTests.ModuleB>).IsTrue())
         do! check(Assert.That(dependencies |> Seq.contains typeof<ModuleDependencyRegistryTests.ModuleC>).IsTrue())
     }
@@ -51,12 +52,12 @@ type ModuleDependencyRegistryTests() =
         registry.AddDynamicDependency(typeof<ModuleDependencyRegistryTests.ModuleA>, typeof<ModuleDependencyRegistryTests.ModuleB>)
         registry.RemoveDependency(typeof<ModuleDependencyRegistryTests.ModuleA>, typeof<ModuleDependencyRegistryTests.ModuleB>)
         let dependencies = registry.GetDynamicDependencies(typeof<ModuleDependencyRegistryTests.ModuleA>)
-        do! check(Assert.That(dependencies).IsEmpty())
+        do! check(Assert.That(Seq.isEmpty dependencies).IsTrue())
     }
 
     [<Test>]
     member _.GetDynamicDependencies_NoDependencies_ReturnsEmpty() = async {
         let registry = ModuleDependencyRegistry()
         let dependencies = registry.GetDynamicDependencies(typeof<ModuleDependencyRegistryTests.ModuleA>)
-        do! check(Assert.That(dependencies).IsEmpty())
+        do! check(Assert.That(Seq.isEmpty dependencies).IsTrue())
     }

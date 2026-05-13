@@ -5,6 +5,8 @@ open System.Threading
 open System.Threading.Tasks
 open ModularPipelines.Attributes.Events
 open ModularPipelines.Context
+open ModularPipelines.Enums
+open ModularPipelines.Extensions
 open ModularPipelines.Modules
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
@@ -13,7 +15,7 @@ open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
 module DynamicDependencyIntegrationTests =
-    let private executionOrder = ResizeArray<string>()
+    let executionOrder = ResizeArray<string>()
 
     type AddDependencyAttribute(dependencyType: Type) =
         inherit Attribute()
@@ -58,6 +60,6 @@ type DynamicDependencyIntegrationTests() =
                 .ExecutePipelineAsync()
             |> Async.AwaitTask
 
-        do! check(Assert.That(result.Status).IsEqualTo(Enums.Status.Successful))
-        do! check(Assert.That<string array>(DynamicDependencyIntegrationTests.executionOrder |> Seq.toArray).IsEquivalentTo([| "A"; "B" |]))
+        do! check(Assert.That(result.Status = Status.Successful).IsTrue())
+        do! check(Assert.That((DynamicDependencyIntegrationTests.executionOrder |> Seq.toArray) = [| "A"; "B" |]).IsTrue())
     }

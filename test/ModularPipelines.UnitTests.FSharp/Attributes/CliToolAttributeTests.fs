@@ -13,9 +13,11 @@ open TUnit.Core
 type private TestGitOptions() =
     inherit CommandLineToolOptions()
 
+[<AbstractClass>]
 type private TestGitCommitOptions() =
     inherit TestGitOptions()
 
+[<AbstractClass>]
 [<CliTool("test")>]
 type private TestOptionsWithAttribute() =
     inherit CommandLineToolOptions()

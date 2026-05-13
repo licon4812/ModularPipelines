@@ -40,7 +40,7 @@
 		<Compile Include="Modules\**" />
 		<Compile Include="ScaleTests.fs" />
 		<Compile Include="Api\**" />
-		<Compile Include="attributes\**" />
+		<Compile Include="Attributes\**" />
 		<None Include="Tests.fs" />
 		<None Include="Tests2.fs" />
 		<None Include="Tests3.fs" />

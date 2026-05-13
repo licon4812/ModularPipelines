@@ -19,17 +19,17 @@ open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
 module ModuleRegistrationContextTests =
-    type private ModuleA() =
+    type ModuleA() =
         inherit Module<string>()
         override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) =
             Task.FromResult<string>("A")
 
-    type private ModuleB() =
+    type ModuleB() =
         inherit Module<string>()
         override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) =
             Task.FromResult<string>("B")
 
-    let private createContext
+    let createContext
             (moduleType: Type)
             (dependencyRegistry: IModuleDependencyRegistry option)
             (metadataRegistry: IModuleMetadataRegistry option)

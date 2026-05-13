@@ -54,12 +54,12 @@ module ModuleAttributeEventServiceTests =
 
     [<TestStart>]
     [<TestFailure>]
-    type private ModuleWithAttributes() =
+    type ModuleWithAttributes() =
         inherit Module<string>()
         override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) =
             Task.FromResult<string>("test")
 
-    type private ModuleWithoutAttributes() =
+    type ModuleWithoutAttributes() =
         inherit Module<string>()
         override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) =
             Task.FromResult<string>("test")
@@ -67,7 +67,7 @@ module ModuleAttributeEventServiceTests =
     [<LowPriorityStart>]
     [<MediumPriorityStart>]
     [<HighPriorityStart>]
-    type private ModuleWithPrioritizedHandlers() =
+    type ModuleWithPrioritizedHandlers() =
         inherit Module<string>()
         override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) =
             Task.FromResult<string>("test")
@@ -75,7 +75,7 @@ module ModuleAttributeEventServiceTests =
     [<LowPriorityStart>]
     [<TestStart>]
     [<HighPriorityStart>]
-    type private ModuleWithMixedPriorityHandlers() =
+    type ModuleWithMixedPriorityHandlers() =
         inherit Module<string>()
         override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) =
             Task.FromResult<string>("test")
@@ -85,7 +85,7 @@ type ModuleAttributeEventServiceTests() =
     member _.GetStartHandlers_ModuleWithAttribute_ReturnsHandler() = async {
         let service = ModuleAttributeEventService()
         let handlers = service.GetStartHandlers(typeof<ModuleAttributeEventServiceTests.ModuleWithAttributes>)
-        do! check(Assert.That(handlers.Count).IsEqualTo(1))
+        do! check(Assert.That(handlers.Count = 1).IsTrue())
         do! check(Assert.That(handlers.[0]).IsTypeOf<ModuleAttributeEventServiceTests.TestStartAttribute>())
     }
 
@@ -93,7 +93,7 @@ type ModuleAttributeEventServiceTests() =
     member _.GetFailureHandlers_ModuleWithAttribute_ReturnsHandler() = async {
         let service = ModuleAttributeEventService()
         let handlers = service.GetFailureHandlers(typeof<ModuleAttributeEventServiceTests.ModuleWithAttributes>)
-        do! check(Assert.That(handlers.Count).IsEqualTo(1))
+        do! check(Assert.That(handlers.Count = 1).IsTrue())
         do! check(Assert.That(handlers.[0]).IsTypeOf<ModuleAttributeEventServiceTests.TestFailureAttribute>())
     }
 
@@ -101,7 +101,7 @@ type ModuleAttributeEventServiceTests() =
     member _.GetStartHandlers_ModuleWithoutAttributes_ReturnsEmpty() = async {
         let service = ModuleAttributeEventService()
         let handlers = service.GetStartHandlers(typeof<ModuleAttributeEventServiceTests.ModuleWithoutAttributes>)
-        do! check(Assert.That(handlers).IsEmpty())
+        do! check(Assert.That(handlers.Count = 0).IsTrue())
     }
 
     [<Test>]
@@ -116,7 +116,7 @@ type ModuleAttributeEventServiceTests() =
     member _.GetStartHandlers_WithPriority_ReturnsSortedByPriority() = async {
         let service = ModuleAttributeEventService()
         let handlers = service.GetStartHandlers(typeof<ModuleAttributeEventServiceTests.ModuleWithPrioritizedHandlers>)
-        do! check(Assert.That(handlers.Count).IsEqualTo(3))
+        do! check(Assert.That(handlers.Count = 3).IsTrue())
         do! check(Assert.That(handlers.[0]).IsTypeOf<ModuleAttributeEventServiceTests.HighPriorityStartAttribute>())
         do! check(Assert.That(handlers.[1]).IsTypeOf<ModuleAttributeEventServiceTests.MediumPriorityStartAttribute>())
         do! check(Assert.That(handlers.[2]).IsTypeOf<ModuleAttributeEventServiceTests.LowPriorityStartAttribute>())
@@ -126,7 +126,7 @@ type ModuleAttributeEventServiceTests() =
     member _.GetStartHandlers_WithMixedPriority_DefaultsToZero() = async {
         let service = ModuleAttributeEventService()
         let handlers = service.GetStartHandlers(typeof<ModuleAttributeEventServiceTests.ModuleWithMixedPriorityHandlers>)
-        do! check(Assert.That(handlers.Count).IsEqualTo(3))
+        do! check(Assert.That(handlers.Count = 3).IsTrue())
         do! check(Assert.That(handlers.[0]).IsTypeOf<ModuleAttributeEventServiceTests.TestStartAttribute>())
         do! check(Assert.That(handlers.[1]).IsTypeOf<ModuleAttributeEventServiceTests.HighPriorityStartAttribute>())
         do! check(Assert.That(handlers.[2]).IsTypeOf<ModuleAttributeEventServiceTests.LowPriorityStartAttribute>())
@@ -136,6 +136,6 @@ type ModuleAttributeEventServiceTests() =
     member _.GetStartHandlers_SingleHandler_ReturnsWithoutSorting() = async {
         let service = ModuleAttributeEventService()
         let handlers = service.GetStartHandlers(typeof<ModuleAttributeEventServiceTests.ModuleWithAttributes>)
-        do! check(Assert.That(handlers.Count).IsEqualTo(1))
+        do! check(Assert.That(handlers.Count = 1).IsTrue())
         do! check(Assert.That(handlers.[0]).IsTypeOf<ModuleAttributeEventServiceTests.TestStartAttribute>())
     }

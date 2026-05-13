@@ -3,6 +3,7 @@ namespace ModularPipelines.UnitTests.Attributes
 open ModularPipelines.DotNet.Options
 open ModularPipelines.Helpers.Internal
 open TUnit.Assertions
+open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
@@ -20,8 +21,8 @@ type DotNetFormatOptionsTests() =
 
         let args = this.BuildArguments(options)
 
-        do! check(Assert.That<string array>(args |> Seq.toArray).IsEquivalentTo([|
+        do! check(Assert.That((args |> Seq.toArray) = [|
             "--exclude-diagnostics"; "CS0246"
             "--exclude-diagnostics"; "CS1503"
-        |]))
+        |]).IsTrue())
     }

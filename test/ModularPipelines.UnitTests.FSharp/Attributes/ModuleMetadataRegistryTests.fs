@@ -13,12 +13,12 @@ open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
 module ModuleMetadataRegistryTests =
-    type private ModuleA() =
+    type ModuleA() =
         inherit Module<string>()
         override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) =
             Task.FromResult<string>("A")
 
-    let private createRegistry () =
+    let createRegistry () =
         ModuleMetadataRegistry(Options.Create(ModuleRegistrationOptions()))
 
 type ModuleMetadataRegistryTests() =

@@ -6,16 +6,19 @@ open System.Threading.Tasks
 open ModularPipelines.Attributes.Events
 open ModularPipelines.Configuration
 open ModularPipelines.Context
+open ModularPipelines.Enums
+open ModularPipelines.Extensions
 open ModularPipelines.Models
 open ModularPipelines.Modules
 open ModularPipelines.Options
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
+open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
 module LifecycleEventIntegrationTests =
-    let private eventLog = ResizeArray<string>()
+    let eventLog = ResizeArray<string>()
 
     type LogStartAttribute() =
         inherit Attribute()
@@ -93,7 +96,7 @@ type LifecycleEventIntegrationTests() =
                 .ExecutePipelineAsync()
             |> Async.AwaitTask
 
-        do! check(Assert.That(result.Status).IsEqualTo(Enums.Status.Successful))
+        do! check(Assert.That(result.Status = Status.Successful).IsTrue())
         do! check(Assert.That(LifecycleEventIntegrationTests.eventLog |> Seq.contains "Start:SuccessfulModule").IsTrue())
         do! check(Assert.That(LifecycleEventIntegrationTests.eventLog |> Seq.contains "End:SuccessfulModule").IsTrue())
     }
@@ -108,6 +111,7 @@ type LifecycleEventIntegrationTests() =
                         options.ExecutionMode <- ExecutionMode.WaitForAllModules)
                     .ExecutePipelineAsync()
                 |> Async.AwaitTask
+                |> Async.Ignore
         with _ -> ()
 
         do! check(Assert.That(LifecycleEventIntegrationTests.eventLog |> Seq.contains "Start:FailingModule").IsTrue())
@@ -122,7 +126,7 @@ type LifecycleEventIntegrationTests() =
                 .ExecutePipelineAsync()
             |> Async.AwaitTask
 
-        do! check(Assert.That(result.Status).IsEqualTo(Enums.Status.Successful))
+        do! check(Assert.That(result.Status = Status.Successful).IsTrue())
         do! check(Assert.That(LifecycleEventIntegrationTests.eventLog |> Seq.contains "Start:SkippingModule").IsTrue())
         do! check(Assert.That(LifecycleEventIntegrationTests.eventLog |> Seq.exists (fun e -> e.Contains("Skipped:SkippingModule:Test skip reason"))).IsTrue())
     }

@@ -5,6 +5,8 @@ open System.Threading
 open System.Threading.Tasks
 open ModularPipelines.Attributes.Events
 open ModularPipelines.Context
+open ModularPipelines.Enums
+open ModularPipelines.Extensions
 open ModularPipelines.Models
 open ModularPipelines.Modules
 open ModularPipelines.TestHelpers
@@ -14,7 +16,7 @@ open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
 module MetadataCrossPhaseIntegrationTests =
-    let private eventLog = ResizeArray<string>()
+    let eventLog = ResizeArray<string>()
 
     type SetMetadataOnRegistrationAttribute(key: string, value: string) =
         inherit Attribute()
@@ -30,7 +32,8 @@ module MetadataCrossPhaseIntegrationTests =
             member _.ContinueOnError = false
             member _.OnModuleStartAsync(context: IModuleHookContext) =
                 let value = context.GetMetadata<string>(key)
-                eventLog.Add($"Start:ReadMetadata:{key}={if value = null then "null" else value}")
+                let valueText = if value = null then "null" else value
+                eventLog.Add($"Start:ReadMetadata:{key}={valueText}")
                 Task.CompletedTask
 
     type ReadMetadataOnEndAttribute(key: string) =
@@ -39,7 +42,8 @@ module MetadataCrossPhaseIntegrationTests =
             member _.ContinueOnError = false
             member _.OnModuleEndAsync(context: IModuleHookContext, _: IModuleResult) =
                 let value = context.GetMetadata<string>(key)
-                eventLog.Add($"End:ReadMetadata:{key}={if value = null then "null" else value}")
+                let valueText = if value = null then "null" else value
+                eventLog.Add($"End:ReadMetadata:{key}={valueText}")
                 Task.CompletedTask
 
     [<SetMetadataOnRegistration("config", "value-from-registration")>]
@@ -69,7 +73,7 @@ type MetadataCrossPhaseIntegrationTests() =
                 .ExecutePipelineAsync()
             |> Async.AwaitTask
 
-        do! check(Assert.That(result.Status).IsEqualTo(Enums.Status.Successful))
+        do! check(Assert.That(result.Status = Status.Successful).IsTrue())
         do! check(Assert.That(MetadataCrossPhaseIntegrationTests.eventLog |> Seq.contains "Registration:SetMetadata:config=value-from-registration").IsTrue())
         do! check(Assert.That(MetadataCrossPhaseIntegrationTests.eventLog |> Seq.contains "Start:ReadMetadata:config=value-from-registration").IsTrue())
         do! check(Assert.That(MetadataCrossPhaseIntegrationTests.eventLog |> Seq.contains "End:ReadMetadata:config=value-from-registration").IsTrue())

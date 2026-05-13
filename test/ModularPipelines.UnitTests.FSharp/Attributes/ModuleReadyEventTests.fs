@@ -7,14 +7,16 @@ open ModularPipelines.Attributes
 open ModularPipelines.Attributes.Events
 open ModularPipelines.Context
 open ModularPipelines.Enums
+open ModularPipelines.Extensions
 open ModularPipelines.Modules
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
+open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
 module ModuleReadyEventTests =
-    let private eventLog = ResizeArray<string>()
+    let eventLog = ResizeArray<string>()
 
     type LogReadyAttribute() =
         inherit Attribute()
@@ -79,7 +81,7 @@ module ModuleReadyEventTests =
             }
 
     [<LogReady>]
-    [<DependsOn<DependencyModule>()>]
+    [<DependsOn(typeof<DependencyModule>)>]
     type DependentModuleWithReadyEvent() =
         inherit Module<string>()
         override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) =
@@ -107,7 +109,7 @@ type ModuleReadyEventTests() =
                 .ExecutePipelineAsync()
             |> Async.AwaitTask
 
-        do! check(Assert.That(result.Status).IsEqualTo(Status.Successful))
+        do! check(Assert.That(result.Status = Status.Successful).IsTrue())
         do! check(Assert.That(ModuleReadyEventTests.eventLog |> Seq.contains "Ready:SimpleModuleWithReadyEvent").IsTrue())
     }
 
@@ -119,7 +121,7 @@ type ModuleReadyEventTests() =
                 .ExecutePipelineAsync()
             |> Async.AwaitTask
 
-        do! check(Assert.That(result.Status).IsEqualTo(Status.Successful))
+        do! check(Assert.That(result.Status = Status.Successful).IsTrue())
         do! check(Assert.That(ModuleReadyEventTests.eventLog |> Seq.exists (fun e -> e.Contains("Ready:ModuleWithTimingCheck:ElapsedTime:True"))).IsTrue())
     }
 
@@ -131,7 +133,7 @@ type ModuleReadyEventTests() =
                 .ExecutePipelineAsync()
             |> Async.AwaitTask
 
-        do! check(Assert.That(result.Status).IsEqualTo(Status.Successful))
+        do! check(Assert.That(result.Status = Status.Successful).IsTrue())
 
         let readyIndex = ModuleReadyEventTests.eventLog.IndexOf("Ready:ModuleWithReadyAndStart")
         let startIndex = ModuleReadyEventTests.eventLog.IndexOf("Start:ModuleWithReadyAndStart")
@@ -150,7 +152,7 @@ type ModuleReadyEventTests() =
                 .ExecutePipelineAsync()
             |> Async.AwaitTask
 
-        do! check(Assert.That(result.Status).IsEqualTo(Status.Successful))
+        do! check(Assert.That(result.Status = Status.Successful).IsTrue())
         do! check(Assert.That(ModuleReadyEventTests.eventLog |> Seq.contains "Ready:DependentModuleWithReadyEvent").IsTrue())
     }
 
