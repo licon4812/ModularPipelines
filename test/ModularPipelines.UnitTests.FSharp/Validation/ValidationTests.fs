@@ -23,6 +23,12 @@ type private AnotherModule() =
     override _.ExecuteAsync(_, _) =
         System.Threading.Tasks.Task.FromResult<int>(42)
 
+[<ModularPipelines.Attributes.DependsOn(typeof<SelfReferencingModule>)>]
+type private SelfReferencingModule() =
+    inherit Module<string>()
+    override _.ExecuteAsync(_, _) =
+        System.Threading.Tasks.Task.FromResult<string>(null)
+
 [<ModularPipelines.Attributes.DependsOn(typeof<ModuleB>)>]
 type private ModuleA() =
     inherit Module<string>()
@@ -245,6 +251,26 @@ type ValidationTests() =
     }
 
     [<Test>]
+    member _.ValidateAsync_WithSelfReferencingModule_ReturnsError() = async {
+        let builder = Pipeline.CreateBuilder()
+        builder.Services.AddModule<SelfReferencingModule>() |> ignore
+
+        let! result = builder.ValidateAsync() |> Async.AwaitTask
+
+        do! check(Assert.That(result.HasErrors).IsTrue())
+
+        do! check(
+            Assert.That(
+                result.Errors.Any(fun e ->
+                    e.Category = ValidationErrorCategory.Dependency
+                    && e.Message.Contains("SelfReferencingModule")
+                    && e.Message.Contains("cannot reference itself"))
+            )
+                .IsTrue()
+        )
+    }
+
+    [<Test>]
     member _.ValidateAsync_WithCircularDependency_ReturnsError() = async {
         let builder = Pipeline.CreateBuilder()
         builder.Services.AddModule<ModuleA>().AddModule<ModuleB>().AddModule<ModuleC>() |> ignore
@@ -261,6 +287,22 @@ type ValidationTests() =
             )
                 .IsTrue()
         )
+    }
+
+    [<Test>]
+    member _.BuildAsync_WithSelfReferencingModule_ThrowsValidationException() = async {
+        let builder = Pipeline.CreateBuilder()
+        builder.Services.AddModule<SelfReferencingModule>() |> ignore
+
+        let mutable threw = false
+
+        try
+            let! _ = builder.BuildAsync() |> Async.AwaitTask
+            ()
+        with ex when isBaseException<PipelineValidationException> ex ->
+            threw <- true
+
+        do! check(Assert.That(threw).IsTrue())
     }
 
     [<Test>]
