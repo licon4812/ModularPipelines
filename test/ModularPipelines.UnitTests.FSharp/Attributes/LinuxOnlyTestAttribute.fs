@@ -1,4 +1,4 @@
-namespace ModularPipelines.UnitTests.Attributes
+namespace ModularPipelines.UnitTests.FSharp.Attributes
 
 open System
 open System.Threading.Tasks

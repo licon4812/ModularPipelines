@@ -1,4 +1,4 @@
-namespace ModularPipelines.UnitTests.Attributes
+namespace ModularPipelines.UnitTests.FSharp.Attributes
 
 open ModularPipelines.DotNet.Options
 open ModularPipelines.Helpers.Internal

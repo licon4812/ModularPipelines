@@ -1,4 +1,4 @@
-namespace ModularPipelines.UnitTests.Attributes
+namespace ModularPipelines.UnitTests.FSharp.Attributes
 
 open ModularPipelines.Helpers.Internal
 open TUnit.Core
