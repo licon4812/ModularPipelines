@@ -13,5 +13,5 @@ type StringLogger<'T>(stringBuilder: StringBuilder) =
 
         member _.IsEnabled(logLevel: LogLevel) = true
 
-        member _.BeginScope<'TState when 'TState: not struct>(state: 'TState) =
+        member _.BeginScope<'TState when 'TState: not null>(_: 'TState) : IDisposable =
             { new IDisposable with member _.Dispose() = () }
