@@ -1,17 +1,43 @@
 namespace ModularPipelines.UnitTests.FSharp.Engine
 
-open ModularPipelines.UnitTests.Engine
-open ModularPipelines.UnitTests.FSharp
+open System
+open Disposer = ModularPipelines.Helpers.Disposer
+open TUnit.Assertions
+open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
+type private AsyncDisposableClass() =
+    member val DisposedAsync = false with get, set
+
+    interface IAsyncDisposable with
+        member this.DisposeAsync() =
+            this.DisposedAsync <- true
+            ValueTask()
+
+type private DisposableClass() =
+    member val Disposed = false with get, set
+
+    interface IDisposable with
+        member this.Dispose() =
+            this.Disposed <- true
+
 type DisposerTests() =
-    inherit ModularPipelines.UnitTests.Engine.DisposerTests()
+    [<Test>]
+    member _.Disposer_Calls_Async() = async {
+        let myClass = AsyncDisposableClass()
+        do! check(Assert.That(myClass.DisposedAsync).IsFalse())
+
+        do! Disposer.DisposeObjectAsync(myClass) |> Async.AwaitTask
+
+        do! check(Assert.That(myClass.DisposedAsync).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_1() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Engine.DisposerTests> "Disposer_Calls_Async" 0 None
+    member _.Disposer_Calls_Sync() = async {
+        let myClass = DisposableClass()
+        do! check(Assert.That(myClass.Disposed).IsFalse())
 
-    [<Test>]
-    member this.Test_2() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Engine.DisposerTests> "Disposer_Calls_Sync" 0 None
+        do! Disposer.DisposeObjectAsync(myClass) |> Async.AwaitTask
 
+        do! check(Assert.That(myClass.Disposed).IsTrue())
+    }

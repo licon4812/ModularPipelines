@@ -1,53 +1,203 @@
 namespace ModularPipelines.UnitTests.FSharp.Dependencies
 
-open ModularPipelines.UnitTests.Dependencies
-open ModularPipelines.UnitTests.FSharp
+open System
+open System.Collections.Generic
+open System.Threading.Tasks
+open ModularPipelines.Attributes
+open ModularPipelines.Context
+open ModularPipelines.Engine
+open ModularPipelines.Exceptions
+open ModularPipelines.Modules
+open TUnit.Assertions
+open TUnit.Assertions.Extensions
+open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
+[<DependsOn(typeof<DirectCycleModuleB>)>]
+type DirectCycleModuleA() =
+    inherit Module<bool>()
+    override _.ExecuteAsync(_, _) = Task.FromResult(true)
+and [<DependsOn(typeof<DirectCycleModuleA>)>] DirectCycleModuleB() =
+    inherit Module<bool>()
+    override _.ExecuteAsync(_, _) = Task.FromResult(true)
+
+[<DependsOn(typeof<TripleCycleModuleB>)>]
+type TripleCycleModuleA() =
+    inherit Module<bool>()
+    override _.ExecuteAsync(_, _) = Task.FromResult(true)
+and [<DependsOn(typeof<TripleCycleModuleC>)>] TripleCycleModuleB() =
+    inherit Module<bool>()
+    override _.ExecuteAsync(_, _) = Task.FromResult(true)
+and [<DependsOn(typeof<TripleCycleModuleA>)>] TripleCycleModuleC() =
+    inherit Module<bool>()
+    override _.ExecuteAsync(_, _) = Task.FromResult(true)
+
+[<DependsOn(typeof<LinearModuleB>)>]
+type LinearModuleA() =
+    inherit Module<bool>()
+    override _.ExecuteAsync(_, _) = Task.FromResult(true)
+and [<DependsOn(typeof<LinearModuleC>)>] LinearModuleB() =
+    inherit Module<bool>()
+    override _.ExecuteAsync(_, _) = Task.FromResult(true)
+and LinearModuleC() =
+    inherit Module<bool>()
+    override _.ExecuteAsync(_, _) = Task.FromResult(true)
+
+type IndependentModuleA() =
+    inherit Module<bool>()
+    override _.ExecuteAsync(_, _) = Task.FromResult(true)
+
+type IndependentModuleB() =
+    inherit Module<bool>()
+    override _.ExecuteAsync(_, _) = Task.FromResult(true)
+
+type ComplexGraphRoot() =
+    inherit Module<bool>()
+    override _.ExecuteAsync(_, _) = Task.FromResult(true)
+
+[<DependsOn(typeof<ComplexGraphRoot>)>]
+[<DependsOn(typeof<ComplexGraphCycleB>)>]
+type ComplexGraphCycleA() =
+    inherit Module<bool>()
+    override _.ExecuteAsync(_, _) = Task.FromResult(true)
+and [<DependsOn(typeof<ComplexGraphCycleA>)>] ComplexGraphCycleB() =
+    inherit Module<bool>()
+    override _.ExecuteAsync(_, _) = Task.FromResult(true)
+
 type CircularDependencyDetectionTests() =
-    inherit ModularPipelines.UnitTests.Dependencies.CircularDependencyDetectionTests()
+    [<Test>]
+    member _.ValidateNoCycles_WithDirectCycle_ThrowsCircularDependencyException() = async {
+        let mutable threw = false
+
+        try
+            DependencyGraphValidator.ValidateNoCycles([| typeof<DirectCycleModuleA>; typeof<DirectCycleModuleB> |])
+        with :? CircularDependencyException ->
+            threw <- true
+
+        do! check(Assert.That(threw).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_1() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.CircularDependencyDetectionTests> "ValidateNoCycles_WithDirectCycle_ThrowsCircularDependencyException" 0 None
+    member _.ValidateNoCycles_WithTripleCycle_ThrowsCircularDependencyException() = async {
+        let mutable threw = false
+
+        try
+            DependencyGraphValidator.ValidateNoCycles([| typeof<TripleCycleModuleA>; typeof<TripleCycleModuleB>; typeof<TripleCycleModuleC> |])
+        with :? CircularDependencyException ->
+            threw <- true
+
+        do! check(Assert.That(threw).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_2() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.CircularDependencyDetectionTests> "ValidateNoCycles_WithTripleCycle_ThrowsCircularDependencyException" 0 None
+    member _.ValidateNoCycles_WithLinearChain_DoesNotThrow() = async {
+        let mutable threw = false
+
+        try
+            DependencyGraphValidator.ValidateNoCycles([| typeof<LinearModuleA>; typeof<LinearModuleB>; typeof<LinearModuleC> |])
+        with _ ->
+            threw <- true
+
+        do! check(Assert.That(threw).IsFalse())
+    }
 
     [<Test>]
-    member this.Test_3() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.CircularDependencyDetectionTests> "ValidateNoCycles_WithLinearChain_DoesNotThrow" 0 None
+    member _.ValidateNoCycles_WithIndependentModules_DoesNotThrow() = async {
+        let mutable threw = false
+
+        try
+            DependencyGraphValidator.ValidateNoCycles([| typeof<IndependentModuleA>; typeof<IndependentModuleB> |])
+        with _ ->
+            threw <- true
+
+        do! check(Assert.That(threw).IsFalse())
+    }
 
     [<Test>]
-    member this.Test_4() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.CircularDependencyDetectionTests> "ValidateNoCycles_WithIndependentModules_DoesNotThrow" 0 None
+    member _.ValidateNoCycles_WithEmptyCollection_DoesNotThrow() = async {
+        let mutable threw = false
+
+        try
+            DependencyGraphValidator.ValidateNoCycles(Array.empty<Type>)
+        with _ ->
+            threw <- true
+
+        do! check(Assert.That(threw).IsFalse())
+    }
 
     [<Test>]
-    member this.Test_5() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.CircularDependencyDetectionTests> "ValidateNoCycles_WithEmptyCollection_DoesNotThrow" 0 None
+    member _.ValidateNoCycles_WithComplexGraphContainingCycle_ThrowsCircularDependencyException() = async {
+        let mutable threw = false
+
+        try
+            DependencyGraphValidator.ValidateNoCycles([| typeof<ComplexGraphRoot>; typeof<ComplexGraphCycleA>; typeof<ComplexGraphCycleB> |])
+        with :? CircularDependencyException ->
+            threw <- true
+
+        do! check(Assert.That(threw).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_6() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.CircularDependencyDetectionTests> "ValidateNoCycles_WithComplexGraphContainingCycle_ThrowsCircularDependencyException" 0 None
+    member _.ValidateNoCycles_ExceptionContainsCycleTypes() = async {
+        let mutable cycleTypes: IReadOnlyList<Type> = null
+
+        try
+            DependencyGraphValidator.ValidateNoCycles([| typeof<DirectCycleModuleA>; typeof<DirectCycleModuleB> |])
+        with :? CircularDependencyException as ex ->
+            cycleTypes <- ex.CycleTypes
+
+        do! check(Assert.That(cycleTypes).IsNotNull())
+        do! check(Assert.That(cycleTypes.Count >= 2).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_7() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.CircularDependencyDetectionTests> "ValidateNoCycles_ExceptionContainsCycleTypes" 0 None
+    member _.ValidateNoCycles_ExceptionMessageShowsCyclePath() = async {
+        let mutable message = null
+
+        try
+            DependencyGraphValidator.ValidateNoCycles([| typeof<DirectCycleModuleA>; typeof<DirectCycleModuleB> |])
+        with :? CircularDependencyException as ex ->
+            message <- ex.Message
+
+        do! check(Assert.That(message).IsNotNull())
+        do! check(Assert.That(message.Contains("->")).IsTrue())
+        do! check(Assert.That(message.Contains("Circular dependency detected")).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_8() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.CircularDependencyDetectionTests> "ValidateNoCycles_ExceptionMessageShowsCyclePath" 0 None
+    member _.AddModulesFromAssembly_WithCircularDependency_ThrowsAtRegistrationTime() = async {
+        let mutable message = null
+
+        try
+            DependencyGraphValidator.ValidateNoCycles([| typeof<DirectCycleModuleA>; typeof<DirectCycleModuleB> |])
+        with :? CircularDependencyException as ex ->
+            message <- ex.Message
+
+        do! check(Assert.That(message).IsNotNull())
+        do! check(Assert.That(message.Contains("Circular dependency detected at registration")).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_9() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.CircularDependencyDetectionTests> "AddModulesFromAssembly_WithCircularDependency_ThrowsAtRegistrationTime" 0 None
+    member _.CreateWithCyclePath_FormatsMessageCorrectly() = async {
+        let cyclePath = List<Type>([ typeof<DirectCycleModuleA>; typeof<DirectCycleModuleB>; typeof<DirectCycleModuleA> ])
+        let exception = CircularDependencyException.CreateWithCyclePath(cyclePath)
+
+        do! check(Assert.That(exception.Message.Contains("**DirectCycleModuleA**")).IsTrue())
+        do! check(Assert.That(exception.Message.Contains("->")).IsTrue())
+        do! check(Assert.That(Seq.toList exception.CycleTypes = Seq.toList cyclePath).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_10() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.CircularDependencyDetectionTests> "CreateWithCyclePath_FormatsMessageCorrectly" 0 None
+    member _.CreateWithCyclePath_HighlightsStartAndEndOfCycle() = async {
+        let cyclePath =
+            List<Type>([
+                typeof<TripleCycleModuleA>
+                typeof<TripleCycleModuleB>
+                typeof<TripleCycleModuleC>
+                typeof<TripleCycleModuleA>
+            ])
 
-    [<Test>]
-    member this.Test_11() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.CircularDependencyDetectionTests> "CreateWithCyclePath_HighlightsStartAndEndOfCycle" 0 None
+        let exception = CircularDependencyException.CreateWithCyclePath(cyclePath)
 
+        do! check(Assert.That(exception.Message.Contains("**TripleCycleModuleA**")).IsTrue())
+    }

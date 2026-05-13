@@ -1,29 +1,52 @@
 namespace ModularPipelines.UnitTests.FSharp.Dependencies
 
-open ModularPipelines.UnitTests.Dependencies
-open ModularPipelines.UnitTests.FSharp
+open System
+open System.Reflection
+open ModularPipelines.Attributes
+open TUnit.Assertions
+open TUnit.Assertions.Extensions
+open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
 type ModuleCategoryAttributeTests() =
-    inherit ModularPipelines.UnitTests.Dependencies.ModuleCategoryAttributeTests()
+    [<Test>]
+    member _.Constructor_WithValidCategory_SetsCategoryProperty() = async {
+        let attr = ModuleCategoryAttribute("infrastructure")
+        do! check(Assert.That(attr.Category).IsEqualTo("infrastructure"))
+    }
 
     [<Test>]
-    member this.Test_1() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.ModuleCategoryAttributeTests> "Constructor_WithValidCategory_SetsCategoryProperty" 0 None
+    member _.Constructor_WithNullCategory_ThrowsArgumentException() = async {
+        let mutable threw = false
+
+        try
+            ModuleCategoryAttribute(null) |> ignore
+        with :? ArgumentException ->
+            threw <- true
+
+        do! check(Assert.That(threw).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_2() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.ModuleCategoryAttributeTests> "Constructor_WithNullCategory_ThrowsArgumentException" 0 None
+    member _.Constructor_WithEmptyCategory_ThrowsArgumentException() = async {
+        let mutable threw = false
+
+        try
+            ModuleCategoryAttribute(String.Empty) |> ignore
+        with :? ArgumentException ->
+            threw <- true
+
+        do! check(Assert.That(threw).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_3() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.ModuleCategoryAttributeTests> "Constructor_WithEmptyCategory_ThrowsArgumentException" 0 None
+    member _.Attribute_DoesNotAllowMultiple() = async {
+        let usage = typeof<ModuleCategoryAttribute>.GetCustomAttribute<AttributeUsageAttribute>()
+        do! check(Assert.That(usage.AllowMultiple).IsFalse())
+    }
 
     [<Test>]
-    member this.Test_4() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.ModuleCategoryAttributeTests> "Attribute_DoesNotAllowMultiple" 0 None
-
-    [<Test>]
-    member this.Test_5() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.ModuleCategoryAttributeTests> "Attribute_IsInheritable" 0 None
-
+    member _.Attribute_IsInheritable() = async {
+        let usage = typeof<ModuleCategoryAttribute>.GetCustomAttribute<AttributeUsageAttribute>()
+        do! check(Assert.That(usage.Inherited).IsTrue())
+    }

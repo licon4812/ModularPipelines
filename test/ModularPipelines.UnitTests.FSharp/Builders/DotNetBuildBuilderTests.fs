@@ -1,89 +1,353 @@
 namespace ModularPipelines.UnitTests.FSharp.Builders
 
-open ModularPipelines.UnitTests.Builders
-open ModularPipelines.UnitTests.FSharp
+open System
+open System.Collections.Generic
+open System.Linq
+open System.Threading
+open ModularPipelines.Context
+open ModularPipelines.DotNet.Builders
+open ModularPipelines.DotNet.Options
+open ModularPipelines.Models
+open ModularPipelines.Options
+open ModularPipelines.TestHelpers
+open Moq
+open TUnit.Assertions
+open TUnit.Assertions.Extensions
+open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
+module private DotNetBuildBuilderTestHelpers =
+    let createDotNetBuildResult workingDirectory =
+        CommandResult(
+            "dotnet build",
+            workingDirectory,
+            "",
+            "",
+            Dictionary<string, string>(),
+            DateTimeOffset.Now,
+            DateTimeOffset.Now,
+            TimeSpan.Zero,
+            0
+        )
+
+    let createDotNetBuildMockCommand() =
+        let mockCommand = Mock<ICommand>()
+
+        mockCommand
+            .Setup(fun c ->
+                c.ExecuteCommandLineTool(
+                    It.IsAny<CommandLineToolOptions>(),
+                    It.IsAny<CommandExecutionOptions>(),
+                    It.IsAny<CancellationToken>()
+                ))
+            .ReturnsAsync(createDotNetBuildResult "/working/dir")
+        |> ignore
+
+        mockCommand
+
+open DotNetBuildBuilderTestHelpers
+
 type DotNetBuildBuilderTests() =
-    inherit ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests()
+    inherit TestBase()
 
     [<Test>]
-    member this.Test_1() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "ForProject_SetsProjectPath" 0 None
+    member _.ForProject_SetsProjectPath() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+
+        builder.ForProject("MyProject.csproj") |> ignore
+
+        let toolOptions, _ = builder.ToOptions()
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(toolOptions.ProjectSolution), "MyProject.csproj"))
+    }
 
     [<Test>]
-    member this.Test_2() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "WithConfiguration_SetsConfiguration" 0 None
+    member _.WithConfiguration_SetsConfiguration() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+
+        builder.WithConfiguration("Release") |> ignore
+
+        let toolOptions, _ = builder.ToOptions()
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(toolOptions.Configuration), "Release"))
+    }
 
     [<Test>]
-    member this.Test_3() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "WithFramework_SetsFramework" 0 None
+    member _.WithFramework_SetsFramework() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+
+        builder.WithFramework("net8.0") |> ignore
+
+        let toolOptions, _ = builder.ToOptions()
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(toolOptions.Framework), "net8.0"))
+    }
 
     [<Test>]
-    member this.Test_4() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "WithRuntime_SetsRuntime" 0 None
+    member _.WithRuntime_SetsRuntime() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+
+        builder.WithRuntime("win-x64") |> ignore
+
+        let toolOptions, _ = builder.ToOptions()
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(toolOptions.Runtime), "win-x64"))
+    }
 
     [<Test>]
-    member this.Test_5() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "WithOutput_SetsOutput" 0 None
+    member _.WithOutput_SetsOutput() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+
+        builder.WithOutput("/output/path") |> ignore
+
+        let toolOptions, _ = builder.ToOptions()
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(toolOptions.Output), "/output/path"))
+    }
 
     [<Test>]
-    member this.Test_6() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "WithNoRestore_EnablesNoRestore" 0 None
+    member _.WithNoRestore_EnablesNoRestore() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+
+        builder.WithNoRestore() |> ignore
+
+        let toolOptions, _ = builder.ToOptions()
+        do! check(Assert.That(toolOptions.NoRestore.HasValue && toolOptions.NoRestore.Value).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_7() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "WithNoIncremental_EnablesNoIncremental" 0 None
+    member _.WithNoIncremental_EnablesNoIncremental() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+
+        builder.WithNoIncremental() |> ignore
+
+        let toolOptions, _ = builder.ToOptions()
+        do! check(Assert.That(toolOptions.NoIncremental.HasValue && toolOptions.NoIncremental.Value).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_8() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "WithNoLogo_EnablesNoLogo" 0 None
+    member _.WithNoLogo_EnablesNoLogo() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+
+        builder.WithNoLogo() |> ignore
+
+        let toolOptions, _ = builder.ToOptions()
+        do! check(Assert.That(toolOptions.Nologo.HasValue && toolOptions.Nologo.Value).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_9() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "WithProperty_AddsProperty" 0 None
+    member _.WithProperty_AddsProperty() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+
+        builder.WithProperty("Version", "1.0.0") |> ignore
+
+        let toolOptions, _ = builder.ToOptions()
+        do! check(Assert.That(toolOptions.Properties).IsNotNull())
+        do! check(Assert.That(toolOptions.Properties.Count()).IsEqualTo(1))
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(toolOptions.Properties.First().Key), "Version"))
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(toolOptions.Properties.First().Value), "1.0.0"))
+    }
 
     [<Test>]
-    member this.Test_10() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "WithProperty_AddsMultipleProperties" 0 None
+    member _.WithProperty_AddsMultipleProperties() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+
+        builder
+            .WithProperty("Version", "1.0.0")
+            .WithProperty("AssemblyVersion", "1.0.0.0")
+        |> ignore
+
+        let toolOptions, _ = builder.ToOptions()
+        do! check(Assert.That(toolOptions.Properties).IsNotNull())
+        do! check(Assert.That(toolOptions.Properties.Count()).IsEqualTo(2))
+    }
 
     [<Test>]
-    member this.Test_11() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "WithWorkingDirectory_SetsWorkingDirectory" 0 None
+    member _.WithWorkingDirectory_SetsWorkingDirectory() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+
+        builder.WithWorkingDirectory("/project/dir") |> ignore
+
+        let _, execOptions = builder.ToOptions()
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(execOptions.WorkingDirectory), "/project/dir"))
+    }
 
     [<Test>]
-    member this.Test_12() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "WithTimeout_SetsTimeout" 0 None
+    member _.WithTimeout_SetsTimeout() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+        let timeout = TimeSpan.FromMinutes(30)
+
+        builder.WithTimeout(timeout) |> ignore
+
+        let _, execOptions = builder.ToOptions()
+        do! check(Assert.That(execOptions.ExecutionTimeout).IsEqualTo(timeout))
+    }
 
     [<Test>]
-    member this.Test_13() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "WithEnvironmentVariable_AddsVariable" 0 None
+    member _.WithEnvironmentVariable_AddsVariable() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+
+        builder.WithEnvironmentVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1") |> ignore
+
+        let _, execOptions = builder.ToOptions()
+        do! check(Assert.That(execOptions.EnvironmentVariables).IsNotNull())
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(execOptions.EnvironmentVariables["DOTNET_CLI_TELEMETRY_OPTOUT"]), "1"))
+    }
 
     [<Test>]
-    member this.Test_14() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "WithThrowOnError_SetsThrowOnError" 0 None
+    member _.WithThrowOnError_SetsThrowOnError() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+
+        builder.WithThrowOnError(false) |> ignore
+
+        let _, execOptions = builder.ToOptions()
+        do! check(Assert.That(execOptions.ThrowOnNonZeroExitCode).IsFalse())
+    }
 
     [<Test>]
-    member this.Test_15() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "FluentChaining_SetsAllOptions" 0 None
+    member _.FluentChaining_SetsAllOptions() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+
+        builder
+            .ForProject("MyProject.sln")
+            .WithConfiguration("Release")
+            .WithFramework("net8.0")
+            .WithNoRestore()
+            .WithNoLogo()
+            .WithProperty("Version", "2.0.0")
+            .WithWorkingDirectory("/project")
+            .WithTimeout(TimeSpan.FromMinutes(15))
+        |> ignore
+
+        let toolOptions, execOptions = builder.ToOptions()
+
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(toolOptions.ProjectSolution), "MyProject.sln"))
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(toolOptions.Configuration), "Release"))
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(toolOptions.Framework), "net8.0"))
+        do! check(Assert.That(toolOptions.NoRestore.HasValue && toolOptions.NoRestore.Value).IsTrue())
+        do! check(Assert.That(toolOptions.Nologo.HasValue && toolOptions.Nologo.Value).IsTrue())
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(toolOptions.Properties.First().Key), "Version"))
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(execOptions.WorkingDirectory), "/project"))
+        do! check(Assert.That(execOptions.ExecutionTimeout).IsEqualTo(TimeSpan.FromMinutes(15)))
+    }
 
     [<Test>]
-    member this.Test_16() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "FluentChaining_ReturnsSameBuilderInstance" 0 None
+    member _.FluentChaining_ReturnsSameBuilderInstance() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+
+        let result1 = builder.ForProject("test.csproj")
+        let result2 = result1.WithConfiguration("Release")
+        let result3 = result2.WithFramework("net8.0")
+
+        do! check(Assert.That(ReferenceEquals(builder, result1)).IsTrue())
+        do! check(Assert.That(ReferenceEquals(result1, result2)).IsTrue())
+        do! check(Assert.That(ReferenceEquals(result2, result3)).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_17() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "ExecuteAsync_CallsCommandExecuteWithOptions" 0 None
+    member _.ExecuteAsync_CallsCommandExecuteWithOptions() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+        let mutable capturedToolOptions: DotNetBuildOptions option = None
+        let mutable callCount = 0
+
+        mockCommand
+            .Setup(fun c ->
+                c.ExecuteCommandLineTool(
+                    It.IsAny<CommandLineToolOptions>(),
+                    It.IsAny<CommandExecutionOptions>(),
+                    It.IsAny<CancellationToken>()
+                ))
+            .Callback<CommandLineToolOptions, CommandExecutionOptions, CancellationToken>(fun options _ _ ->
+                callCount <- callCount + 1
+                capturedToolOptions <- Some (options :?> DotNetBuildOptions))
+            .ReturnsAsync(createDotNetBuildResult "/working/dir")
+        |> ignore
+
+        builder
+            .ForProject("MyProject.csproj")
+            .WithConfiguration("Release")
+        |> ignore
+
+        let! result = builder.ExecuteAsync() |> Async.AwaitTask
+
+        do! check(Assert.That(result).IsNotNull())
+        do! check(Assert.That(callCount).IsEqualTo(1))
+        do! check(Assert.That(capturedToolOptions.IsSome).IsTrue())
+
+        match capturedToolOptions with
+        | Some toolOptions ->
+            do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(toolOptions.ProjectSolution), "MyProject.csproj"))
+            do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(toolOptions.Configuration), "Release"))
+        | None -> ()
+    }
 
     [<Test>]
-    member this.Test_18() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "ExecuteAsync_PassesExecutionOptions" 0 None
+    member _.ExecuteAsync_PassesExecutionOptions() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let mutable capturedExecOptions: CommandExecutionOptions option = None
+
+        mockCommand
+            .Setup(fun c ->
+                c.ExecuteCommandLineTool(
+                    It.IsAny<CommandLineToolOptions>(),
+                    It.IsAny<CommandExecutionOptions>(),
+                    It.IsAny<CancellationToken>()
+                ))
+            .Callback<CommandLineToolOptions, CommandExecutionOptions, CancellationToken>(fun _ execOptions _ ->
+                capturedExecOptions <- Some execOptions)
+            .ReturnsAsync(createDotNetBuildResult "/test/dir")
+        |> ignore
+
+        let builder = DotNetBuildBuilder(mockCommand.Object)
+
+        builder
+            .WithWorkingDirectory("/test/dir")
+            .WithTimeout(TimeSpan.FromMinutes(10))
+        |> ignore
+
+        do! builder.ExecuteAsync() |> Async.AwaitTask |> Async.Ignore
+
+        do! check(Assert.That(capturedExecOptions.IsSome).IsTrue())
+
+        match capturedExecOptions with
+        | Some execOptions ->
+            do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(execOptions.WorkingDirectory), "/test/dir"))
+            do! check(Assert.That(execOptions.ExecutionTimeout).IsEqualTo(TimeSpan.FromMinutes(10)))
+        | None -> ()
+    }
 
     [<Test>]
-    member this.Test_19() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "InitialOptions_UsesProvidedOptions" 0 None
+    member _.InitialOptions_UsesProvidedOptions() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let initialOptions = DotNetBuildOptions(Configuration = "Debug", Framework = "net7.0")
+        let builder = DotNetBuildBuilder(mockCommand.Object, initialOptions)
+
+        let toolOptions, _ = builder.ToOptions()
+
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(toolOptions.Configuration), "Debug"))
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(toolOptions.Framework), "net7.0"))
+    }
 
     [<Test>]
-    member this.Test_20() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Builders.DotNetBuildBuilderTests> "InitialOptions_CanBeOverridden" 0 None
+    member _.InitialOptions_CanBeOverridden() = async {
+        let mockCommand = createDotNetBuildMockCommand()
+        let initialOptions = DotNetBuildOptions(Configuration = "Debug")
+        let builder = DotNetBuildBuilder(mockCommand.Object, initialOptions)
 
+        builder.WithConfiguration("Release") |> ignore
+
+        let toolOptions, _ = builder.ToOptions()
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(toolOptions.Configuration), "Release"))
+    }

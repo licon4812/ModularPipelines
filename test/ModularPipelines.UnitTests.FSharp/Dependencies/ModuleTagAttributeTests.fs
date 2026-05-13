@@ -1,33 +1,64 @@
 namespace ModularPipelines.UnitTests.FSharp.Dependencies
 
-open ModularPipelines.UnitTests.Dependencies
-open ModularPipelines.UnitTests.FSharp
+open System
+open System.Reflection
+open ModularPipelines.Attributes
+open TUnit.Assertions
+open TUnit.Assertions.Extensions
+open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
 type ModuleTagAttributeTests() =
-    inherit ModularPipelines.UnitTests.Dependencies.ModuleTagAttributeTests()
+    [<Test>]
+    member _.Constructor_WithValidTag_SetsTagProperty() = async {
+        let attr = ModuleTagAttribute("database")
+        do! check(Assert.That(attr.Tag).IsEqualTo("database"))
+    }
 
     [<Test>]
-    member this.Test_1() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.ModuleTagAttributeTests> "Constructor_WithValidTag_SetsTagProperty" 0 None
+    member _.Constructor_WithNullTag_ThrowsArgumentException() = async {
+        let mutable threw = false
+
+        try
+            ModuleTagAttribute(null) |> ignore
+        with :? ArgumentException ->
+            threw <- true
+
+        do! check(Assert.That(threw).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_2() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.ModuleTagAttributeTests> "Constructor_WithNullTag_ThrowsArgumentException" 0 None
+    member _.Constructor_WithEmptyTag_ThrowsArgumentException() = async {
+        let mutable threw = false
+
+        try
+            ModuleTagAttribute(String.Empty) |> ignore
+        with :? ArgumentException ->
+            threw <- true
+
+        do! check(Assert.That(threw).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_3() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.ModuleTagAttributeTests> "Constructor_WithEmptyTag_ThrowsArgumentException" 0 None
+    member _.Constructor_WithWhitespaceTag_ThrowsArgumentException() = async {
+        let mutable threw = false
+
+        try
+            ModuleTagAttribute("   ") |> ignore
+        with :? ArgumentException ->
+            threw <- true
+
+        do! check(Assert.That(threw).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_4() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.ModuleTagAttributeTests> "Constructor_WithWhitespaceTag_ThrowsArgumentException" 0 None
+    member _.Attribute_AllowsMultiple() = async {
+        let usage = typeof<ModuleTagAttribute>.GetCustomAttribute<AttributeUsageAttribute>()
+        do! check(Assert.That(usage.AllowMultiple).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_5() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.ModuleTagAttributeTests> "Attribute_AllowsMultiple" 0 None
-
-    [<Test>]
-    member this.Test_6() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Dependencies.ModuleTagAttributeTests> "Attribute_IsInheritable" 0 None
-
+    member _.Attribute_IsInheritable() = async {
+        let usage = typeof<ModuleTagAttribute>.GetCustomAttribute<AttributeUsageAttribute>()
+        do! check(Assert.That(usage.Inherited).IsTrue())
+    }

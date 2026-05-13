@@ -1,50 +1,187 @@
 namespace ModularPipelines.UnitTests.FSharp.Engine
 
-open ModularPipelines.UnitTests.Engine
-open ModularPipelines.UnitTests.FSharp
+open System
+open System.Threading
+open System.Threading.Tasks
+open ModularPipelines.Context
+open ModularPipelines.Enums
+open ModularPipelines.Modules
+open ModularPipelines.TestHelpers
+open TUnit.Assertions
+open TUnit.Assertions.Extensions
+open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
-[<TUnit.Core.NotInParallel(nameof(MetricsCollectorTests))>]
+type private QuickModule1() =
+    inherit Module<string>()
+
+    override _.ExecuteAsync(_: IModuleContext, cancellationToken: CancellationToken) =
+        task {
+            do! Task.Delay(10, cancellationToken)
+            return "Done"
+        }
+
+type private QuickModule2() =
+    inherit Module<string>()
+
+    override _.ExecuteAsync(_: IModuleContext, cancellationToken: CancellationToken) =
+        task {
+            do! Task.Delay(10, cancellationToken)
+            return "Done"
+        }
+
+type private QuickModule3() =
+    inherit Module<string>()
+
+    override _.ExecuteAsync(_: IModuleContext, cancellationToken: CancellationToken) =
+        task {
+            do! Task.Delay(10, cancellationToken)
+            return "Done"
+        }
+
+[<NotInParallel(nameof MetricsCollectorTests)>]
 type MetricsCollectorTests() =
-    inherit ModularPipelines.UnitTests.Engine.MetricsCollectorTests()
+    [<Test>]
+    member _.PipelineSummary_ContainsMetrics() = async {
+        let! result =
+            TestPipelineHostBuilder.Create()
+                .AddModule<QuickModule1>()
+                .AddModule<QuickModule2>()
+                .AddModule<QuickModule3>()
+                .ExecutePipelineAsync()
+            |> Async.AwaitTask
+
+        do! check(Assert.That(result.Status).IsEqualTo(Status.Successful))
+        do! check(Assert.That(result.Metrics).IsNotNull())
+    }
 
     [<Test>]
-    member this.Test_1() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Engine.MetricsCollectorTests> "PipelineSummary_ContainsMetrics" 0 None
+    member _.PipelineMetrics_HasParallelismFactor() = async {
+        let! result =
+            TestPipelineHostBuilder.Create()
+                .AddModule<QuickModule1>()
+                .AddModule<QuickModule2>()
+                .ExecutePipelineAsync()
+            |> Async.AwaitTask
+
+        let metrics = result.Metrics
+        do! check(Assert.That(metrics).IsNotNull())
+        do! check(Assert.That(metrics.ParallelismFactor >= 0.0).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_2() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Engine.MetricsCollectorTests> "PipelineMetrics_HasParallelismFactor" 0 None
+    member _.PipelineMetrics_HasPeakConcurrency() = async {
+        let! result =
+            TestPipelineHostBuilder.Create()
+                .AddModule<QuickModule1>()
+                .AddModule<QuickModule2>()
+                .AddModule<QuickModule3>()
+                .ExecutePipelineAsync()
+            |> Async.AwaitTask
+
+        let metrics = result.Metrics
+        do! check(Assert.That(metrics).IsNotNull())
+        do! check(Assert.That(metrics.PeakConcurrency >= 1).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_3() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Engine.MetricsCollectorTests> "PipelineMetrics_HasPeakConcurrency" 0 None
+    member _.PipelineMetrics_HasAverageConcurrency() = async {
+        let! result =
+            TestPipelineHostBuilder.Create()
+                .AddModule<QuickModule1>()
+                .AddModule<QuickModule2>()
+                .ExecutePipelineAsync()
+            |> Async.AwaitTask
+
+        let metrics = result.Metrics
+        do! check(Assert.That(metrics).IsNotNull())
+        do! check(Assert.That(metrics.AverageConcurrency >= 0.0).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_4() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Engine.MetricsCollectorTests> "PipelineMetrics_HasAverageConcurrency" 0 None
+    member _.PipelineMetrics_HasEfficiency() = async {
+        let! result =
+            TestPipelineHostBuilder.Create()
+                .AddModule<QuickModule1>()
+                .ExecutePipelineAsync()
+            |> Async.AwaitTask
+
+        let metrics = result.Metrics
+        do! check(Assert.That(metrics).IsNotNull())
+        do! check(Assert.That(metrics.Efficiency >= 0.0).IsTrue())
+        do! check(Assert.That(metrics.Efficiency <= 1.0).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_5() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Engine.MetricsCollectorTests> "PipelineMetrics_HasEfficiency" 0 None
+    member _.PipelineMetrics_HasModuleCounts() = async {
+        let! result =
+            TestPipelineHostBuilder.Create()
+                .AddModule<QuickModule1>()
+                .AddModule<QuickModule2>()
+                .AddModule<QuickModule3>()
+                .ExecutePipelineAsync()
+            |> Async.AwaitTask
+
+        let metrics = result.Metrics
+        do! check(Assert.That(metrics).IsNotNull())
+        do! check(Assert.That(metrics.TotalModules).IsEqualTo(3))
+        do! check(Assert.That(metrics.SuccessfulModules).IsEqualTo(3))
+        do! check(Assert.That(metrics.FailedModules).IsEqualTo(0))
+    }
 
     [<Test>]
-    member this.Test_6() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Engine.MetricsCollectorTests> "PipelineMetrics_HasModuleCounts" 0 None
+    member _.PipelineMetrics_HasTimingData() = async {
+        let! result =
+            TestPipelineHostBuilder.Create()
+                .AddModule<QuickModule1>()
+                .ExecutePipelineAsync()
+            |> Async.AwaitTask
+
+        let metrics = result.Metrics
+        do! check(Assert.That(metrics).IsNotNull())
+        do! check(Assert.That(metrics.WallClockDuration > TimeSpan.Zero).IsTrue())
+        do! check(Assert.That(metrics.TotalModuleExecutionTime >= TimeSpan.Zero).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_7() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Engine.MetricsCollectorTests> "PipelineMetrics_HasTimingData" 0 None
+    member _.PipelineSummary_ContainsModuleTimelines() = async {
+        let! result =
+            TestPipelineHostBuilder.Create()
+                .AddModule<QuickModule1>()
+                .AddModule<QuickModule2>()
+                .ExecutePipelineAsync()
+            |> Async.AwaitTask
+
+        do! check(Assert.That(result.Status).IsEqualTo(Status.Successful))
+        do! check(Assert.That(result.ModuleTimelines).IsNotNull())
+        do! check(Assert.That(result.ModuleTimelines.Count).IsEqualTo(2))
+    }
 
     [<Test>]
-    member this.Test_8() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Engine.MetricsCollectorTests> "PipelineSummary_ContainsModuleTimelines" 0 None
+    member _.ModuleTimeline_ContainsModuleName() = async {
+        let! result =
+            TestPipelineHostBuilder.Create()
+                .AddModule<QuickModule1>()
+                .ExecutePipelineAsync()
+            |> Async.AwaitTask
+
+        do! check(Assert.That(result.ModuleTimelines).IsNotNull())
+        do! check(Assert.That(result.ModuleTimelines.Count).IsEqualTo(1))
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(result.ModuleTimelines[0].ModuleName), "QuickModule1"))
+    }
 
     [<Test>]
-    member this.Test_9() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Engine.MetricsCollectorTests> "ModuleTimeline_ContainsModuleName" 0 None
+    member _.ModuleTimeline_ContainsTimingData() = async {
+        let! result =
+            TestPipelineHostBuilder.Create()
+                .AddModule<QuickModule1>()
+                .ExecutePipelineAsync()
+            |> Async.AwaitTask
 
-    [<Test>]
-    member this.Test_10() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Engine.MetricsCollectorTests> "ModuleTimeline_ContainsTimingData" 0 None
+        do! check(Assert.That(result.ModuleTimelines).IsNotNull())
 
+        let timeline = result.ModuleTimelines[0]
+        do! check(Assert.That(timeline.StartTime).IsNotNull())
+        do! check(Assert.That(timeline.EndTime).IsNotNull())
+        do! check(Assert.That(timeline.ExecutionDuration).IsNotNull())
+    }

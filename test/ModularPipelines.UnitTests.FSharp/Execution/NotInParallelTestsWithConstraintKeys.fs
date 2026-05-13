@@ -1,0 +1,53 @@
+namespace ModularPipelines.UnitTests.FSharp.Execution
+
+open System.Collections.Generic
+open ModularPipelines.TestHelpers
+open TUnit.Assertions
+open TUnit.Assertions.Extensions
+open TUnit.Assertions.FSharp.Operations
+open TUnit.Core
+
+[<NotInParallel>]
+type NotInParallelTestsWithConstraintKeys() =
+    inherit TestBase()
+    
+    static let tracker = NotInParallelTracker()
+
+    [<ModularPipelines.Attributes.NotInParallel("A")>]
+    type ModuleWithAConstraintKey1() =
+        inherit NotInParallelTestModule()
+        override _.Tracker = tracker
+        override _.ConflictingModuleNames = ["ModuleWithAConstraintKey2"] :> IEnumerable<string>
+
+    [<ModularPipelines.Attributes.NotInParallel("A")>]
+    type ModuleWithAConstraintKey2() =
+        inherit NotInParallelTestModule()
+        override _.Tracker = tracker
+        override _.ConflictingModuleNames = ["ModuleWithAConstraintKey1"] :> IEnumerable<string>
+
+    [<ModularPipelines.Attributes.NotInParallel("B")>]
+    type ModuleWithBConstraintKey1() =
+        inherit NotInParallelTestModule()
+        override _.Tracker = tracker
+        override _.ConflictingModuleNames = ["ModuleWithBConstraintKey2"] :> IEnumerable<string>
+
+    [<ModularPipelines.Attributes.NotInParallel("B")>]
+    type ModuleWithBConstraintKey2() =
+        inherit NotInParallelTestModule()
+        override _.Tracker = tracker
+        override _.ConflictingModuleNames = ["ModuleWithBConstraintKey1"] :> IEnumerable<string>
+
+    [<Test>]
+    member _.NotInParallel_If_Same_ConstraintKey() = async {
+        tracker.Reset()
+
+        do! TestPipelineHostBuilder.Create()
+                .AddModule<ModuleWithAConstraintKey1>()
+                .AddModule<ModuleWithAConstraintKey2>()
+                .AddModule<ModuleWithBConstraintKey1>()
+                .AddModule<ModuleWithBConstraintKey2>()
+                .ExecutePipelineAsync()
+            |> Async.AwaitTask
+
+        do! check(CollectionEqualToAssertionExtensions.IsEmpty(Assert.That(tracker.Violations)))
+    }

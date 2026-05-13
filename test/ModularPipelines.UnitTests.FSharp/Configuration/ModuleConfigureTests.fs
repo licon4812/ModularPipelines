@@ -1,21 +1,57 @@
 namespace ModularPipelines.UnitTests.FSharp.Configuration
 
-open ModularPipelines.UnitTests.Configuration
-open ModularPipelines.UnitTests.FSharp
+open System
+open System.Threading
+open System.Threading.Tasks
+open ModularPipelines.Configuration
+open ModularPipelines.Context
+open ModularPipelines.Modules
+open TUnit.Assertions
+open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
+type private TestModule() =
+    inherit Module<string>()
+
+    override _.ExecuteAsync(_, _) =
+        Task.FromResult("test")
+
+type private ConfiguredModule() =
+    inherit Module<string>()
+
+    override _.Configure() =
+        ModuleConfiguration.Create()
+            .WithTimeout(TimeSpan.FromSeconds(60))
+            .WithAlwaysRun()
+            .Build()
+
+    override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) =
+        Task.FromResult("test")
+
 type ModuleConfigureTests() =
-    inherit ModularPipelines.UnitTests.Configuration.ModuleConfigureTests()
+    [<Test>]
+    member _.Module_DefaultConfiguration_ReturnsDefault() = async {
+        let testModule = TestModule()
+        let config = (testModule :> IModule).Configuration
+
+        do! check(Assert.That(obj.ReferenceEquals(config, ModuleConfiguration.Default)).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_1() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Configuration.ModuleConfigureTests> "Module_DefaultConfiguration_ReturnsDefault" 0 None
+    member _.Module_OverriddenConfigure_ReturnsCustomConfig() = async {
+        let configuredModule = ConfiguredModule()
+        let config = (configuredModule :> IModule).Configuration
+
+        do! check(Assert.That(config.Timeout.HasValue).IsTrue())
+        do! check(Assert.That(config.Timeout.Value = TimeSpan.FromSeconds(60)).IsTrue())
+        do! check(Assert.That(config.AlwaysRun).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_2() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Configuration.ModuleConfigureTests> "Module_OverriddenConfigure_ReturnsCustomConfig" 0 None
+    member _.Module_Configuration_IsCached() = async {
+        let configuredModule = ConfiguredModule()
+        let config1 = (configuredModule :> IModule).Configuration
+        let config2 = (configuredModule :> IModule).Configuration
 
-    [<Test>]
-    member this.Test_3() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Configuration.ModuleConfigureTests> "Module_Configuration_IsCached" 0 None
-
+        do! check(Assert.That(obj.ReferenceEquals(config1, config2)).IsTrue())
+    }

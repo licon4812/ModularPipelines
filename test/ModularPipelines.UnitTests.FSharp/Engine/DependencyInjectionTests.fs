@@ -1,13 +1,64 @@
 namespace ModularPipelines.UnitTests.FSharp.Engine
 
-open ModularPipelines.UnitTests.Engine
-open ModularPipelines.UnitTests.FSharp
+open Microsoft.Extensions.Configuration
+open Microsoft.Extensions.DependencyInjection
+open Microsoft.Extensions.Hosting
+open ModularPipelines.Context
+open ModularPipelines.DependencyInjection
+open ModularPipelines.Modules
+open ModularPipelines.TestHelpers
+open Moq
+open TUnit.Assertions
+open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
+type private DependencyInjectionModule() =
+    inherit Module<bool>()
+
+    override _.ExecuteAsync(_: IModuleContext, _) =
+        System.Threading.Tasks.Task.FromResult(true)
+
 type DependencyInjectionTests() =
-    inherit ModularPipelines.UnitTests.Engine.DependencyInjectionTests()
+    [<Test>]
+    member _.AllDependenciesCanBeBuilt() = async {
+        let! host =
+            TestPipelineHostBuilder.Create()
+                .AddModule<DependencyInjectionModule>()
+                .BuildHostAsync()
+            |> Async.AwaitTask
+
+        let services = host.Services
+        let collection = services.GetRequiredService<IPipelineServiceContainerWrapper>().ServiceCollection
+
+        for serviceDescriptor in
+            collection
+            |> Seq.filter (fun sd ->
+                let serviceNamespace = sd.ServiceType.Namespace
+                not sd.ServiceType.IsGenericType
+                && not (isNull serviceNamespace)
+                && serviceNamespace.StartsWith("ModularPipeline")) do
+            services.GetRequiredService(serviceDescriptor.ServiceType) |> ignore
+
+        do! check(Assert.That(true).IsTrue())
+    }
 
     [<Test>]
-    member this.Test_1() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Engine.DependencyInjectionTests> "AllDependenciesCanBeBuilt" 0 None
+    member _.Validate() = async {
+        let serviceCollection =
+            ServiceCollection()
+                .AddSingleton(Mock.Of<IHost>())
+                .AddSingleton(Mock.Of<IHostEnvironment>())
+                .AddSingleton(Mock.Of<IConfiguration>())
 
+        DependencyInjectionSetup.Initialize(serviceCollection)
+
+        serviceCollection.BuildServiceProvider(
+            ServiceProviderOptions(
+                ValidateScopes = true,
+                ValidateOnBuild = true
+            )
+        )
+        |> ignore
+
+        do! check(Assert.That(true).IsTrue())
+    }

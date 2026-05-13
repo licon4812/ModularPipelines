@@ -1,13 +1,44 @@
 namespace ModularPipelines.UnitTests.FSharp.Execution
 
-open ModularPipelines.UnitTests.Execution
-open ModularPipelines.UnitTests.FSharp
+open System
+open System.Threading
+open System.Threading.Tasks
+open System.Linq
+open ModularPipelines.Context
+open ModularPipelines.Modules
+open ModularPipelines.TestHelpers
+open TUnit.Assertions
+open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
+type private AsyncDisposableModule() =
+    inherit Module<bool>()
+
+    member val IsDisposed = false with get, set
+
+    override _.ExecuteAsync(_: IModuleContext, cancellationToken: CancellationToken) =
+        task {
+            do! Task.Delay(1, cancellationToken)
+            return true
+        }
+
+    interface IAsyncDisposable with
+        member this.DisposeAsync() =
+            ValueTask(
+                task {
+                    do! Task.Delay(1)
+                    this.IsDisposed <- true
+                    GC.SuppressFinalize(this)
+                }
+            )
+
 type AsyncDisposableModuleTests() =
-    inherit ModularPipelines.UnitTests.Execution.AsyncDisposableModuleTests()
-
     [<Test>]
-    member this.Test_1() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Execution.AsyncDisposableModuleTests> "SuccessfullyDisposed" 0 None
+    member _.SuccessfullyDisposed() = async {
+        let! pipelineSummary =
+            TestPipelineHostBuilder.Create().AddModule<AsyncDisposableModule>().ExecutePipelineAsync()
+            |> Async.AwaitTask
 
+        let isDisposed = pipelineSummary.Modules.OfType<AsyncDisposableModule>().Single().IsDisposed
+        do! check(Assert.That(isDisposed).IsTrue())
+    }

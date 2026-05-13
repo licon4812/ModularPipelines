@@ -29,7 +29,6 @@
 
 	<ItemGroup>
 		<Compile Include="TestConstants.fs" />
-		<Compile Include="CSharpTestWrapper.fs" />
 		<None Include="Data\**" />
 		<Compile Include="GlobalTestSetup.fs" />
 		<Compile Include="GlobalDummyModule.fs" />
@@ -79,7 +78,6 @@
 		<ProjectReference Include="..\..\src\ModularPipelines.TeamCity\ModularPipelines.TeamCity.csproj" />
 		<ProjectReference Include="..\..\src\ModularPipelines.Terraform\ModularPipelines.Terraform.csproj" />
 		<ProjectReference Include="..\..\src\ModularPipelines\ModularPipelines.csproj" />
-		<ProjectReference Include="..\ModularPipelines.UnitTests\ModularPipelines.UnitTests.csproj" />
 		<ProjectReference Include="..\ModularPipelines.TestHelpers\ModularPipelines.TestHelpers.csproj" />
 	</ItemGroup>
 

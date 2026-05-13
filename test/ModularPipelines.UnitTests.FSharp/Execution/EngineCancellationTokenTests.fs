@@ -1,22 +1,132 @@
 namespace ModularPipelines.UnitTests.FSharp.Execution
 
-open ModularPipelines.UnitTests.Execution
-open ModularPipelines.UnitTests.FSharp
+open System
+open System.Threading
+open System.Threading.Tasks
+open Microsoft.Extensions.DependencyInjection
+open ModularPipelines.Attributes
+open ModularPipelines.Configuration
+open ModularPipelines.Context
+open ModularPipelines.Engine
+open ModularPipelines.Enums
+open ModularPipelines.Modules
+open ModularPipelines.TestHelpers
+open TUnit.Assertions
+open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
-[<TUnit.Core.NotInParallel(nameof(EngineCancellationTokenTests))>]
+let private waitForCancellationDelay = TimeSpan.FromMilliseconds(100)
+
+type private BadModule() =
+    inherit ThrowingTestModule<bool>()
+
+[<DependsOn(typeof<BadModule>)>]
+type private Module1() =
+    inherit SimpleTestModule<bool>()
+    override _.Result = true
+
+type private LongRunningModule() =
+    inherit Module<bool>()
+
+    let taskCompletionSource = TaskCompletionSource<bool>()
+
+    override _.ExecuteAsync(_: IModuleContext, cancellationToken: CancellationToken) =
+        task {
+            let! _ = taskCompletionSource.Task.WaitAsync(cancellationToken)
+            return true
+        }
+
+type private LongRunningModuleWithoutCancellation() =
+    inherit Module<bool>()
+
+    let taskCompletionSource = TaskCompletionSource<bool>()
+
+    override _.Configure() =
+        ModuleConfiguration.Create().WithTimeout(TimeSpan.FromSeconds(10)).Build()
+
+    override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) =
+        task {
+            let! _ = taskCompletionSource.Task
+            return true
+        }
+
+[<NotInParallel(nameof EngineCancellationTokenTests)>]
 type EngineCancellationTokenTests() =
-    inherit ModularPipelines.UnitTests.Execution.EngineCancellationTokenTests()
+    inherit TestBase()
 
     [<Test>]
-    member this.Test_1() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Execution.EngineCancellationTokenTests> "When_Cancel_Engine_Token_With_DependsOn_Then_Modules_Cancel" 0 None
+    member _.When_Cancel_Engine_Token_With_DependsOn_Then_Modules_Cancel() = async {
+        let builder = TestPipelineHostBuilder.Create().AddModule<BadModule>().AddModule<Module1>()
+        builder.Options.ThrowOnPipelineFailure <- true
+
+        let! host = builder.BuildHostAsync() |> Async.AwaitTask
+        let resultRegistry = host.RootServices.GetRequiredService<IModuleResultRegistry>()
+
+        let mutable threw = false
+
+        try
+            do! host.ExecutePipelineAsync() |> Async.AwaitTask |> Async.Ignore
+        with _ ->
+            threw <- true
+
+        let module1Result = resultRegistry.GetResult(typeof<Module1>)
+
+        do! check(Assert.That(threw).IsTrue())
+        do! check(Assert.That(module1Result).IsNotNull())
+        do! check(Assert.That(module1Result.ModuleStatus).IsEqualTo(Status.PipelineTerminated))
+    }
 
     [<Test>]
-    member this.Test_2() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Execution.EngineCancellationTokenTests> "When_Cancel_Engine_Token_Without_DependsOn_Then_Modules_Cancel" 0 None
+    member _.When_Cancel_Engine_Token_Without_DependsOn_Then_Modules_Cancel() = async {
+        let builder = TestPipelineHostBuilder.Create().AddModule<BadModule>().AddModule<LongRunningModule>()
+        builder.Options.ThrowOnPipelineFailure <- true
+
+        let! host = builder.BuildHostAsync() |> Async.AwaitTask
+        let resultRegistry = host.RootServices.GetRequiredService<IModuleResultRegistry>()
+        let pipelineTask = host.ExecutePipelineAsync()
+
+        do! Task.Delay(waitForCancellationDelay) |> Async.AwaitTask
+
+        let mutable threw = false
+
+        try
+            do! pipelineTask |> Async.AwaitTask |> Async.Ignore
+        with _ ->
+            threw <- true
+
+        let longRunningModuleResult = resultRegistry.GetResult(typeof<LongRunningModule>)
+
+        do! check(Assert.That(threw).IsTrue())
+        do! check(Assert.That(longRunningModuleResult).IsNotNull())
+        do! check(Assert.That(longRunningModuleResult.ModuleStatus).IsEqualTo(Status.PipelineTerminated))
+        do! check(Assert.That(longRunningModuleResult.ModuleDuration).IsLessThan(TimeSpan.FromSeconds(5)))
+    }
 
     [<Test>]
-    member this.Test_3() =
-        CSharpTestWrapper.invokeTest (this :> obj) typeof<ModularPipelines.UnitTests.Execution.EngineCancellationTokenTests> "When_Cancel_Engine_Token_Without_DependsOn_Then_Modules_Cancel_Without_Cancellation" 0 None
+    member _.When_Cancel_Engine_Token_Without_DependsOn_Then_Modules_Cancel_Without_Cancellation() = async {
+        let builder =
+            TestPipelineHostBuilder.Create()
+                .AddModule<BadModule>()
+                .AddModule<LongRunningModuleWithoutCancellation>()
 
+        builder.Options.ThrowOnPipelineFailure <- true
+
+        let! host = builder.BuildHostAsync() |> Async.AwaitTask
+        let resultRegistry = host.RootServices.GetRequiredService<IModuleResultRegistry>()
+        let pipelineTask = host.ExecutePipelineAsync()
+
+        do! Task.Delay(waitForCancellationDelay) |> Async.AwaitTask
+
+        let mutable threw = false
+
+        try
+            do! pipelineTask |> Async.AwaitTask |> Async.Ignore
+        with _ ->
+            threw <- true
+
+        let longRunningModuleResult = resultRegistry.GetResult(typeof<LongRunningModuleWithoutCancellation>)
+
+        do! check(Assert.That(threw).IsTrue())
+        do! check(Assert.That(longRunningModuleResult).IsNotNull())
+        do! check(Assert.That(longRunningModuleResult.ModuleStatus).IsEqualTo(Status.PipelineTerminated))
+    }
