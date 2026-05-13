@@ -273,8 +273,10 @@ type CliAttributeTests() =
 
         let list = this.BuildArguments(options)
 
-        do! check(Assert.That(list |> Seq.isEmpty |> not).IsTrue())
-        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(list |> Seq.head), "--debug"))
+        let firstItem = list |> Seq.tryHead
+
+        do! check(Assert.That(firstItem.IsSome).IsTrue())
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(firstItem.Value), "--debug"))
         do! check(Assert.That(list |> Seq.contains "--namespace").IsTrue())
         do! check(Assert.That(list |> Seq.contains "production").IsTrue())
         do! check(Assert.That(list |> Seq.contains "--set=key1=val1").IsTrue())
