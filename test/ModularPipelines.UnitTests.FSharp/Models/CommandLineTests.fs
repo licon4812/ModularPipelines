@@ -12,7 +12,7 @@ type CommandLineTests() =
     member _.CommandLine_StoresToolAndArguments() = async {
         let commandLine = CommandLine("git", ["add"; "--all"])
         do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(commandLine.Tool), "git"))
-        do! check(Assert.That(commandLine.Arguments).IsEquivalentTo([| "add"; "--all" |]))
+        do! check(Assert.That((commandLine.Arguments |> Seq.toArray) = [| "add"; "--all" |]).IsTrue())
     }
 
     [<Test>]
@@ -32,5 +32,5 @@ type CommandLineTests() =
         let args = List<string>(["add"])
         let commandLine = CommandLine("git", args)
         args.Add("--all")
-        do! check(Assert.That(commandLine.Arguments).HasCount().EqualTo(1))
+        do! check(Assert.That(commandLine.Arguments |> Seq.length = 1).IsTrue())
     }

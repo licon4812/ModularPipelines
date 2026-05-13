@@ -47,6 +47,11 @@ type SkipDecisionTests() =
     [<Arguments(false)>]
     member _.Of(shouldSkip: bool) = async {
         let skipDecision = SkipDecision.Of(shouldSkip, "Blah!")
-        do! check(Assert.That(skipDecision.ShouldSkip).IsEqualTo(shouldSkip))
-        do! check(Assert.That(skipDecision.Reason).IsEqualTo(if shouldSkip then "Blah!" else null))
+
+        if shouldSkip then
+            do! check(Assert.That(skipDecision.ShouldSkip).IsTrue())
+            do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(skipDecision.Reason), "Blah!"))
+        else
+            do! check(Assert.That(skipDecision.ShouldSkip).IsFalse())
+            do! check(Assert.That(skipDecision.Reason).IsNull())
     }

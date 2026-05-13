@@ -1,5 +1,6 @@
 namespace ModularPipelines.UnitTests.FSharp.Validation
 
+open System
 open System.Linq
 open ModularPipelines
 open ModularPipelines.Context
@@ -8,6 +9,7 @@ open ModularPipelines.Extensions
 open ModularPipelines.Modules
 open ModularPipelines.Validation
 open TUnit.Assertions
+open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
@@ -48,6 +50,13 @@ type private ModuleWithOptionalDep() =
     inherit Module<string>()
     override _.ExecuteAsync(_, _) = System.Threading.Tasks.Task.FromResult<string>(null)
 
+[<AutoOpen>]
+module private ValidationTestHelpers =
+    let isBaseException<'T when 'T :> exn> (ex: exn) =
+        match ex with
+        | :? AggregateException as aggregate -> aggregate.GetBaseException() :? 'T
+        | _ -> ex :? 'T
+
 type ValidationTests() =
     [<Test>]
     member _.ValidateAsync_WithValidConfiguration_ReturnsNoErrors() = async {
@@ -58,7 +67,7 @@ type ValidationTests() =
 
         do! check(Assert.That(result.IsValid).IsTrue())
         do! check(Assert.That(result.HasErrors).IsFalse())
-        do! check(Assert.That(result.Errors.Count).IsEqualTo(0))
+        do! check(Assert.That(result.Errors.Count = 0).IsTrue())
     }
 
     [<Test>]
@@ -97,7 +106,7 @@ type ValidationTests() =
         try
             let! _ = builder.BuildAsync() |> Async.AwaitTask
             ()
-        with :? PipelineValidationException ->
+        with ex when isBaseException<PipelineValidationException> ex ->
             threw <- true
 
         do! check(Assert.That(threw).IsTrue())
@@ -142,7 +151,7 @@ type ValidationTests() =
         let! summary = pipeline.RunAsync() |> Async.AwaitTask
 
         do! check(Assert.That(summary).IsNotNull())
-        do! check(Assert.That(summary.Modules).IsNotNull())
+        do! check(Assert.That<System.Collections.Generic.IReadOnlyList<IModule>>(summary.Modules).IsNotNull())
 
         do! pipeline.DisposeAsync().AsTask() |> Async.AwaitTask
     }
@@ -152,17 +161,17 @@ type ValidationTests() =
         let error = ValidationError(ValidationErrorCategory.Options, "Test error")
         let result = ValidationResult.WithError(error)
 
-        do! check(Assert.That(result.HasErrors).IsEqualTo(true))
-        do! check(Assert.That(result.IsValid).IsEqualTo(false))
-        do! check(Assert.That(result.Errors.Count).IsEqualTo(1))
+        do! check(Assert.That(result.HasErrors).IsTrue())
+        do! check(Assert.That(result.IsValid).IsFalse())
+        do! check(Assert.That(result.Errors.Count = 1).IsTrue())
     }
 
     [<Test>]
     member _.ValidationResult_Success_IsValid() = async {
         let result = ValidationResult.Success()
 
-        do! check(Assert.That(result.HasErrors).IsEqualTo(false))
-        do! check(Assert.That(result.IsValid).IsEqualTo(true))
+        do! check(Assert.That(result.HasErrors).IsFalse())
+        do! check(Assert.That(result.IsValid).IsTrue())
     }
 
     [<Test>]
@@ -174,7 +183,7 @@ type ValidationTests() =
 
         result1.Merge(result2)
 
-        do! check(Assert.That(result1.Errors.Count).IsEqualTo(2))
+        do! check(Assert.That(result1.Errors.Count = 2).IsTrue())
     }
 
     [<Test>]
@@ -182,8 +191,8 @@ type ValidationTests() =
         let error = ValidationError(ValidationErrorCategory.Dependency, "Test message")
         let str = error.ToString()
 
-        do! check(Assert.That(str.Contains("Dependency")).IsEqualTo(true))
-        do! check(Assert.That(str.Contains("Test message")).IsEqualTo(true))
+        do! check(Assert.That(str.Contains("Dependency")).IsTrue())
+        do! check(Assert.That(str.Contains("Test message")).IsTrue())
     }
 
     [<Test>]
@@ -191,7 +200,7 @@ type ValidationTests() =
         let error = ValidationError(ValidationErrorCategory.ModuleConfiguration, "Test message", typeof<SimpleModule>)
         let str = error.ToString()
 
-        do! check(Assert.That(str.Contains("SimpleModule")).IsEqualTo(true))
+        do! check(Assert.That(str.Contains("SimpleModule")).IsTrue())
     }
 
     [<Test>]
@@ -264,7 +273,7 @@ type ValidationTests() =
         try
             let! _ = builder.BuildAsync() |> Async.AwaitTask
             ()
-        with :? PipelineValidationException ->
+        with ex when isBaseException<PipelineValidationException> ex ->
             threw <- true
 
         do! check(Assert.That(threw).IsTrue())

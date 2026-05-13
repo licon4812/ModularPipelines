@@ -1,5 +1,6 @@
 namespace ModularPipelines.UnitTests.FSharp.Models
 
+open System
 open System.IO
 open System.Linq
 open Microsoft.Extensions.DependencyInjection
@@ -17,6 +18,7 @@ open ModularPipelines.Modules
 open ModularPipelines.Options
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
+open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
@@ -37,7 +39,7 @@ type private NUnitModule() =
 
             let trxFileName = "test-results.trx"
 
-            do!
+            let! _ =
                 context
                     .DotNet()
                     .Test(
@@ -81,24 +83,20 @@ type TrxParsingTests() =
         let modules = host.RootServices.GetServices<IModule>()
         let m = modules.OfType<NUnitModule>().First()
         let testResult = m.LastResult
+        let failedCount =
+            testResult.UnitTestResults.Where(fun x -> x.Outcome = Nullable<TestOutcome>(TestOutcome.Failed))
+            |> Seq.length
+
+        let notExecutedCount =
+            testResult.UnitTestResults.Where(fun x -> x.Outcome = Nullable<TestOutcome>(TestOutcome.NotExecuted))
+            |> Seq.length
+
+        let passedCount =
+            testResult.UnitTestResults.Where(fun x -> x.Outcome = Nullable<TestOutcome>(TestOutcome.Passed))
+            |> Seq.length
 
         do! check(Assert.That(testResult.Successful).IsFalse())
-
-        do! check(
-            Assert.That(testResult.UnitTestResults.Where(fun x -> x.Outcome = TestOutcome.Failed))
-                .HasCount()
-                .EqualTo(1)
-        )
-
-        do! check(
-            Assert.That(testResult.UnitTestResults.Where(fun x -> x.Outcome = TestOutcome.NotExecuted))
-                .HasCount()
-                .EqualTo(1)
-        )
-
-        do! check(
-            Assert.That(testResult.UnitTestResults.Where(fun x -> x.Outcome = TestOutcome.Passed))
-                .HasCount()
-                .EqualTo(2)
-        )
+        do! check(Assert.That((failedCount = 1)).IsTrue())
+        do! check(Assert.That((notExecutedCount = 1)).IsTrue())
+        do! check(Assert.That((passedCount = 2)).IsTrue())
     }

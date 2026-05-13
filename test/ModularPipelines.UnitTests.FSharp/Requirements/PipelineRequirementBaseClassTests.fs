@@ -1,5 +1,6 @@
 namespace ModularPipelines.UnitTests.FSharp.Requirements
 
+open System
 open System.Threading
 open Microsoft.Extensions.DependencyInjection
 open ModularPipelines.Context
@@ -11,6 +12,7 @@ open ModularPipelines.Modules
 open ModularPipelines.Requirements
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
+open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 open ModularPipelines.Enums
@@ -59,6 +61,19 @@ type private CustomOrderRequirement() =
     inherit PipelineRequirement()
     override _.Order = 10
 
+[<AutoOpen>]
+module private RequirementTestHelpers =
+    let unwrapMessage (ex: exn) =
+        match ex with
+        | :? AggregateException as aggregate -> aggregate.GetBaseException().Message
+        | _ -> ex.Message
+
+    let isRequirementFailure (ex: exn) =
+        match ex with
+        | :? FailedRequirementsException -> true
+        | :? AggregateException as aggregate -> aggregate.GetBaseException() :? FailedRequirementsException
+        | _ -> false
+
 type PipelineRequirementBaseClassTests() =
     [<Test>]
     member _.Sync_Requirement_With_Pass_Succeeds() = async {
@@ -75,7 +90,7 @@ type PipelineRequirementBaseClassTests() =
         let resultRegistry = host.RootServices.GetRequiredService<IModuleResultRegistry>()
         let result = resultRegistry.GetResult(typeof<RequirementDummyModule>)
 
-        do! check(Assert.That(result.ModuleStatus).IsEqualTo(Status.Successful))
+        do! check(Assert.That(result.ModuleStatus = Status.Successful).IsTrue())
     }
 
     [<Test>]
@@ -92,9 +107,9 @@ type PipelineRequirementBaseClassTests() =
                     .ExecutePipelineAsync()
                 |> Async.AwaitTask
                 |> Async.Ignore
-        with :? FailedRequirementsException as ex ->
+        with ex when isRequirementFailure ex ->
             threw <- true
-            exMessage <- ex.Message
+            exMessage <- unwrapMessage ex
 
         do! check(Assert.That(threw).IsTrue())
         do! check(Assert.That(exMessage.Contains("Sync requirement failed")).IsTrue())
@@ -115,7 +130,7 @@ type PipelineRequirementBaseClassTests() =
         let resultRegistry = host.RootServices.GetRequiredService<IModuleResultRegistry>()
         let result = resultRegistry.GetResult(typeof<RequirementDummyModule>)
 
-        do! check(Assert.That(result.ModuleStatus).IsEqualTo(Status.Successful))
+        do! check(Assert.That(result.ModuleStatus = Status.Successful).IsTrue())
     }
 
     [<Test>]
@@ -132,9 +147,9 @@ type PipelineRequirementBaseClassTests() =
                     .ExecutePipelineAsync()
                 |> Async.AwaitTask
                 |> Async.Ignore
-        with :? FailedRequirementsException as ex ->
+        with ex when isRequirementFailure ex ->
             threw <- true
-            exMessage <- ex.Message
+            exMessage <- unwrapMessage ex
 
         do! check(Assert.That(threw).IsTrue())
         do! check(Assert.That(exMessage.Contains("Async requirement failed")).IsTrue())
@@ -155,7 +170,7 @@ type PipelineRequirementBaseClassTests() =
         let resultRegistry = host.RootServices.GetRequiredService<IModuleResultRegistry>()
         let result = resultRegistry.GetResult(typeof<RequirementDummyModule>)
 
-        do! check(Assert.That(result.ModuleStatus).IsEqualTo(Status.Successful))
+        do! check(Assert.That(result.ModuleStatus = Status.Successful).IsTrue())
     }
 
     [<Test>]
@@ -172,9 +187,9 @@ type PipelineRequirementBaseClassTests() =
                     .ExecutePipelineAsync()
                 |> Async.AwaitTask
                 |> Async.Ignore
-        with :? FailedRequirementsException as ex ->
+        with ex when isRequirementFailure ex ->
             threw <- true
-            exMessage <- ex.Message
+            exMessage <- unwrapMessage ex
 
         do! check(Assert.That(threw).IsTrue())
         do! check(Assert.That(exMessage.Contains("When condition failed")).IsTrue())
@@ -183,5 +198,5 @@ type PipelineRequirementBaseClassTests() =
     [<Test>]
     member _.Custom_Order_Is_Respected() = async {
         let requirement = CustomOrderRequirement()
-        do! check(Assert.That(requirement.Order).IsEqualTo(10))
+        do! check(Assert.That(requirement.Order = 10).IsTrue())
     }

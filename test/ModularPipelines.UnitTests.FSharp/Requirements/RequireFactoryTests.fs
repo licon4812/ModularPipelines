@@ -11,6 +11,7 @@ open ModularPipelines.Modules
 open ModularPipelines.Requirements
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
+open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 open ModularPipelines.Enums
@@ -22,6 +23,19 @@ type private RequireFactoryDummyModule() =
             do! System.Threading.Tasks.Task.Yield()
             return true
         }
+
+[<AutoOpen>]
+module private RequirementFactoryTestHelpers =
+    let unwrapMessage (ex: exn) =
+        match ex with
+        | :? AggregateException as aggregate -> aggregate.GetBaseException().Message
+        | _ -> ex.Message
+
+    let isRequirementFailure (ex: exn) =
+        match ex with
+        | :? FailedRequirementsException -> true
+        | :? AggregateException as aggregate -> aggregate.GetBaseException() :? FailedRequirementsException
+        | _ -> false
 
 type RequireFactoryTests() =
     [<Test>]
@@ -39,7 +53,7 @@ type RequireFactoryTests() =
         let resultRegistry = host.RootServices.GetRequiredService<IModuleResultRegistry>()
         let result = resultRegistry.GetResult(typeof<RequireFactoryDummyModule>)
 
-        do! check(Assert.That(result.ModuleStatus).IsEqualTo(Status.Successful))
+        do! check(Assert.That(result.ModuleStatus = Status.Successful).IsTrue())
     }
 
     [<Test>]
@@ -57,9 +71,9 @@ type RequireFactoryTests() =
                     .ExecutePipelineAsync()
                 |> Async.AwaitTask
                 |> Async.Ignore
-        with :? FailedRequirementsException as ex ->
+        with ex when isRequirementFailure ex ->
             threw <- true
-            exMessage <- ex.Message
+            exMessage <- unwrapMessage ex
 
         do! check(Assert.That(threw).IsTrue())
         do! check(Assert.That(exMessage.Contains(reason)).IsTrue())
@@ -89,7 +103,7 @@ type RequireFactoryTests() =
         let resultRegistry = host.RootServices.GetRequiredService<IModuleResultRegistry>()
         let result = resultRegistry.GetResult(typeof<RequireFactoryDummyModule>)
 
-        do! check(Assert.That(result.ModuleStatus).IsEqualTo(Status.Successful))
+        do! check(Assert.That(result.ModuleStatus = Status.Successful).IsTrue())
     }
 
     [<Test>]
@@ -116,9 +130,9 @@ type RequireFactoryTests() =
                     .ExecutePipelineAsync()
                 |> Async.AwaitTask
                 |> Async.Ignore
-        with :? FailedRequirementsException as ex ->
+        with ex when isRequirementFailure ex ->
             threw <- true
-            exMessage <- ex.Message
+            exMessage <- unwrapMessage ex
 
         do! check(Assert.That(threw).IsTrue())
         do! check(Assert.That(exMessage.Contains(reason)).IsTrue())
@@ -143,7 +157,7 @@ type RequireFactoryTests() =
             let resultRegistry = host.RootServices.GetRequiredService<IModuleResultRegistry>()
             let result = resultRegistry.GetResult(typeof<RequireFactoryDummyModule>)
 
-            do! check(Assert.That(result.ModuleStatus).IsEqualTo(Status.Successful))
+            do! check(Assert.That(result.ModuleStatus = Status.Successful).IsTrue())
         finally
             Environment.SetEnvironmentVariable(varName, null)
     }
@@ -165,9 +179,9 @@ type RequireFactoryTests() =
                     .ExecutePipelineAsync()
                 |> Async.AwaitTask
                 |> Async.Ignore
-        with :? FailedRequirementsException as ex ->
+        with ex when isRequirementFailure ex ->
             threw <- true
-            exMessage <- ex.Message
+            exMessage <- unwrapMessage ex
 
         do! check(Assert.That(threw).IsTrue())
         do! check(Assert.That(exMessage.Contains(varName)).IsTrue())
@@ -191,9 +205,9 @@ type RequireFactoryTests() =
                     .ExecutePipelineAsync()
                 |> Async.AwaitTask
                 |> Async.Ignore
-        with :? FailedRequirementsException as ex ->
+        with ex when isRequirementFailure ex ->
             threw <- true
-            exMessage <- ex.Message
+            exMessage <- unwrapMessage ex
 
         do! check(Assert.That(threw).IsTrue())
         do! check(Assert.That(exMessage.Contains(customReason)).IsTrue())
@@ -202,5 +216,5 @@ type RequireFactoryTests() =
     [<Test>]
     member _.DelegateRequirement_Respects_Order() = async {
         let requirement = Require.That((fun _ -> true), "test", order = 5)
-        do! check(Assert.That(requirement.Order).IsEqualTo(5))
+        do! check(Assert.That(requirement.Order = 5).IsTrue())
     }

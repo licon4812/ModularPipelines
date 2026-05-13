@@ -7,6 +7,7 @@ open ModularPipelines.Enums
 open ModularPipelines.Models
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
+open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
@@ -58,12 +59,10 @@ type ModuleExecutionPhaseTests() =
                 DependentModules = ImmutableList<Type>.Empty
             )
 
-        let updated =
-            { original with
-                UnresolvedDependencies = original.UnresolvedDependencies.Remove(typeof<string>) }
+        let updated = ModuleStateTransitions.RemoveDependency(original, typeof<string>)
 
-        do! check(Assert.That(updated.UnresolvedDependencies.Count).IsEqualTo(1))
-        do! check(Assert.That(original.UnresolvedDependencies.Count).IsEqualTo(2))
+        do! check(Assert.That(updated.UnresolvedDependencies.Count = 1).IsTrue())
+        do! check(Assert.That(original.UnresolvedDependencies.Count = 2).IsTrue())
     }
 
     [<Test>]
@@ -77,8 +76,8 @@ type ModuleExecutionPhaseTests() =
                 ReadyAt = now
             )
 
-        do! check(Assert.That(queued.QueuedAt).IsEqualTo(now))
-        do! check(Assert.That(queued.ReadyAt).IsEqualTo(now))
+        do! check(Assert.That(queued.QueuedAt = now).IsTrue())
+        do! check(Assert.That(queued.ReadyAt = now).IsTrue())
     }
 
     [<Test>]
@@ -94,8 +93,8 @@ type ModuleExecutionPhaseTests() =
                 CancellationSource = cts
             )
 
-        do! check(Assert.That(running.StartedAt).IsEqualTo(now))
-        do! check(Assert.That(running.CancellationSource).IsEqualTo(cts))
+        do! check(Assert.That(running.StartedAt = now).IsTrue())
+        do! check(Assert.That(obj.ReferenceEquals(running.CancellationSource, cts)).IsTrue())
     }
 
     [<Test>]
@@ -111,7 +110,7 @@ type ModuleExecutionPhaseTests() =
                 Result = TestModuleResult()
             )
 
-        do! check(Assert.That(completed.Duration).IsEqualTo(TimeSpan.FromSeconds(5)))
+        do! check(Assert.That(completed.Duration = TimeSpan.FromSeconds(5.0)).IsTrue())
     }
 
     [<Test>]
@@ -129,7 +128,7 @@ type ModuleExecutionPhaseTests() =
                 Result = TestModuleResult()
             )
 
-        do! check(Assert.That(failed.Duration).IsEqualTo(TimeSpan.FromSeconds(3)))
+        do! check(Assert.That(failed.Duration = TimeSpan.FromSeconds(3.0)).IsTrue())
         do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(failed.Exception.Message), "Test failure"))
     }
 
@@ -166,5 +165,5 @@ type ModuleExecutionPhaseTests() =
                 PreviousPhase = previousPhase
             )
 
-        do! check(Assert.That(cancelled.PreviousPhase).IsEqualTo(previousPhase))
+        do! check(Assert.That(obj.ReferenceEquals(cancelled.PreviousPhase, previousPhase)).IsTrue())
     }

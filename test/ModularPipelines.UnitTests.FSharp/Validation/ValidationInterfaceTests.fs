@@ -4,6 +4,7 @@ open System.Reflection
 open ModularPipelines.Context
 open ModularPipelines.Validation
 open TUnit.Assertions
+open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 

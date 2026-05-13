@@ -12,6 +12,7 @@ open ModularPipelines.Models
 open ModularPipelines.Modules
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
+open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 open ModularPipelines.Enums
@@ -159,8 +160,8 @@ type SyncModuleTests() =
     member this.SyncModule_Executes_And_Returns_Value() = async {
         let! m = this.RunModule<SimpleSyncModule>() |> Async.AwaitTask
         let! result = m.CompletionSource.Task |> Async.AwaitTask
-        do! check(Assert.That(result.ValueOrDefault).IsEqualTo("Hello from sync module"))
-        do! check(Assert.That(result.ModuleResultType).IsEqualTo(ModuleResultType.Success))
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(result.ValueOrDefault), "Hello from sync module"))
+        do! check(Assert.That(result.ModuleResultType = ModuleResultType.Success).IsTrue())
     }
 
     [<Test>]
@@ -168,16 +169,16 @@ type SyncModuleTests() =
         let! m = this.RunModule<SyncModuleReturningNull>() |> Async.AwaitTask
         let! result = m.CompletionSource.Task |> Async.AwaitTask
         do! check(Assert.That(result.ValueOrDefault).IsNull())
-        do! check(Assert.That(result.ModuleResultType).IsEqualTo(ModuleResultType.Success))
+        do! check(Assert.That(result.ModuleResultType = ModuleResultType.Success).IsTrue())
     }
 
     [<Test>]
     member this.SyncModule_Can_Return_Complex_Types() = async {
         let! m = this.RunModule<SyncModuleWithComplexType>() |> Async.AwaitTask
         let! result = m.CompletionSource.Task |> Async.AwaitTask
-        do! check(Assert.That(result.ValueOrDefault).IsNotNull())
-        do! check(Assert.That(result.ValueOrDefault.Count).IsEqualTo(3))
-        do! check(Assert.That(result.ValueOrDefault["two"]).IsEqualTo(2))
+        do! check(Assert.That(result.ValueOrDefault <> null).IsTrue())
+        do! check(Assert.That(result.ValueOrDefault.Count = 3).IsTrue())
+        do! check(Assert.That(result.ValueOrDefault["two"] = 2).IsTrue())
     }
 
     [<Test>]
@@ -193,7 +194,7 @@ type SyncModuleTests() =
         let resultRegistry = host.RootServices.GetRequiredService<IModuleResultRegistry>()
         let result = resultRegistry.GetResult(typeof<ThrowingSyncModule>)
 
-        do! check(Assert.That(result.ModuleStatus).IsEqualTo(Status.Failed))
+        do! check(Assert.That(result.ModuleStatus = Status.Failed).IsTrue())
         do! check(Assert.That(result.ExceptionOrDefault).IsNotNull())
         do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(result.ExceptionOrDefault.Message), "Sync module exception"))
     }
@@ -252,7 +253,7 @@ type SyncModuleTests() =
         let! struct (dep, dependent) = this.RunModules<SyncDependencyModule, SyncDependentModule>() |> Async.AwaitTask
         let! depResult = dep.CompletionSource.Task |> Async.AwaitTask
         let! dependentResult = dependent.CompletionSource.Task |> Async.AwaitTask
-        do! check(Assert.That(depResult.ValueOrDefault).IsEqualTo(42))
+        do! check(Assert.That(depResult.ValueOrDefault = 42).IsTrue())
         do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(dependentResult.ValueOrDefault), "Dependency value: 42"))
     }
 
@@ -261,7 +262,7 @@ type SyncModuleTests() =
         let! struct (asyncModule, syncModule) = this.RunModules<AsyncDependencyModule, SyncDependsOnAsync>() |> Async.AwaitTask
         let! asyncResult = asyncModule.CompletionSource.Task |> Async.AwaitTask
         let! syncResult = syncModule.CompletionSource.Task |> Async.AwaitTask
-        do! check(Assert.That(asyncResult.ValueOrDefault).IsEqualTo(100))
+        do! check(Assert.That(asyncResult.ValueOrDefault = 100).IsTrue())
         do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(syncResult.ValueOrDefault), "Async dependency value: 100"))
     }
 
@@ -270,7 +271,7 @@ type SyncModuleTests() =
         let! struct (syncModule, asyncModule) = this.RunModules<SyncModuleForAsyncToDepend, AsyncDependsOnSync>() |> Async.AwaitTask
         let! syncResult = syncModule.CompletionSource.Task |> Async.AwaitTask
         let! asyncResult = asyncModule.CompletionSource.Task |> Async.AwaitTask
-        do! check(Assert.That(syncResult.ValueOrDefault).IsEqualTo(200))
+        do! check(Assert.That(syncResult.ValueOrDefault = 200).IsTrue())
         do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(asyncResult.ValueOrDefault), "Sync dependency value: 200"))
     }
 
@@ -278,7 +279,7 @@ type SyncModuleTests() =
     member this.SyncModule_Respects_Configuration() = async {
         let! m = this.RunModule<SyncModuleWithTimeout>() |> Async.AwaitTask
         let imodule = m :> IModule
-        do! check(Assert.That(imodule.Configuration.Timeout).IsEqualTo(System.TimeSpan.FromMinutes(5.0)))
+        do! check(Assert.That(imodule.Configuration.Timeout = System.TimeSpan.FromMinutes(5.0)).IsTrue())
     }
 
     [<Test>]
@@ -286,7 +287,7 @@ type SyncModuleTests() =
         let! m = this.RunModule<SyncModuleWithRetry>() |> Async.AwaitTask
         let! result = m.CompletionSource.Task |> Async.AwaitTask
         do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(result.ValueOrDefault), "success on third try"))
-        do! check(Assert.That(m.ExecutionCount).IsEqualTo(3))
+        do! check(Assert.That(m.ExecutionCount = 3).IsTrue())
     }
 
     [<Test>]

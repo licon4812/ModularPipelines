@@ -47,6 +47,11 @@ type RequirementDecisionTests() =
     [<Arguments(false)>]
     member _.Of(success: bool) = async {
         let requirementDecision = RequirementDecision.Of(success, "Blah!")
-        do! check(Assert.That(requirementDecision.Success).IsEqualTo(success))
-        do! check(Assert.That(requirementDecision.Reason).IsEqualTo(if not success then "Blah!" else null))
+
+        if success then
+            do! check(Assert.That(requirementDecision.Success).IsTrue())
+            do! check(Assert.That(requirementDecision.Reason).IsNull())
+        else
+            do! check(Assert.That(requirementDecision.Success).IsFalse())
+            do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(requirementDecision.Reason), "Blah!"))
     }

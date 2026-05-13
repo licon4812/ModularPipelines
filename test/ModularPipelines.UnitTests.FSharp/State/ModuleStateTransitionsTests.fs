@@ -6,8 +6,10 @@ open System.Threading
 open ModularPipelines.Engine.State
 open ModularPipelines.Enums
 open ModularPipelines.Models
+open ModularPipelines.Modules
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
+open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
@@ -28,6 +30,18 @@ type private TransitionTestModuleResult() =
 
 type ModuleStateTransitionsTests() =
     inherit TestBase()
+
+    let createSnapshot phase =
+        ModuleStateSnapshot(
+            ModuleType = typeof<string>,
+            Module = Unchecked.defaultof<IModule>,
+            Phase = phase,
+            RequiresSequentialExecution = false,
+            RequiredLockKeys = Array.empty,
+            Priority = ModulePriority.Normal,
+            ExecutionType = ExecutionType.Default,
+            CompletionSource = System.Threading.Tasks.TaskCompletionSource<IModule>()
+        )
 
     let pendingNoDeps =
         ModuleExecutionPhase.Pending(
@@ -70,32 +84,14 @@ type ModuleStateTransitionsTests() =
 
     [<Test>]
     member _.Pending_HasNotYetStartedStatus() = async {
-        let snapshot =
-            ModuleStateSnapshot(
-                ModuleType = typeof<string>,
-                Module = null,
-                Phase = pendingNoDeps,
-                RequiresSequentialExecution = false,
-                RequiredLockKeys = Array.empty,
-                Priority = ModulePriority.Normal,
-                ExecutionType = ExecutionType.Default
-            )
+        let snapshot = createSnapshot pendingNoDeps
 
         do! check(Assert.That(snapshot.Status).IsEqualTo(Status.NotYetStarted))
     }
 
     [<Test>]
     member _.Running_HasProcessingStatus() = async {
-        let snapshot =
-            ModuleStateSnapshot(
-                ModuleType = typeof<string>,
-                Module = null,
-                Phase = running,
-                RequiresSequentialExecution = false,
-                RequiredLockKeys = Array.empty,
-                Priority = ModulePriority.Normal,
-                ExecutionType = ExecutionType.Default
-            )
+        let snapshot = createSnapshot running
 
         do! check(Assert.That(snapshot.Status).IsEqualTo(Status.Processing))
     }
@@ -110,16 +106,7 @@ type ModuleStateTransitionsTests() =
                 Result = TransitionTestModuleResult()
             )
 
-        let snapshot =
-            ModuleStateSnapshot(
-                ModuleType = typeof<string>,
-                Module = null,
-                Phase = completed,
-                RequiresSequentialExecution = false,
-                RequiredLockKeys = Array.empty,
-                Priority = ModulePriority.Normal,
-                ExecutionType = ExecutionType.Default
-            )
+        let snapshot = createSnapshot completed
 
         do! check(Assert.That(snapshot.Status).IsEqualTo(Status.Successful))
     }
@@ -135,16 +122,7 @@ type ModuleStateTransitionsTests() =
                 Result = TransitionTestModuleResult()
             )
 
-        let snapshot =
-            ModuleStateSnapshot(
-                ModuleType = typeof<string>,
-                Module = null,
-                Phase = failed,
-                RequiresSequentialExecution = false,
-                RequiredLockKeys = Array.empty,
-                Priority = ModulePriority.Normal,
-                ExecutionType = ExecutionType.Default
-            )
+        let snapshot = createSnapshot failed
 
         do! check(Assert.That(snapshot.Status).IsEqualTo(Status.Failed))
     }
@@ -159,32 +137,14 @@ type ModuleStateTransitionsTests() =
                 Result = TransitionTestModuleResult()
             )
 
-        let snapshot =
-            ModuleStateSnapshot(
-                ModuleType = typeof<string>,
-                Module = null,
-                Phase = skipped,
-                RequiresSequentialExecution = false,
-                RequiredLockKeys = Array.empty,
-                Priority = ModulePriority.Normal,
-                ExecutionType = ExecutionType.Default
-            )
+        let snapshot = createSnapshot skipped
 
         do! check(Assert.That(snapshot.IsSuccessful).IsFalse())
     }
 
     [<Test>]
     member _.Queued_HasNotYetStartedStatus() = async {
-        let snapshot =
-            ModuleStateSnapshot(
-                ModuleType = typeof<string>,
-                Module = null,
-                Phase = queued,
-                RequiresSequentialExecution = false,
-                RequiredLockKeys = Array.empty,
-                Priority = ModulePriority.Normal,
-                ExecutionType = ExecutionType.Default
-            )
+        let snapshot = createSnapshot queued
 
         do! check(Assert.That(snapshot.Status).IsEqualTo(Status.NotYetStarted))
     }
@@ -199,16 +159,7 @@ type ModuleStateTransitionsTests() =
                 Result = TransitionTestModuleResult()
             )
 
-        let snapshot =
-            ModuleStateSnapshot(
-                ModuleType = typeof<string>,
-                Module = null,
-                Phase = completed,
-                RequiresSequentialExecution = false,
-                RequiredLockKeys = Array.empty,
-                Priority = ModulePriority.Normal,
-                ExecutionType = ExecutionType.Default
-            )
+        let snapshot = createSnapshot completed
 
         do! check(Assert.That(snapshot.IsSuccessful).IsTrue())
     }

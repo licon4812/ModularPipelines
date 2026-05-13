@@ -11,6 +11,7 @@ open ModularPipelines.Models
 open ModularPipelines.Modules
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
+open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
@@ -69,13 +70,13 @@ type ModuleStateStoreTests() =
                 executionType = ExecutionType.Default
             )
 
-        do! check(Assert.That(state.Module).IsEqualTo(m))
-        do! check(Assert.That(state.ModuleType).IsEqualTo(moduleType))
+        do! check(Assert.That(obj.ReferenceEquals(state.Module, m)).IsTrue())
+        do! check(Assert.That(state.ModuleType = moduleType).IsTrue())
         do! check(Assert.That(state.Phase).IsTypeOf<ModuleExecutionPhase.Pending>())
 
         let pending = state.Phase :?> ModuleExecutionPhase.Pending
-        do! check(Assert.That(pending.UnresolvedDependencies.Count).IsEqualTo(1))
-        do! check(Assert.That(pending.DependentModules.Count).IsEqualTo(1))
+        do! check(Assert.That(pending.UnresolvedDependencies.Count = 1).IsTrue())
+        do! check(Assert.That(pending.DependentModules.Count = 1).IsTrue())
     }
 
     [<Test>]
@@ -134,7 +135,7 @@ type ModuleStateStoreTests() =
         let state = _store.GetState(typeof<StoreTestModule>)
 
         do! check(Assert.That(state).IsNotNull())
-        do! check(Assert.That(state.Module).IsEqualTo(m))
+        do! check(Assert.That(obj.ReferenceEquals(state.Module, m)).IsTrue())
     }
 
     [<Test>]
@@ -319,7 +320,7 @@ type ModuleStateStoreTests() =
 
         do! check(Assert.That(result).IsNotNull())
         let pending = result.Phase :?> ModuleExecutionPhase.Pending
-        do! check(Assert.That(pending.UnresolvedDependencies.Count).IsEqualTo(1))
+        do! check(Assert.That(pending.UnresolvedDependencies.Count = 1).IsTrue())
         do! check(Assert.That(pending.UnresolvedDependencies.Contains(typeof<int>)).IsTrue())
     }
 
@@ -371,8 +372,8 @@ type ModuleStateStoreTests() =
 
         let ready = _store.GetReadyModules() |> Seq.toList
 
-        do! check(Assert.That(ready.Length).IsEqualTo(1))
-        do! check(Assert.That(ready.[0].ModuleType).IsEqualTo(typeof<StoreTestModule>))
+        do! check(Assert.That(ready.Length = 1).IsTrue())
+        do! check(Assert.That(ready.[0].ModuleType = typeof<StoreTestModule>).IsTrue())
     }
 
     [<Test>]
@@ -405,10 +406,10 @@ type ModuleStateStoreTests() =
 
         let struct (pending, queued, running, completed) = _store.GetStateCounts()
 
-        do! check(Assert.That(pending).IsEqualTo(1))
-        do! check(Assert.That(queued).IsEqualTo(1))
-        do! check(Assert.That(running).IsEqualTo(0))
-        do! check(Assert.That(completed).IsEqualTo(0))
+        do! check(Assert.That((pending = 1)).IsTrue())
+        do! check(Assert.That((queued = 1)).IsTrue())
+        do! check(Assert.That((running = 0)).IsTrue())
+        do! check(Assert.That((completed = 0)).IsTrue())
     }
 
     [<Test>]
@@ -417,10 +418,13 @@ type ModuleStateStoreTests() =
         let mutable oldState: ModuleStateSnapshot = Unchecked.defaultof<_>
         let mutable newState: ModuleStateSnapshot = Unchecked.defaultof<_>
 
-        _store.StateChanged.AddHandler(fun old n ->
-            eventFired <- true
-            oldState <- old
-            newState <- n)
+        let handler =
+            Action<ModuleStateSnapshot, ModuleStateSnapshot>(fun old n ->
+                eventFired <- true
+                oldState <- old
+                newState <- n)
+
+        _store.add_StateChanged(handler)
 
         _store.RegisterModule(
             StoreTestModule(),
@@ -456,17 +460,17 @@ type ModuleStateStoreTests() =
         |> ignore
 
         let pendingState = _store.GetState(typeof<StoreTestModule>)
-        do! check(Assert.That(pendingState.Status).IsEqualTo(Status.NotYetStarted))
+        do! check(Assert.That(pendingState.Status = Status.NotYetStarted).IsTrue())
 
         _store.TransitionToQueued(typeof<StoreTestModule>) |> ignore
         let queuedState = _store.GetState(typeof<StoreTestModule>)
-        do! check(Assert.That(queuedState.Status).IsEqualTo(Status.NotYetStarted))
+        do! check(Assert.That(queuedState.Status = Status.NotYetStarted).IsTrue())
 
         _store.TransitionToRunning(typeof<StoreTestModule>, new CancellationTokenSource()) |> ignore
         let runningState = _store.GetState(typeof<StoreTestModule>)
-        do! check(Assert.That(runningState.Status).IsEqualTo(Status.Processing))
+        do! check(Assert.That(runningState.Status = Status.Processing).IsTrue())
 
         _store.TransitionToCompleted(typeof<StoreTestModule>, StoreTestModuleResult()) |> ignore
         let completedState = _store.GetState(typeof<StoreTestModule>)
-        do! check(Assert.That(completedState.Status).IsEqualTo(Status.Successful))
+        do! check(Assert.That(completedState.Status = Status.Successful).IsTrue())
     }

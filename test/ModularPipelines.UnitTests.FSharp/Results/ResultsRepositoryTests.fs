@@ -10,6 +10,7 @@ open ModularPipelines.Models
 open ModularPipelines.Modules
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
+open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 open ModularPipelines.Enums
@@ -67,8 +68,8 @@ type ResultsRepositoryTests() =
         let module1Result = resultRegistry.GetResult(typeof<RepoModule1>)
         let module2Result = resultRegistry.GetResult(typeof<RepoModule2>)
 
-        do! check(Assert.That(module1Result.ModuleStatus).IsEqualTo(Status.Successful))
-        do! check(Assert.That(module2Result.ModuleStatus).IsEqualTo(Status.Successful))
+        do! check(Assert.That(module1Result.ModuleStatus = Status.Successful).IsTrue())
+        do! check(Assert.That(module2Result.ModuleStatus = Status.Successful).IsTrue())
     }
 
     [<Test>]
@@ -90,6 +91,6 @@ type ResultsRepositoryTests() =
         let module1Result = resultRegistry.GetResult(typeof<RepoModule1>)
         let module2Result = resultRegistry.GetResult(typeof<RepoModule2>)
 
-        do! check(Assert.That(module1Result.ModuleStatus).IsEqualTo(Status.UsedHistory))
-        do! check(Assert.That(module2Result.ModuleStatus).IsEqualTo(Status.UsedHistory))
+        do! check(Assert.That(module1Result.ModuleStatus = Status.UsedHistory).IsTrue())
+        do! check(Assert.That(module2Result.ModuleStatus = Status.UsedHistory).IsTrue())
     }
