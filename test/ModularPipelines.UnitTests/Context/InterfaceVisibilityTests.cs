@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Context;
+using ModularPipelines.Context;
 using System.Reflection;
 
 namespace ModularPipelines.UnitTests.Context;
@@ -8,6 +8,7 @@ namespace ModularPipelines.UnitTests.Context;
 /// </summary>
 public class InterfaceVisibilityTests
 {
+    [Test]
     public async Task EngineInterfaces_ShouldBeInternal()
     {
         var assembly = typeof(IModuleContext).Assembly;
@@ -25,6 +26,7 @@ public class InterfaceVisibilityTests
         }
     }
 
+    [Test]
     public async Task UserFacingContextInterfaces_ShouldBePublic()
     {
         var assembly = typeof(IModuleContext).Assembly;
@@ -58,6 +60,7 @@ public class InterfaceVisibilityTests
         }
     }
 
+    [Test]
     public async Task ExtensionPointInterfaces_ShouldBePublic()
     {
         var assembly = typeof(IModuleContext).Assembly;
@@ -81,6 +84,7 @@ public class InterfaceVisibilityTests
         }
     }
 
+    [Test]
     public async Task IPipelineServiceContainerWrapper_ShouldBeInternal()
     {
         var assembly = typeof(IModuleContext).Assembly;

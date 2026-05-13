@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Context;
+using ModularPipelines.Context;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
 using ModularPipelines.TestHelpers;
@@ -16,6 +16,7 @@ public class PowershellTests : TestBase
         }
     }
 
+    [Test]
     public async Task Has_Not_Errored()
     {
         var moduleResult = await await RunModule<PowershellEchoModule>();
@@ -23,6 +24,7 @@ public class PowershellTests : TestBase
         await ModuleResultAssertions.AssertSuccessWithValue(moduleResult);
     }
 
+    [Test]
     public async Task Standard_Output_Equals_Foo_Bar()
     {
         var moduleResult = await await RunModule<PowershellEchoModule>();

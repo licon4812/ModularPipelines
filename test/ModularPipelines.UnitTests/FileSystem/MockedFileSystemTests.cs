@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Context;
 using ModularPipelines.Enums;
 using ModularPipelines.FileSystem;
@@ -11,6 +11,7 @@ namespace ModularPipelines.UnitTests.FileSystem;
 
 public class MockedFileSystemTests
 {
+    [Test]
     public async Task Module_CanUseMockedFileSystem_ForReading()
     {
         // Arrange - create mock provider that returns fake config
@@ -40,6 +41,7 @@ public class MockedFileSystemTests
         mockProvider.Verify(p => p.ReadAllTextAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
+    [Test]
     public async Task Module_CanUseMockedFileSystem_ForWriting()
     {
         // Arrange
@@ -64,6 +66,7 @@ public class MockedFileSystemTests
             It.IsAny<CancellationToken>()), Times.Once);
     }
 
+    [Test]
     public async Task Module_CanUseMockedFileSystem_ForFolderOperations()
     {
         // Arrange

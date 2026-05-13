@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Configuration;
 using ModularPipelines.Context;
 using ModularPipelines.Engine;
@@ -175,6 +175,7 @@ public class DirectModuleHooksIntegrationTests : TestBase
         ClearLog();
     }
 
+    [Test]
     public async Task FullPipeline_WithMultipleModules_HooksExecuteInCorrectOrder()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -200,6 +201,7 @@ public class DirectModuleHooksIntegrationTests : TestBase
         await Assert.That(module1ExecuteIndex).IsLessThan(module1AfterIndex);
     }
 
+    [Test]
     public async Task HookOrdering_DirectHooksRunBeforeConfigHooks()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -221,6 +223,7 @@ public class DirectModuleHooksIntegrationTests : TestBase
         await Assert.That(configBeforeIndex).IsLessThan(executeIndex);
     }
 
+    [Test]
     public async Task DependentModule_HooksExecuteWithCorrectDependencyOrder()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -240,6 +243,7 @@ public class DirectModuleHooksIntegrationTests : TestBase
         await Assert.That(module1AfterIndex).IsLessThan(dependentBeforeIndex);
     }
 
+    [Test]
     public async Task Context_IsAvailableInHooks()
     {
         var module = await RunModule<ContextVerifyingModule>();
@@ -250,6 +254,7 @@ public class DirectModuleHooksIntegrationTests : TestBase
         await Assert.That(module.LoggerWasAvailableInAfterHook).IsTrue();
     }
 
+    [Test]
     public async Task Pipeline_CompletesSuccessfully_WithAllHooksExecuted()
     {
         var host = await TestPipelineHostBuilder.Create()

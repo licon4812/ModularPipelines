@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Attributes;
 using ModularPipelines.Configuration;
 using ModularPipelines.Context;
@@ -59,6 +59,7 @@ public class AlwaysRunTests : TestBase
         }
     }
 
+    [Test]
     public async Task AlwaysRunModules_Will_Run_Even_With_Exception()
     {
         var host = await TestPipelineHostBuilder.Create()

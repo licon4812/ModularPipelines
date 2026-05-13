@@ -76,6 +76,7 @@ public class PipelineWriterTests : TestBase
         }
     }
 
+    [Test]
     public async Task GitHubWriter()
     {
         await TestPipelineHostBuilder.Create()

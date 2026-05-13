@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Configuration;
 using ModularPipelines.Context;
 using ModularPipelines.Engine;
@@ -25,6 +25,7 @@ public class IgnoredFailureTests : TestBase
         }
     }
 
+    [Test]
     public async Task Has_Not_Thrown_Or_Cancelled_Pipeline()
     {
         var host = await TestPipelineHostBuilder.Create()

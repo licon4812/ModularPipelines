@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using ModularPipelines.Context;
 using ModularPipelines.Context.Domains;
 using Moq;
@@ -10,6 +10,7 @@ namespace ModularPipelines.UnitTests.Context;
 /// </summary>
 public class ContextExtensionsTests
 {
+    [Test]
     public async Task GetService_ShouldResolveFromDI()
     {
         // Arrange
@@ -27,6 +28,7 @@ public class ContextExtensionsTests
         await Assert.That(result).IsSameReferenceAs(expectedService);
     }
 
+    [Test]
     public async Task GetService_WhenServiceNotRegistered_ShouldThrow()
     {
         // Arrange
@@ -41,6 +43,7 @@ public class ContextExtensionsTests
             .ThrowsExactly<InvalidOperationException>();
     }
 
+    [Test]
     public async Task TryGetService_ShouldReturnServiceOrNull()
     {
         // Arrange
@@ -57,6 +60,7 @@ public class ContextExtensionsTests
         await Assert.That(result).IsNull();
     }
 
+    [Test]
     public async Task TryGetService_WhenServiceExists_ShouldReturnService()
     {
         // Arrange
@@ -74,6 +78,7 @@ public class ContextExtensionsTests
         await Assert.That(result).IsSameReferenceAs(expectedService);
     }
 
+    [Test]
     public async Task GetConfigValue_ShouldReturnConfigurationValue()
     {
         // Arrange
@@ -93,6 +98,7 @@ public class ContextExtensionsTests
         await Assert.That(result).IsEqualTo("TestValue");
     }
 
+    [Test]
     public async Task GetRequiredConfigValue_WhenValueExists_ShouldReturnValue()
     {
         // Arrange
@@ -112,6 +118,7 @@ public class ContextExtensionsTests
         await Assert.That(result).IsEqualTo("TestValue");
     }
 
+    [Test]
     public async Task GetRequiredConfigValue_WhenValueMissing_ShouldThrow()
     {
         // Arrange

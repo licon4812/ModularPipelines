@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using ModularPipelines.Extensions;
 using ModularPipelines.FileSystem;
 using ModularPipelines.TestHelpers;
@@ -9,6 +9,7 @@ namespace ModularPipelines.UnitTests.FileSystem;
 
 public class FileTests : TestBase
 {
+    [Test]
     public async Task Delete()
     {
         var file = await CreateRandomFile();
@@ -18,6 +19,7 @@ public class FileTests : TestBase
         await Assert.That(file.Exists).IsFalse();
     }
 
+    [Test]
     public async Task MoveTo()
     {
         var file = await CreateRandomFile();
@@ -44,6 +46,7 @@ public class FileTests : TestBase
         }
     }
 
+    [Test]
     public async Task Data_Is_Populated()
     {
         var file = await CreateRandomFile();
@@ -65,6 +68,7 @@ public class FileTests : TestBase
         }
     }
 
+    [Test]
     public async Task CopyTo()
     {
         var file = await CreateRandomFile();
@@ -86,6 +90,7 @@ public class FileTests : TestBase
         }
     }
 
+    [Test]
     public async Task CreateFile()
     {
         var file = File.GetNewTemporaryFilePath();
@@ -95,6 +100,7 @@ public class FileTests : TestBase
         await Assert.That(file.Exists).IsTrue();
     }
 
+    [Test]
     public async Task ReadEmptyFile()
     {
         var file = File.GetNewTemporaryFilePath();
@@ -115,6 +121,7 @@ public class FileTests : TestBase
         }
     }
 
+    [Test]
     public async Task ReadWriteFile()
     {
         var file = File.GetNewTemporaryFilePath();
@@ -137,6 +144,7 @@ public class FileTests : TestBase
         }
     }
 
+    [Test]
     public async Task ReadWriteLinesFile()
     {
         var file = File.GetNewTemporaryFilePath();
@@ -158,6 +166,7 @@ public class FileTests : TestBase
         }
     }
 
+    [Test]
     public async Task ReadWriteBytesFile()
     {
         var file = File.GetNewTemporaryFilePath();
@@ -168,6 +177,7 @@ public class FileTests : TestBase
         await Assert.That(plainText).IsEqualTo("Hello world!");
     }
 
+    [Test]
     public async Task WriteStreamFile()
     {
         var file = File.GetNewTemporaryFilePath();
@@ -178,6 +188,7 @@ public class FileTests : TestBase
         await Assert.That(plainText).IsEqualTo("Hello world!");
     }
 
+    [Test]
     public async Task ReadWriteReadOnlyMemoryBytesFile()
     {
         var file = File.GetNewTemporaryFilePath();
@@ -188,6 +199,7 @@ public class FileTests : TestBase
         await Assert.That(plainText).IsEqualTo("Hello world!");
     }
 
+    [Test]
     public async Task ReadWriteStreamFile()
     {
         var file = File.GetNewTemporaryFilePath();
@@ -198,6 +210,7 @@ public class FileTests : TestBase
         await Assert.That(plainText).IsEqualTo("Hello world!");
     }
 
+    [Test]
     public async Task Null_FileInfo_Implicit_Cast()
     {
         FileInfo? fileInfo = null;
@@ -206,6 +219,7 @@ public class FileTests : TestBase
         await Assert.That(file).IsNull();
     }
 
+    [Test]
     public async Task Null_String_Implicit_Cast()
     {
         string? fileInfo = null;
@@ -214,6 +228,7 @@ public class FileTests : TestBase
         await Assert.That(file).IsNull();
     }
 
+    [Test]
     public async Task FileInfo_Implicit_Cast()
     {
         var fileInfo = new FileInfo(Path.GetTempFileName());
@@ -222,6 +237,7 @@ public class FileTests : TestBase
         await Assert.That(file).IsNotNull();
     }
 
+    [Test]
     public async Task String_Implicit_Cast()
     {
         var fileInfo = Path.GetTempFileName();
@@ -230,6 +246,7 @@ public class FileTests : TestBase
         await Assert.That(file).IsNotNull();
     }
 
+    [Test]
     [WindowsOnlyTest]
     public async Task Attributes()
     {
@@ -240,6 +257,7 @@ public class FileTests : TestBase
         await Assert.That(file.Attributes.HasFlag(FileAttributes.Hidden)).IsTrue();
     }
 
+    [Test]
     public async Task EqualityTrue()
     {
         var path = Path.GetRandomFileName();
@@ -255,6 +273,7 @@ public class FileTests : TestBase
         }
     }
 
+    [Test]
     public async Task EqualityFalse()
     {
         var file = new File(Path.GetRandomFileName());
@@ -269,6 +288,7 @@ public class FileTests : TestBase
         }
     }
 
+    [Test]
     [Arguments("**/Nest2/**/*.txt")]
     [Arguments("**/blah.txt")]
     [Arguments("**/Blah.txt")]
@@ -281,6 +301,7 @@ public class FileTests : TestBase
         await Assert.That(files[0].Name).IsEqualTo("Blah.txt");
     }
 
+    [Test]
     public async Task GlobTest2()
     {
         var folder = new Folder(TestContext.OutputDirectory)
@@ -292,30 +313,35 @@ public class FileTests : TestBase
         await Assert.That(files[0].Name).IsEqualTo("Blah.txt");
     }
 
+    [Test]
     public async Task AssertExists()
     {
         var file = (File?) await CreateRandomFile();
         await Assert.That(() => file.AssertExists()).ThrowsNothing();
     }
 
+    [Test]
     public async Task AssertExists_ThrowsWhenNotExists()
     {
         var file = File.GetNewTemporaryFilePath();
         await Assert.That(() => file.AssertExists()).Throws<FileNotFoundException>();
     }
 
+    [Test]
     public async Task AssertExists_ThrowsWhenNull()
     {
         var file = null as File;
         await Assert.That(() => file.AssertExists()).Throws<ArgumentNullException>();
     }
 
+    [Test]
     public async Task MoveTo_Folder()
     {
         var file = await CreateRandomFile();
         file.MoveTo(new Folder(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)));
     }
 
+    [Test]
     public async Task CopyTo_Folder()
     {
         var file = await CreateRandomFile();

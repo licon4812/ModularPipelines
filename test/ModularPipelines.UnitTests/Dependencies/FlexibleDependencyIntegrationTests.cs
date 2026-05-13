@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Attributes;
 using ModularPipelines.Context;
@@ -38,6 +38,7 @@ public class FlexibleDependencyIntegrationTests : TestBase
 
     #region Tag-Based Dependency Tests
 
+    [Test]
     public async Task DependsOnModulesWithTag_WaitsForTaggedModules()
     {
         // Arrange & Act
@@ -61,6 +62,7 @@ public class FlexibleDependencyIntegrationTests : TestBase
         await Assert.That(afterDbIndex).IsGreaterThan(dbBIndex);
     }
 
+    [Test]
     public async Task DependsOnModulesWithTag_NoMatchingModules_StillSucceeds()
     {
         // Arrange & Act - AfterDatabaseModule depends on "database" tag but no modules have it
@@ -73,6 +75,7 @@ public class FlexibleDependencyIntegrationTests : TestBase
         await Assert.That(result.Status).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task DependsOnModulesWithTag_MultipleTagsOnModule_MatchesCorrectly()
     {
         // Arrange & Act
@@ -95,6 +98,7 @@ public class FlexibleDependencyIntegrationTests : TestBase
 
     #region Category-Based Dependency Tests
 
+    [Test]
     public async Task DependsOnModulesInCategory_WaitsForCategorizedModules()
     {
         // Arrange & Act
@@ -118,6 +122,7 @@ public class FlexibleDependencyIntegrationTests : TestBase
         await Assert.That(afterInfraIndex).IsGreaterThan(infraBIndex);
     }
 
+    [Test]
     public async Task DependsOnModulesInCategory_NoMatchingModules_StillSucceeds()
     {
         // Arrange & Act
@@ -134,6 +139,7 @@ public class FlexibleDependencyIntegrationTests : TestBase
 
     #region Attribute-Based Dependency Tests
 
+    [Test]
     public async Task DependsOnModulesWithAttribute_WaitsForAttributedModules()
     {
         // Arrange & Act
@@ -157,6 +163,7 @@ public class FlexibleDependencyIntegrationTests : TestBase
         await Assert.That(afterCriticalIndex).IsGreaterThan(criticalBIndex);
     }
 
+    [Test]
     public async Task DependsOnModulesWithAttribute_InheritedAttribute_IsRecognized()
     {
         // Arrange & Act
@@ -175,6 +182,7 @@ public class FlexibleDependencyIntegrationTests : TestBase
         await Assert.That(afterCriticalIndex).IsGreaterThan(derivedIndex);
     }
 
+    [Test]
     public async Task DependsOnModulesWithAttribute_NoMatchingModules_StillSucceeds()
     {
         // Arrange & Act
@@ -191,6 +199,7 @@ public class FlexibleDependencyIntegrationTests : TestBase
 
     #region Override-Based Tags Tests
 
+    [Test]
     public async Task ModuleWithOverrideTags_IsRecognizedByTagDependency()
     {
         // Arrange & Act
@@ -210,6 +219,7 @@ public class FlexibleDependencyIntegrationTests : TestBase
         await Assert.That(afterDbIndex).IsGreaterThan(overrideIndex);
     }
 
+    [Test]
     public async Task ModuleWithOverrideCategory_IsRecognizedByCategoryDependency()
     {
         // Arrange & Act
@@ -233,6 +243,7 @@ public class FlexibleDependencyIntegrationTests : TestBase
 
     #region Registration-Time Tags Tests
 
+    [Test]
     public async Task ModuleWithRegistrationTags_IsRecognizedByTagDependency()
     {
         // Arrange & Act
@@ -255,6 +266,7 @@ public class FlexibleDependencyIntegrationTests : TestBase
         await Assert.That(afterDbIndex).IsGreaterThan(plainIndex);
     }
 
+    [Test]
     public async Task ModuleWithRegistrationCategory_IsRecognizedByCategoryDependency()
     {
         // Arrange & Act
@@ -277,6 +289,7 @@ public class FlexibleDependencyIntegrationTests : TestBase
         await Assert.That(afterInfraIndex).IsGreaterThan(plainIndex);
     }
 
+    [Test]
     public async Task ModuleWithBothAttributeAndRegistrationTags_MergesTags()
     {
         // Arrange & Act - DatabaseModuleA has "database" tag via attribute, add "slow" via registration
@@ -303,6 +316,7 @@ public class FlexibleDependencyIntegrationTests : TestBase
 
     #region Combined Dependency Tests
 
+    [Test]
     public async Task CombinedDependencies_ModuleWithMultipleFlexibleDependencies()
     {
         // Arrange & Act
@@ -328,6 +342,7 @@ public class FlexibleDependencyIntegrationTests : TestBase
         await Assert.That(combinedIndex).IsGreaterThan(criticalAIndex);
     }
 
+    [Test]
     public async Task ChainedFlexibleDependencies_ExecuteInCorrectOrder()
     {
         // Arrange & Act

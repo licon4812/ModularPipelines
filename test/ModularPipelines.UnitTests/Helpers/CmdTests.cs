@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Cmd.Extensions;
+using ModularPipelines.Cmd.Extensions;
 using ModularPipelines.Context;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
@@ -19,6 +19,7 @@ public class CmdTests : TestBase
         }
     }
 
+    [Test]
     public async Task Has_Not_Errored()
     {
         var moduleResult = await await RunModule<CmdEchoModule>();
@@ -26,6 +27,7 @@ public class CmdTests : TestBase
         await ModuleResultAssertions.AssertSuccessWithValue(moduleResult);
     }
 
+    [Test]
     public async Task Standard_Output_Equals_Foo_Bar()
     {
         var moduleResult = await await RunModule<CmdEchoModule>();

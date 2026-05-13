@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Attributes.Events;
+using ModularPipelines.Attributes.Events;
 using ModularPipelines.Context;
 using ModularPipelines.Engine.Attributes;
 using ModularPipelines.Modules;
@@ -91,6 +91,7 @@ public class ModuleAttributeEventServiceTests
             => Task.FromResult<string?>("test");
     }
 
+    [Test]
     public async Task GetStartHandlers_ModuleWithAttribute_ReturnsHandler()
     {
         var service = new ModuleAttributeEventService();
@@ -101,6 +102,7 @@ public class ModuleAttributeEventServiceTests
         await Assert.That(handlers[0]).IsTypeOf<TestStartAttribute>();
     }
 
+    [Test]
     public async Task GetFailureHandlers_ModuleWithAttribute_ReturnsHandler()
     {
         var service = new ModuleAttributeEventService();
@@ -111,6 +113,7 @@ public class ModuleAttributeEventServiceTests
         await Assert.That(handlers[0]).IsTypeOf<TestFailureAttribute>();
     }
 
+    [Test]
     public async Task GetStartHandlers_ModuleWithoutAttributes_ReturnsEmpty()
     {
         var service = new ModuleAttributeEventService();
@@ -120,6 +123,7 @@ public class ModuleAttributeEventServiceTests
         await Assert.That(handlers).IsEmpty();
     }
 
+    [Test]
     public async Task GetHandlers_CachesResults()
     {
         var service = new ModuleAttributeEventService();
@@ -130,6 +134,7 @@ public class ModuleAttributeEventServiceTests
         await Assert.That(ReferenceEquals(handlers1, handlers2)).IsTrue();
     }
 
+    [Test]
     public async Task GetStartHandlers_WithPriority_ReturnsSortedByPriority()
     {
         var service = new ModuleAttributeEventService();
@@ -143,6 +148,7 @@ public class ModuleAttributeEventServiceTests
         await Assert.That(handlers[2]).IsTypeOf<LowPriorityStartAttribute>();    // Priority 100
     }
 
+    [Test]
     public async Task GetStartHandlers_WithMixedPriority_DefaultsToZero()
     {
         var service = new ModuleAttributeEventService();
@@ -156,6 +162,7 @@ public class ModuleAttributeEventServiceTests
         await Assert.That(handlers[2]).IsTypeOf<LowPriorityStartAttribute>();   // Priority 100
     }
 
+    [Test]
     public async Task GetStartHandlers_SingleHandler_ReturnsWithoutSorting()
     {
         var service = new ModuleAttributeEventService();

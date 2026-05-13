@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Attributes;
+using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.Modules;
 using ModularPipelines.TestHelpers;
@@ -51,6 +51,7 @@ public class CategoryFilterDependencyTests : TestBase
         }
     }
 
+    [Test]
     public async Task Optional_Dependency_Works_When_Filtered_By_Category()
     {
         // Issue #2164: Running only "test" category with optional deps should work
@@ -68,6 +69,7 @@ public class CategoryFilterDependencyTests : TestBase
         await Assert.That(result.ValueOrDefault).IsEqualTo("test-compile-skipped");
     }
 
+    [Test]
     public async Task Optional_Dependency_Is_Skipped_When_Filtered_By_Category()
     {
         // When using category filters, dependencies in other categories should be marked optional
@@ -86,6 +88,7 @@ public class CategoryFilterDependencyTests : TestBase
         await Assert.That(result.ValueOrDefault).IsEqualTo("test-compile-skipped");
     }
 
+    [Test]
     public async Task Both_Categories_Run_Successfully()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()

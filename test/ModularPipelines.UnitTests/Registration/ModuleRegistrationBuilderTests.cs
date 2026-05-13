@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using ModularPipelines.Context;
 using ModularPipelines.DependencyInjection;
@@ -24,6 +24,7 @@ public class ModuleRegistrationBuilderTests
         protected override bool Result => true;
     }
 
+    [Test]
     public async Task AddModule_ReturnsBuilder_WithServicesAccess()
     {
         // Arrange
@@ -37,6 +38,7 @@ public class ModuleRegistrationBuilderTests
         await Assert.That(builder.Services).IsEqualTo(services);
     }
 
+    [Test]
     public async Task AddModule_ChainedCalls_RegistersAllModules()
     {
         // Arrange
@@ -51,6 +53,7 @@ public class ModuleRegistrationBuilderTests
         await Assert.That(moduleDescriptors.Count).IsEqualTo(2);
     }
 
+    [Test]
     public async Task WithTags_DoesNotThrow()
     {
         // Arrange
@@ -70,6 +73,7 @@ public class ModuleRegistrationBuilderTests
         await Assert.That(options).IsNotNull();
     }
 
+    [Test]
     public async Task WithCategory_DoesNotThrow()
     {
         // Arrange
@@ -89,6 +93,7 @@ public class ModuleRegistrationBuilderTests
         await Assert.That(options).IsNotNull();
     }
 
+    [Test]
     public async Task WithTags_MultipleCalls_DoesNotThrow()
     {
         // Arrange
@@ -104,6 +109,7 @@ public class ModuleRegistrationBuilderTests
         await Assert.That(moduleDescriptors.Count).IsEqualTo(1);
     }
 
+    [Test]
     public async Task WithCategory_CanChainWithAddModule()
     {
         // Arrange
@@ -120,6 +126,7 @@ public class ModuleRegistrationBuilderTests
         await Assert.That(moduleDescriptors.Count).IsEqualTo(2);
     }
 
+    [Test]
     public async Task Builder_CanAddRequirement()
     {
         // Arrange
@@ -134,6 +141,7 @@ public class ModuleRegistrationBuilderTests
         await Assert.That(requirementDescriptors.Count).IsEqualTo(1);
     }
 
+    [Test]
     public async Task Builder_CanConfigure()
     {
         // Arrange

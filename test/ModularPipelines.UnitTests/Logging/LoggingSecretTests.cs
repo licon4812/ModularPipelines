@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -34,6 +34,7 @@ public class LoggingSecretTests
         }
     }
 
+    [Test]
     [Arguments("Shh!")]
     [Arguments("SuperSecret!")]
     [Arguments("🤐")]

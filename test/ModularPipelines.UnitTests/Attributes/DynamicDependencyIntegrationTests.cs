@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Attributes.Events;
+using ModularPipelines.Attributes.Events;
 using ModularPipelines.Context;
 using ModularPipelines.Modules;
 using ModularPipelines.TestHelpers;
@@ -53,6 +53,7 @@ public class DynamicDependencyIntegrationTests : TestBase
         ExecutionOrder.Clear();
     }
 
+    [Test]
     public async Task DynamicDependency_ModuleBWaitsForModuleA()
     {
         var result = await TestPipelineHostBuilder.Create()

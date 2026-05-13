@@ -4,6 +4,7 @@ namespace ModularPipelines.UnitTests.Extensions;
 
 public class BooleanExtensionTests
 {
+    [Test]
     public async Task True()
     {
         var trueSkipDecision = true.AsSkipDecisionIfTrue("My reason");
@@ -15,6 +16,7 @@ public class BooleanExtensionTests
         }
     }
 
+    [Test]
     public async Task False()
     {
         var falseSkipDecision = false.AsSkipDecisionIfTrue("My reason");

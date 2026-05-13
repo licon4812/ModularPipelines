@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Attributes;
 using ModularPipelines.Configuration;
 using ModularPipelines.Context;
@@ -51,6 +51,7 @@ public class EngineCancellationTokenTests : TestBase
         }
     }
 
+    [Test]
     public async Task When_Cancel_Engine_Token_With_DependsOn_Then_Modules_Cancel()
     {
         var builder = TestPipelineHostBuilder.Create()
@@ -73,6 +74,7 @@ public class EngineCancellationTokenTests : TestBase
         await Assert.That(module1Result!.ModuleStatus).IsEqualTo(Status.PipelineTerminated);
     }
 
+    [Test]
     public async Task When_Cancel_Engine_Token_Without_DependsOn_Then_Modules_Cancel()
     {
         var builder = TestPipelineHostBuilder.Create()
@@ -98,6 +100,7 @@ public class EngineCancellationTokenTests : TestBase
         await Assert.That(longRunningModuleResult.ModuleDuration).IsLessThan(TimeSpan.FromSeconds(5));
     }
 
+    [Test]
     public async Task When_Cancel_Engine_Token_Without_DependsOn_Then_Modules_Cancel_Without_Cancellation()
     {
         var builder = TestPipelineHostBuilder.Create()

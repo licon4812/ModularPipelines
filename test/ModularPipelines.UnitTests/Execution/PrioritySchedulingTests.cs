@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.Enums;
@@ -72,6 +72,7 @@ public class PrioritySchedulingTests : TestBase
         while (ExecutionOrder.TryDequeue(out _)) { }
     }
 
+    [Test]
     public async Task PriorityAttribute_CanBeAppliedToModule()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -81,6 +82,7 @@ public class PrioritySchedulingTests : TestBase
         await Assert.That(result.Status).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task ModulesWithoutPriorityAttribute_UseNormalPriority()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -90,6 +92,7 @@ public class PrioritySchedulingTests : TestBase
         await Assert.That(result.Status).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task AllPriorityLevels_ExecuteSuccessfully()
     {
         var result = await TestPipelineHostBuilder.Create()

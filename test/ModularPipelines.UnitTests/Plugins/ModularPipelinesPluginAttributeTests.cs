@@ -1,9 +1,10 @@
-﻿using ModularPipelines.Attributes;
+using ModularPipelines.Attributes;
 
 namespace ModularPipelines.UnitTests.Plugins;
 
 public class ModularPipelinesPluginAttributeTests
 {
+    [Test]
     public async Task Constructor_SetsCompatibleMajorVersion()
     {
         var attr = new ModularPipelinesPluginAttribute(5);
@@ -11,6 +12,7 @@ public class ModularPipelinesPluginAttributeTests
         await Assert.That(attr.CompatibleMajorVersion).IsEqualTo(5);
     }
 
+    [Test]
     public async Task Constructor_AcceptsZero()
     {
         var attr = new ModularPipelinesPluginAttribute(0);
@@ -18,12 +20,14 @@ public class ModularPipelinesPluginAttributeTests
         await Assert.That(attr.CompatibleMajorVersion).IsEqualTo(0);
     }
 
+    [Test]
     public async Task Constructor_ThrowsForNegativeVersion()
     {
         await Assert.That(() => new ModularPipelinesPluginAttribute(-1))
             .Throws<ArgumentOutOfRangeException>();
     }
 
+    [Test]
     public async Task Attribute_HasCorrectUsage()
     {
         var usage = typeof(ModularPipelinesPluginAttribute)

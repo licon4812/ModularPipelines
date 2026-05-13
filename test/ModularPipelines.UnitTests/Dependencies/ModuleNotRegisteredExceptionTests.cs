@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Attributes;
+using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.Exceptions;
 using ModularPipelines.Modules;
@@ -42,6 +42,7 @@ public class ModuleNotRegisteredExceptionTests : TestBase
         }
     }
 
+    [Test]
     public async Task Module_Getting_Non_Registered_Module_With_Optional_Dep_Throws_ModuleFailedException()
     {
         // With Optional dependency, validation passes but GetModule fails at runtime
@@ -53,6 +54,7 @@ public class ModuleNotRegisteredExceptionTests : TestBase
         );
     }
 
+    [Test]
     public async Task Module_With_Required_Dependency_Auto_Registers_Missing_Module()
     {
         // With Required dependency (default), missing modules are auto-registered
@@ -65,6 +67,7 @@ public class ModuleNotRegisteredExceptionTests : TestBase
         await Assert.That(pipelineSummary.Modules.Count()).IsEqualTo(2);
     }
 
+    [Test]
     public async Task Module_Getting_Registered_Module_Does_Not_Throw_Exception()
     {
         await Assert.That(() =>

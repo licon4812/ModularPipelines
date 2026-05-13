@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.Engine;
@@ -57,6 +57,7 @@ public class SkipDependabotAttributeTests : TestBase
         protected override bool Result => true;
     }
 
+    [Test]
     public async Task Will_Not_Skip_If_Not_Dependabot()
     {
         var environmentVariables = new Mock<IGitHubEnvironmentVariables>();
@@ -73,6 +74,7 @@ public class SkipDependabotAttributeTests : TestBase
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task Will_Skip_If_Dependabot()
     {
         var environmentVariables = new Mock<IGitHubEnvironmentVariables>();
@@ -92,6 +94,7 @@ public class SkipDependabotAttributeTests : TestBase
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(Status.Skipped);
     }
 
+    [Test]
     public async Task Will_Run_When_Combination_Of_Mandatory_And_Runnable_Run_Category()
     {
         var environmentVariables = new Mock<IGitHubEnvironmentVariables>();
@@ -108,6 +111,7 @@ public class SkipDependabotAttributeTests : TestBase
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task Will__Not_Run_When_Combination_Of_Mandatory_And_Non_Runnable_Run_Category()
     {
         var environmentVariables = new Mock<IGitHubEnvironmentVariables>();
@@ -124,6 +128,7 @@ public class SkipDependabotAttributeTests : TestBase
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(Status.Skipped);
     }
 
+    [Test]
     public async Task Will_Run_When_Combination_Of_Mandatory_And_Runnable_Run_Category2()
     {
         var environmentVariables = new Mock<IGitHubEnvironmentVariables>();

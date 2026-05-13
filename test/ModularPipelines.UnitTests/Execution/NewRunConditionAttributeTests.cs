@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Attributes;
 using ModularPipelines.Conditions;
 using ModularPipelines.Context;
@@ -147,6 +147,7 @@ public class NewRunConditionAttributeTests : TestBase
 
     #region Tests
 
+    [Test]
     public async Task NoConditions_ShouldRun()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -160,6 +161,7 @@ public class NewRunConditionAttributeTests : TestBase
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task RunIfAll_SingleTrueCondition_ShouldRun()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -173,6 +175,7 @@ public class NewRunConditionAttributeTests : TestBase
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task RunIfAll_SingleFalseCondition_ShouldSkip()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -186,6 +189,7 @@ public class NewRunConditionAttributeTests : TestBase
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(Status.Skipped);
     }
 
+    [Test]
     public async Task RunIfAll_MixedConditions_ShouldSkip()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -199,6 +203,7 @@ public class NewRunConditionAttributeTests : TestBase
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(Status.Skipped);
     }
 
+    [Test]
     public async Task RunIfAny_SingleTrueCondition_ShouldRun()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -212,6 +217,7 @@ public class NewRunConditionAttributeTests : TestBase
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task RunIfAny_SingleFalseCondition_ShouldSkip()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -225,6 +231,7 @@ public class NewRunConditionAttributeTests : TestBase
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(Status.Skipped);
     }
 
+    [Test]
     public async Task RunIfAny_MixedConditions_ShouldRun()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -238,6 +245,7 @@ public class NewRunConditionAttributeTests : TestBase
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task SkipIf_TrueCondition_ShouldSkip()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -251,6 +259,7 @@ public class NewRunConditionAttributeTests : TestBase
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(Status.Skipped);
     }
 
+    [Test]
     public async Task SkipIf_FalseCondition_ShouldRun()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -264,6 +273,7 @@ public class NewRunConditionAttributeTests : TestBase
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task SkipIf_EvaluatedBeforeRunIfAll_ShouldSkip()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -277,6 +287,7 @@ public class NewRunConditionAttributeTests : TestBase
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(Status.Skipped);
     }
 
+    [Test]
     public async Task MultipleRunIfAll_AllTrue_ShouldRun()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -290,6 +301,7 @@ public class NewRunConditionAttributeTests : TestBase
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task MultipleRunIfAll_OneFails_ShouldSkip()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -303,6 +315,7 @@ public class NewRunConditionAttributeTests : TestBase
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(Status.Skipped);
     }
 
+    [Test]
     public async Task ConditionGroup_TrueGroup_ShouldRun()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -316,6 +329,7 @@ public class NewRunConditionAttributeTests : TestBase
         await Assert.That(moduleResult.ModuleStatus).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task ConditionGroup_FalseGroup_ShouldSkip()
     {
         var host = await TestPipelineHostBuilder.Create()

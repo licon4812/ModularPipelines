@@ -1,9 +1,10 @@
-﻿using ModularPipelines.Models;
+using ModularPipelines.Models;
 
 namespace ModularPipelines.UnitTests.Models;
 
 public class CommandLineTests
 {
+    [Test]
     public async Task CommandLine_StoresToolAndArguments()
     {
         var commandLine = new CommandLine("git", ["add", "--all"]);
@@ -15,6 +16,7 @@ public class CommandLineTests
         }
     }
 
+    [Test]
     public async Task CommandLine_ToString_FormatsCorrectly()
     {
         var commandLine = new CommandLine("git", ["commit", "-m", "test message"]);
@@ -22,6 +24,7 @@ public class CommandLineTests
         await Assert.That(commandLine.ToString()).IsEqualTo("git commit -m test message");
     }
 
+    [Test]
     public async Task CommandLine_EmptyArguments_ToStringShowsToolOnly()
     {
         var commandLine = new CommandLine("git", []);
@@ -29,6 +32,7 @@ public class CommandLineTests
         await Assert.That(commandLine.ToString()).IsEqualTo("git");
     }
 
+    [Test]
     public async Task CommandLine_ArgumentsAreImmutable()
     {
         var args = new List<string> { "add" };

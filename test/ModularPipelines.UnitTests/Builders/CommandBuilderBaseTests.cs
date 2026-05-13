@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Attributes;
+using ModularPipelines.Attributes;
 using ModularPipelines.Builders;
 using ModularPipelines.Context;
 using ModularPipelines.Models;
@@ -55,6 +55,7 @@ public class CommandBuilderBaseTests : TestBase
 
     #region Execution Options Tests
 
+    [Test]
     public async Task WithWorkingDirectory_SetsWorkingDirectory()
     {
         var mockCommand = new Mock<ICommand>();
@@ -66,6 +67,7 @@ public class CommandBuilderBaseTests : TestBase
         await Assert.That(execOptions.WorkingDirectory).IsEqualTo("/test/directory");
     }
 
+    [Test]
     public async Task WithTimeout_SetsTimeout()
     {
         var mockCommand = new Mock<ICommand>();
@@ -78,6 +80,7 @@ public class CommandBuilderBaseTests : TestBase
         await Assert.That(execOptions.ExecutionTimeout).IsEqualTo(timeout);
     }
 
+    [Test]
     public async Task WithEnvironmentVariable_AddsVariable()
     {
         var mockCommand = new Mock<ICommand>();
@@ -90,6 +93,7 @@ public class CommandBuilderBaseTests : TestBase
         await Assert.That(execOptions.EnvironmentVariables!["MY_VAR"]).IsEqualTo("my_value");
     }
 
+    [Test]
     public async Task WithEnvironmentVariable_AddsMultipleVariables()
     {
         var mockCommand = new Mock<ICommand>();
@@ -105,6 +109,7 @@ public class CommandBuilderBaseTests : TestBase
         await Assert.That(execOptions.EnvironmentVariables!["VAR2"]).IsEqualTo("value2");
     }
 
+    [Test]
     public async Task WithEnvironmentVariables_AddsDictionary()
     {
         var mockCommand = new Mock<ICommand>();
@@ -123,6 +128,7 @@ public class CommandBuilderBaseTests : TestBase
         await Assert.That(execOptions.EnvironmentVariables!["VAR2"]).IsEqualTo("value2");
     }
 
+    [Test]
     public async Task WithSudo_EnablesSudo()
     {
         var mockCommand = new Mock<ICommand>();
@@ -134,6 +140,7 @@ public class CommandBuilderBaseTests : TestBase
         await Assert.That(execOptions.Sudo).IsTrue();
     }
 
+    [Test]
     public async Task WithSudo_DisablesSudo_WhenFalse()
     {
         var mockCommand = new Mock<ICommand>();
@@ -145,6 +152,7 @@ public class CommandBuilderBaseTests : TestBase
         await Assert.That(execOptions.Sudo).IsFalse();
     }
 
+    [Test]
     public async Task WithThrowOnError_EnablesThrowOnError()
     {
         var mockCommand = new Mock<ICommand>();
@@ -157,6 +165,7 @@ public class CommandBuilderBaseTests : TestBase
         await Assert.That(execOptions.ThrowOnNonZeroExitCode).IsTrue();
     }
 
+    [Test]
     public async Task WithThrowOnError_DisablesThrowOnError_WhenFalse()
     {
         var mockCommand = new Mock<ICommand>();
@@ -168,6 +177,7 @@ public class CommandBuilderBaseTests : TestBase
         await Assert.That(execOptions.ThrowOnNonZeroExitCode).IsFalse();
     }
 
+    [Test]
     public async Task WithGracefulShutdownTimeout_SetsTimeout()
     {
         var mockCommand = new Mock<ICommand>();
@@ -180,6 +190,7 @@ public class CommandBuilderBaseTests : TestBase
         await Assert.That(execOptions.GracefulShutdownTimeout).IsEqualTo(timeout);
     }
 
+    [Test]
     public async Task WithLogging_SetsLoggingOptions()
     {
         var mockCommand = new Mock<ICommand>();
@@ -198,6 +209,7 @@ public class CommandBuilderBaseTests : TestBase
         await Assert.That(execOptions.LogSettings.ShowExitCode).IsTrue();
     }
 
+    [Test]
     public async Task WithLogging_ConfiguresUsingAction()
     {
         var mockCommand = new Mock<ICommand>();
@@ -220,6 +232,7 @@ public class CommandBuilderBaseTests : TestBase
 
     #region Tool Options Tests
 
+    [Test]
     public async Task ToolSpecificOption_SetsToolOptions()
     {
         var mockCommand = new Mock<ICommand>();
@@ -231,6 +244,7 @@ public class CommandBuilderBaseTests : TestBase
         await Assert.That(toolOptions.Configuration).IsEqualTo("Release");
     }
 
+    [Test]
     public async Task InitialOptions_UsesProvidedOptions()
     {
         var mockCommand = new Mock<ICommand>();
@@ -241,6 +255,7 @@ public class CommandBuilderBaseTests : TestBase
         await Assert.That(toolOptions.Configuration).IsEqualTo("Debug");
     }
 
+    [Test]
     public async Task InitialOptions_CanBeModified()
     {
         var mockCommand = new Mock<ICommand>();
@@ -258,6 +273,7 @@ public class CommandBuilderBaseTests : TestBase
 
     #region Chaining Tests
 
+    [Test]
     public async Task FluentChaining_SetsAllOptions()
     {
         var mockCommand = new Mock<ICommand>();
@@ -281,6 +297,7 @@ public class CommandBuilderBaseTests : TestBase
         await Assert.That(execOptions.EnvironmentVariables!["CI"]).IsEqualTo("true");
     }
 
+    [Test]
     public async Task FluentChaining_ReturnsSameBuilderInstance()
     {
         var mockCommand = new Mock<ICommand>();
@@ -299,6 +316,7 @@ public class CommandBuilderBaseTests : TestBase
 
     #region ExecuteAsync Tests
 
+    [Test]
     public async Task ExecuteAsync_CallsCommandExecuteWithOptions()
     {
         var mockCommand = new Mock<ICommand>();
@@ -332,6 +350,7 @@ public class CommandBuilderBaseTests : TestBase
             It.IsAny<CancellationToken>()), Times.Once);
     }
 
+    [Test]
     public async Task ExecuteAsync_PassesCancellationToken()
     {
         var mockCommand = new Mock<ICommand>();
@@ -364,6 +383,7 @@ public class CommandBuilderBaseTests : TestBase
         await Assert.That(capturedToken).IsEqualTo(token);
     }
 
+    [Test]
     public async Task ExecuteAsync_PassesExecutionOptions()
     {
         var mockCommand = new Mock<ICommand>();
@@ -403,6 +423,7 @@ public class CommandBuilderBaseTests : TestBase
 
     #region ToOptions Tests
 
+    [Test]
     public async Task ToOptions_ReturnsBothOptionsTuple()
     {
         var mockCommand = new Mock<ICommand>();
@@ -419,6 +440,7 @@ public class CommandBuilderBaseTests : TestBase
         await Assert.That(execOptions.WorkingDirectory).IsEqualTo("/project");
     }
 
+    [Test]
     public async Task ToOptions_CanBeCalledMultipleTimes()
     {
         var mockCommand = new Mock<ICommand>();
@@ -439,6 +461,7 @@ public class CommandBuilderBaseTests : TestBase
 
     #region Non-Generic Interface Tests
 
+    [Test]
     public async Task NonGenericInterface_CanBeUsedForChaining()
     {
         var mockCommand = new Mock<ICommand>();

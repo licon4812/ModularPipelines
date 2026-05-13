@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Context;
+using ModularPipelines.Context;
 using ModularPipelines.Git.Extensions;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
@@ -28,6 +28,7 @@ public class BashTests : TestBase
         }
     }
 
+    [Test]
     public async Task Has_Not_Errored()
     {
         var moduleResult = await await RunModule<BashCommandModule>();
@@ -35,6 +36,7 @@ public class BashTests : TestBase
         await ModuleResultAssertions.AssertSuccessWithValue(moduleResult);
     }
 
+    [Test]
     public async Task Standard_Output_Equals_Foo_Bar()
     {
         var moduleResult = await await RunModule<BashCommandModule>();
@@ -42,6 +44,7 @@ public class BashTests : TestBase
         await ModuleResultAssertions.AssertCommandOutput(moduleResult, TestConstants.TestString);
     }
 
+    [Test]
     [LinuxOnlyTest]
     public async Task Standard_Output_From_Script_Equals_Foo_Bar()
     {

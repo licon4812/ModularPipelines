@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using ModularPipelines.Engine.State;
 using ModularPipelines.Models;
 using ModularPipelines.TestHelpers;
@@ -12,6 +12,7 @@ public class ModuleStateTransitionsTests : TestBase
 {
     #region Valid Transition Tests
 
+    [Test]
     public async Task IsValidTransition_PendingToQueued_ReturnsTrue()
     {
         var from = new ModuleExecutionPhase.Pending
@@ -30,6 +31,7 @@ public class ModuleStateTransitionsTests : TestBase
         await Assert.That(result).IsTrue();
     }
 
+    [Test]
     public async Task IsValidTransition_QueuedToRunning_ReturnsTrue()
     {
         var from = new ModuleExecutionPhase.Queued
@@ -50,6 +52,7 @@ public class ModuleStateTransitionsTests : TestBase
         await Assert.That(result).IsTrue();
     }
 
+    [Test]
     public async Task IsValidTransition_QueuedToPending_ReturnsTrue()
     {
         // Constraint failure allows reverting Queued to Pending
@@ -69,6 +72,7 @@ public class ModuleStateTransitionsTests : TestBase
         await Assert.That(result).IsTrue();
     }
 
+    [Test]
     public async Task IsValidTransition_RunningToCompleted_ReturnsTrue()
     {
         var from = new ModuleExecutionPhase.Running
@@ -90,6 +94,7 @@ public class ModuleStateTransitionsTests : TestBase
         await Assert.That(result).IsTrue();
     }
 
+    [Test]
     public async Task IsValidTransition_RunningToFailed_ReturnsTrue()
     {
         var from = new ModuleExecutionPhase.Running
@@ -116,6 +121,7 @@ public class ModuleStateTransitionsTests : TestBase
 
     #region Invalid Transition Tests
 
+    [Test]
     public async Task IsValidTransition_CompletedToAny_ReturnsFalse()
     {
         var from = new ModuleExecutionPhase.Completed
@@ -137,6 +143,7 @@ public class ModuleStateTransitionsTests : TestBase
         await Assert.That(result).IsFalse();
     }
 
+    [Test]
     public async Task IsValidTransition_PendingToRunning_ReturnsFalse()
     {
         // Cannot skip Queued phase
@@ -161,6 +168,7 @@ public class ModuleStateTransitionsTests : TestBase
 
     #region Pure Transition Function Tests
 
+    [Test]
     public async Task RemoveDependency_CreatesPendingWithDependencyRemoved()
     {
         var pending = new ModuleExecutionPhase.Pending
@@ -176,6 +184,7 @@ public class ModuleStateTransitionsTests : TestBase
         await Assert.That(result.UnresolvedDependencies.Contains(typeof(string))).IsFalse();
     }
 
+    [Test]
     public async Task ToQueued_CreateQueuedFromPending()
     {
         var pending = new ModuleExecutionPhase.Pending
@@ -192,6 +201,7 @@ public class ModuleStateTransitionsTests : TestBase
         await Assert.That(result.DependentModules.Count).IsEqualTo(1);
     }
 
+    [Test]
     public async Task ToQueued_WithUnresolvedDependencies_ThrowsException()
     {
         var pending = new ModuleExecutionPhase.Pending
@@ -204,6 +214,7 @@ public class ModuleStateTransitionsTests : TestBase
             .ThrowsExactly<InvalidOperationException>();
     }
 
+    [Test]
     public async Task ToRunning_CreatesRunningFromQueued()
     {
         var queuedAt = DateTimeOffset.UtcNow.AddSeconds(-1);
@@ -224,6 +235,7 @@ public class ModuleStateTransitionsTests : TestBase
         await Assert.That(result.DependentModules.Count).IsEqualTo(1);
     }
 
+    [Test]
     public async Task ToPending_RevertQueuedToPending()
     {
         var queued = new ModuleExecutionPhase.Queued
@@ -239,6 +251,7 @@ public class ModuleStateTransitionsTests : TestBase
         await Assert.That(result.DependentModules.Count).IsEqualTo(1);
     }
 
+    [Test]
     public async Task ToCompleted_CreatesCompletedFromRunning()
     {
         var startedAt = DateTimeOffset.UtcNow.AddSeconds(-5);
@@ -260,6 +273,7 @@ public class ModuleStateTransitionsTests : TestBase
         await Assert.That(result.Duration).IsEqualTo(completedAt - startedAt);
     }
 
+    [Test]
     public async Task ToFailed_CreatesFailedFromRunning()
     {
         var startedAt = DateTimeOffset.UtcNow.AddSeconds(-3);
@@ -286,6 +300,7 @@ public class ModuleStateTransitionsTests : TestBase
 
     #region Helper Methods Tests
 
+    [Test]
     public async Task IsTerminal_ReturnsTrueForTerminalStates()
     {
         var completed = new ModuleExecutionPhase.Completed
@@ -308,6 +323,7 @@ public class ModuleStateTransitionsTests : TestBase
         await Assert.That(ModuleStateTransitions.IsTerminal(failed)).IsTrue();
     }
 
+    [Test]
     public async Task IsTerminal_ReturnsFalseForNonTerminalStates()
     {
         var pending = new ModuleExecutionPhase.Pending
@@ -327,6 +343,7 @@ public class ModuleStateTransitionsTests : TestBase
         await Assert.That(ModuleStateTransitions.IsTerminal(running)).IsFalse();
     }
 
+    [Test]
     public async Task GetDependentModules_ReturnsCorrectListForAllPhases()
     {
         var dependents = ImmutableList.Create(typeof(string), typeof(int));

@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Context;
+using ModularPipelines.Context;
 using ModularPipelines.Enums;
 using ModularPipelines.Modules;
 using ModularPipelines.Options;
@@ -25,6 +25,7 @@ public class ConcurrencyOptionsTests : TestBase
         }
     }
 
+    [Test]
     public async Task ConcurrencyOptions_HasCorrectDefaultValues()
     {
         var options = new ConcurrencyOptions();
@@ -40,6 +41,7 @@ public class ConcurrencyOptionsTests : TestBase
         await Assert.That(options.MaxIoIntensiveModules).IsNull();
     }
 
+    [Test]
     public async Task Pipeline_RespectsMaxParallelismSetting()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -54,6 +56,7 @@ public class ConcurrencyOptionsTests : TestBase
         await Assert.That(result.Status).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task Pipeline_RespectsMaxCpuIntensiveModulesSetting()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -67,6 +70,7 @@ public class ConcurrencyOptionsTests : TestBase
         await Assert.That(result.Status).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task Pipeline_RespectsMaxIoIntensiveModulesSetting()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -80,6 +84,7 @@ public class ConcurrencyOptionsTests : TestBase
         await Assert.That(result.Status).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task PipelineOptions_HasConcurrencyProperty()
     {
         var options = new PipelineOptions();

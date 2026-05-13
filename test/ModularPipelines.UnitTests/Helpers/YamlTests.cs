@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Context;
+using ModularPipelines.Context;
 using ModularPipelines.TestHelpers;
 using YamlDotNet.Serialization.NamingConventions;
 using static ModularPipelines.UnitTests.Helpers.SerializationTestModels;
@@ -7,6 +7,7 @@ namespace ModularPipelines.UnitTests.Helpers;
 
 public class YamlTests : TestBase
 {
+    [Test]
     public async Task Can_Serialize_With_Null()
     {
         var yaml = await GetService<IYaml>();
@@ -18,6 +19,7 @@ public class YamlTests : TestBase
                                        """);
     }
 
+    [Test]
     public async Task Can_Serialize_With_Array()
     {
         var yaml = await GetService<IYaml>();
@@ -33,6 +35,7 @@ public class YamlTests : TestBase
                                               """);
     }
 
+    [Test]
     public async Task Can_Serialize_With_Options()
     {
         var yaml = await GetService<IYaml>();
@@ -45,6 +48,7 @@ public class YamlTests : TestBase
                                        """);
     }
 
+    [Test]
     public async Task Can_Deserialize()
     {
         var yaml = await GetService<IYaml>();
@@ -56,6 +60,7 @@ public class YamlTests : TestBase
         await Assert.That(result).IsEqualTo(SerializationTestModel.CreateDefault());
     }
 
+    [Test]
     public async Task Can_Deserialize_With_Options()
     {
         var yaml = await GetService<IYaml>();

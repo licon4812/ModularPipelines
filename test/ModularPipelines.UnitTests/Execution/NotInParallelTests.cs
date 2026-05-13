@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Attributes;
+using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.Modules;
 using ModularPipelines.TestHelpers;
@@ -51,6 +51,7 @@ public class NotInParallelTests : TestBase
         protected override IEnumerable<string> ConflictingModuleNames => ["NotParallelModuleWithParallelDependency"];
     }
 
+    [Test]
     public async Task NotInParallel()
     {
         Tracker.Reset();
@@ -63,6 +64,7 @@ public class NotInParallelTests : TestBase
         await Assert.That(Tracker.Violations).IsEmpty();
     }
 
+    [Test]
     public async Task NotInParallel_With_ParallelDependency()
     {
         Tracker.Reset();
@@ -75,6 +77,7 @@ public class NotInParallelTests : TestBase
         await Assert.That(Tracker.Violations).IsEmpty();
     }
 
+    [Test]
     public async Task NotInParallel_With_NonParallelDependency()
     {
         Tracker.Reset();

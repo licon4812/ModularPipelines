@@ -1,10 +1,11 @@
-﻿using ModularPipelines.Engine;
+using ModularPipelines.Engine;
 using ModularPipelines.Exceptions;
 
 namespace ModularPipelines.UnitTests.Plugins;
 
 public class PluginVersionValidatorTests
 {
+    [Test]
     public async Task Validate_WithoutAttribute_DoesNotThrow()
     {
         // Use an assembly without ModularPipelinesPluginAttribute
@@ -14,6 +15,7 @@ public class PluginVersionValidatorTests
             .ThrowsNothing();
     }
 
+    [Test]
     public async Task IsCompatible_WithoutAttribute_ReturnsTrue()
     {
         var assembly = typeof(object).Assembly;
@@ -23,6 +25,7 @@ public class PluginVersionValidatorTests
         await Assert.That(result).IsTrue();
     }
 
+    [Test]
     public async Task IsCompatible_WithNullVersion_ReturnsTrueForNoAttribute()
     {
         var assembly = typeof(object).Assembly;

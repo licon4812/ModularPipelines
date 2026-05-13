@@ -1,4 +1,4 @@
-﻿using Disposer = ModularPipelines.Helpers.Disposer;
+using Disposer = ModularPipelines.Helpers.Disposer;
 
 namespace ModularPipelines.UnitTests.Engine;
 
@@ -25,6 +25,7 @@ public class DisposerTests
         }
     }
 
+    [Test]
     public async Task Disposer_Calls_Async()
     {
         var myClass = new MyClass();
@@ -34,6 +35,7 @@ public class DisposerTests
         await Assert.That(myClass.DisposedAsync).IsTrue();
     }
 
+    [Test]
     public async Task Disposer_Calls_Sync()
     {
         var myClass = new MyClass2();

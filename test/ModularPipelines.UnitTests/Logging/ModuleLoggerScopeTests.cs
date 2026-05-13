@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using ModularPipelines.Logging;
 
 namespace ModularPipelines.UnitTests.Logging;
@@ -57,6 +57,7 @@ public class ModuleLoggerScopeTests
         ModuleLogger.CurrentModuleType.Value = null;
     }
 
+    [Test]
     public async Task ModuleLoggerScope_SetsContext_WhenCreated()
     {
         var mockLogger = new MockModuleLogger("TestLogger");
@@ -69,6 +70,7 @@ public class ModuleLoggerScopeTests
         }
     }
 
+    [Test]
     public async Task ModuleLoggerScope_RestoresNullContext_AfterDispose()
     {
         // Initial state: null
@@ -90,6 +92,7 @@ public class ModuleLoggerScopeTests
         await Assert.That(ModuleLogger.CurrentModuleType.Value).IsNull();
     }
 
+    [Test]
     public async Task ModuleLoggerScope_RestoresPreviousContext_AfterDispose()
     {
         var previousLogger = new MockModuleLogger("PreviousLogger");
@@ -114,6 +117,7 @@ public class ModuleLoggerScopeTests
         await Assert.That(ModuleLogger.CurrentModuleType.Value).IsEqualTo(previousType);
     }
 
+    [Test]
     public async Task ModuleLoggerScope_NestedScopes_RestoreCorrectly()
     {
         var loggerA = new MockModuleLogger("LoggerA");
@@ -163,6 +167,7 @@ public class ModuleLoggerScopeTests
         await Assert.That(ModuleLogger.CurrentModuleType.Value).IsNull();
     }
 
+    [Test]
     public async Task ModuleLoggerScope_RestoresContext_EvenAfterException()
     {
         var previousLogger = new MockModuleLogger("PreviousLogger");
@@ -197,6 +202,7 @@ public class ModuleLoggerScopeTests
         await Assert.That(ModuleLogger.CurrentModuleType.Value).IsEqualTo(previousType);
     }
 
+    [Test]
     public async Task ModuleLoggerScope_DoubleDispose_IsIdempotent()
     {
         var previousLogger = new MockModuleLogger("PreviousLogger");
@@ -232,6 +238,7 @@ public class ModuleLoggerScopeTests
         await Assert.That(ModuleLogger.CurrentModuleType.Value).IsEqualTo(anotherType);
     }
 
+    [Test]
     public async Task ModuleLoggerScope_AsyncExecution_MaintainsContext()
     {
         var mockLogger = new MockModuleLogger("TestLogger");

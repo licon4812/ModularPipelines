@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Configuration;
+using ModularPipelines.Configuration;
 using ModularPipelines.Context;
 using ModularPipelines.Models;
 using Moq;
@@ -10,6 +10,7 @@ public class ModuleConfigurationTests
 {
     #region Default Tests
 
+    [Test]
     public async Task Default_SkipCondition_IsNull()
     {
         var config = ModuleConfiguration.Default;
@@ -17,6 +18,7 @@ public class ModuleConfigurationTests
         await Assert.That(config.SkipCondition).IsNull();
     }
 
+    [Test]
     public async Task Default_Timeout_IsNull()
     {
         var config = ModuleConfiguration.Default;
@@ -24,6 +26,7 @@ public class ModuleConfigurationTests
         await Assert.That(config.Timeout).IsNull();
     }
 
+    [Test]
     public async Task Default_RetryPolicyFactory_IsNull()
     {
         var config = ModuleConfiguration.Default;
@@ -31,6 +34,7 @@ public class ModuleConfigurationTests
         await Assert.That(config.RetryPolicyFactory).IsNull();
     }
 
+    [Test]
     public async Task Default_IgnoreFailuresCondition_IsNull()
     {
         var config = ModuleConfiguration.Default;
@@ -38,6 +42,7 @@ public class ModuleConfigurationTests
         await Assert.That(config.IgnoreFailuresCondition).IsNull();
     }
 
+    [Test]
     public async Task Default_AlwaysRun_IsFalse()
     {
         var config = ModuleConfiguration.Default;
@@ -45,6 +50,7 @@ public class ModuleConfigurationTests
         await Assert.That(config.AlwaysRun).IsFalse();
     }
 
+    [Test]
     public async Task Default_OnBeforeExecute_IsNull()
     {
         var config = ModuleConfiguration.Default;
@@ -52,6 +58,7 @@ public class ModuleConfigurationTests
         await Assert.That(config.OnBeforeExecute).IsNull();
     }
 
+    [Test]
     public async Task Default_OnAfterExecute_IsNull()
     {
         var config = ModuleConfiguration.Default;
@@ -59,6 +66,7 @@ public class ModuleConfigurationTests
         await Assert.That(config.OnAfterExecute).IsNull();
     }
 
+    [Test]
     public async Task Create_ReturnsBuilder()
     {
         var builder = ModuleConfiguration.Create();
@@ -71,6 +79,7 @@ public class ModuleConfigurationTests
 
     #region WithSkipWhen Tests
 
+    [Test]
     public async Task WithSkipWhen_SyncBool_SetsSkipCondition()
     {
         var config = ModuleConfiguration.Create()
@@ -85,6 +94,7 @@ public class ModuleConfigurationTests
         await Assert.That(decision.ShouldSkip).IsTrue();
     }
 
+    [Test]
     public async Task WithSkipWhen_SyncBoolFalse_ReturnsDoNotSkip()
     {
         var config = ModuleConfiguration.Create()
@@ -97,6 +107,7 @@ public class ModuleConfigurationTests
         await Assert.That(decision.ShouldSkip).IsFalse();
     }
 
+    [Test]
     public async Task WithSkipWhen_AsyncBool_SetsSkipCondition()
     {
         var config = ModuleConfiguration.Create()
@@ -115,6 +126,7 @@ public class ModuleConfigurationTests
         await Assert.That(decision.ShouldSkip).IsTrue();
     }
 
+    [Test]
     public async Task WithSkipWhen_SyncSkipDecision_SetsSkipCondition()
     {
         var expectedDecision = SkipDecision.Skip("Test reason");
@@ -133,6 +145,7 @@ public class ModuleConfigurationTests
         }
     }
 
+    [Test]
     public async Task WithSkipWhen_AsyncSkipDecision_SetsSkipCondition()
     {
         var expectedDecision = SkipDecision.Skip("Async reason");
@@ -155,6 +168,7 @@ public class ModuleConfigurationTests
         }
     }
 
+    [Test]
     public async Task WithSkipWhen_WithContext_SyncBool_SetsSkipCondition()
     {
         var config = ModuleConfiguration.Create()
@@ -167,6 +181,7 @@ public class ModuleConfigurationTests
         await Assert.That(decision.ShouldSkip).IsTrue();
     }
 
+    [Test]
     public async Task WithSkipWhen_WithContext_AsyncBool_SetsSkipCondition()
     {
         var config = ModuleConfiguration.Create()
@@ -183,6 +198,7 @@ public class ModuleConfigurationTests
         await Assert.That(decision.ShouldSkip).IsTrue();
     }
 
+    [Test]
     public async Task WithSkipWhen_WithContext_SyncSkipDecision_SetsSkipCondition()
     {
         var config = ModuleConfiguration.Create()
@@ -199,6 +215,7 @@ public class ModuleConfigurationTests
         }
     }
 
+    [Test]
     public async Task WithSkipWhen_WithContext_AsyncSkipDecision_SetsSkipCondition()
     {
         var config = ModuleConfiguration.Create()
@@ -223,6 +240,7 @@ public class ModuleConfigurationTests
 
     #region WithTimeout Tests
 
+    [Test]
     public async Task WithTimeout_SetsTimeout()
     {
         var timeout = TimeSpan.FromMinutes(5);
@@ -238,6 +256,7 @@ public class ModuleConfigurationTests
 
     #region WithRetryPolicy Tests
 
+    [Test]
     public async Task WithRetryPolicy_Direct_SetsRetryPolicyFactory()
     {
         var policy = Policy.NoOpAsync();
@@ -254,6 +273,7 @@ public class ModuleConfigurationTests
         await Assert.That(result).IsEqualTo(policy);
     }
 
+    [Test]
     public async Task WithRetryPolicy_Factory_SetsRetryPolicyFactory()
     {
         var policy = Policy.NoOpAsync();
@@ -270,6 +290,7 @@ public class ModuleConfigurationTests
         await Assert.That(result).IsEqualTo(policy);
     }
 
+    [Test]
     public async Task WithRetryCount_SetsRetryPolicyFactory()
     {
         var config = ModuleConfiguration.Create()
@@ -283,6 +304,7 @@ public class ModuleConfigurationTests
 
     #region WithIgnoreFailures Tests
 
+    [Test]
     public async Task WithIgnoreFailures_Always_SetsIgnoreFailuresCondition()
     {
         var config = ModuleConfiguration.Create()
@@ -297,6 +319,7 @@ public class ModuleConfigurationTests
         await Assert.That(result).IsTrue();
     }
 
+    [Test]
     public async Task WithIgnoreFailuresWhen_SyncCondition_SetsIgnoreFailuresCondition()
     {
         var config = ModuleConfiguration.Create()
@@ -314,6 +337,7 @@ public class ModuleConfigurationTests
         await Assert.That(shouldNotIgnore).IsFalse();
     }
 
+    [Test]
     public async Task WithIgnoreFailuresWhen_AsyncCondition_SetsIgnoreFailuresCondition()
     {
         var config = ModuleConfiguration.Create()
@@ -337,6 +361,7 @@ public class ModuleConfigurationTests
 
     #region WithAlwaysRun Tests
 
+    [Test]
     public async Task WithAlwaysRun_SetsAlwaysRun()
     {
         var config = ModuleConfiguration.Create()
@@ -350,6 +375,7 @@ public class ModuleConfigurationTests
 
     #region WithBeforeExecute Tests
 
+    [Test]
     public async Task WithBeforeExecute_SetsOnBeforeExecute()
     {
         var executed = false;
@@ -374,6 +400,7 @@ public class ModuleConfigurationTests
 
     #region WithAfterExecute Tests
 
+    [Test]
     public async Task WithAfterExecute_SetsOnAfterExecute()
     {
         var executed = false;
@@ -398,6 +425,7 @@ public class ModuleConfigurationTests
 
     #region Fluent Chaining Tests
 
+    [Test]
     public async Task Builder_FluentChaining_AllMethodsChain()
     {
         var policy = Policy.NoOpAsync();

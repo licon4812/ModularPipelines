@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Attributes;
+using ModularPipelines.Attributes;
 using ModularPipelines.Helpers.Internal;
 
 namespace ModularPipelines.UnitTests.Attributes;
@@ -14,6 +14,7 @@ public class EnumValueAttributeTests
         return _argumentBuilder.BuildArguments(model, optionsObject);
     }
 
+    [Test]
     [Arguments(Number.One, "1")]
     [Arguments(Number.Two, "2")]
     [Arguments(Number.Three, "3")]

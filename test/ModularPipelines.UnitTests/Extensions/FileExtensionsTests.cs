@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Engine;
+using ModularPipelines.Engine;
 using ModularPipelines.Extensions;
 using ModularPipelines.FileSystem;
 using File = ModularPipelines.FileSystem.File;
@@ -7,6 +7,7 @@ namespace ModularPipelines.UnitTests.Extensions;
 
 public class FileExtensionsTests
 {
+    [Test]
     public async Task EnumerablePaths()
     {
         var files = new List<File>
@@ -25,6 +26,7 @@ public class FileExtensionsTests
         });
     }
 
+    [Test]
     public async Task ListPaths()
     {
         var files = new List<File>
@@ -42,6 +44,7 @@ public class FileExtensionsTests
         ]);
     }
 
+    [Test]
     public async Task NotFoundMessage()
     {
         var file = new Folder(Environment.CurrentDirectory).FindFile(_ => false);
@@ -51,6 +54,7 @@ public class FileExtensionsTests
         await Assert.That(exception.Message).IsEqualTo("File reference is null - My message (Parameter 'file')");
     }
 
+    [Test]
     public async Task NotFoundWithoutMessage()
     {
         var file = new Folder(Environment.CurrentDirectory).FindFile(_ => false);

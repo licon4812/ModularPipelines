@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Enums;
 using ModularPipelines.Extensions;
@@ -24,6 +24,7 @@ public class SecretObfuscatorTests
             .Callback<string>(value => _stringBuilder.AppendLine(value));
     }
 
+    [Test]
     public async Task GitHubActions_MasksSecrets()
     {
         _buildSystemMock.Setup(x => x.GetCurrentBuildSystem()).Returns(BuildSystem.GitHubActions);
@@ -35,6 +36,7 @@ public class SecretObfuscatorTests
         await Assert.That(logOutput).DoesNotContain("::add-mask::This is NOT a secret value!");
     }
 
+    [Test]
     public async Task DoesNotMaskSecrets_WhenNotGitHubActions()
     {
         _buildSystemMock.Setup(x => x.GetCurrentBuildSystem()).Returns(BuildSystem.Unknown);

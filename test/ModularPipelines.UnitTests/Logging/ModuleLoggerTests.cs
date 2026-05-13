@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ModularPipelines.Attributes;
 using ModularPipelines.Context;
@@ -49,6 +49,7 @@ public class ModuleLoggerTests
         }
     }
 
+    [Test]
     public async Task LogToConsole_Does_Not_Write_To_File_Logger()
     {
         // This test verifies that LogToConsole output goes to console buffers,
@@ -72,6 +73,7 @@ public class ModuleLoggerTests
         await Assert.That(await file.ReadAsync()).DoesNotContain(RandomString);
     }
 
+    [Test]
     [Arguments(typeof(Module2))]
     [Arguments(typeof(Module3))]
     public async Task Can_Obfuscate_Secret(Type moduleType)

@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Configuration;
+using ModularPipelines.Configuration;
 using ModularPipelines.Context;
 using ModularPipelines.Exceptions;
 using ModularPipelines.Modules;
@@ -54,6 +54,7 @@ public class ModuleTimeoutTests : TestBase
         }
     }
 
+    [Test]
     public async Task Throws_TaskException_When_Using_CancellationToken()
     {
         var exception = await Assert.ThrowsAsync<ModuleFailedException>(RunModule<Module_UsingCancellationToken>);
@@ -63,6 +64,7 @@ public class ModuleTimeoutTests : TestBase
         await Assert.That(isExpectedType).IsTrue();
     }
 
+    [Test]
     public async Task Throws_Timeout_Exception_When_Not_Using_CancellationToken()
     {
         var exception = await Assert.ThrowsAsync<ModuleFailedException>(RunModule<Module_NotUsingCancellationToken>);
@@ -72,11 +74,13 @@ public class ModuleTimeoutTests : TestBase
         await Assert.That(isExpectedType).IsTrue();
     }
 
+    [Test]
     public async Task No_Timeout_Does_Not_Throw_Exception()
     {
         await Assert.That(RunModule<NoTimeoutModule>).ThrowsNothing();
     }
 
+    [Test]
     public async Task Timeout_Exception_Contains_Configured_Timeout()
     {
         var exception = await Assert.ThrowsAsync<ModuleFailedException>(RunModule<Module_UsingCancellationToken>);
@@ -86,6 +90,7 @@ public class ModuleTimeoutTests : TestBase
         await Assert.That(timeoutException!.ConfiguredTimeout).IsEqualTo(TimeSpan.FromSeconds(1));
     }
 
+    [Test]
     public async Task Timeout_Exception_Contains_Module_Type()
     {
         var exception = await Assert.ThrowsAsync<ModuleFailedException>(RunModule<Module_UsingCancellationToken>);
@@ -95,6 +100,7 @@ public class ModuleTimeoutTests : TestBase
         await Assert.That(timeoutException!.ModuleType).IsEqualTo(typeof(Module_UsingCancellationToken));
     }
 
+    [Test]
     public async Task Timeout_Exception_Contains_Elapsed_Time()
     {
         var exception = await Assert.ThrowsAsync<ModuleFailedException>(RunModule<Module_UsingCancellationToken>);
@@ -106,6 +112,7 @@ public class ModuleTimeoutTests : TestBase
         await Assert.That(timeoutException!.ElapsedTime).IsGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(900));
     }
 
+    [Test]
     public async Task Timeout_Exception_Indicates_Token_Was_Respected_When_Module_Uses_Token()
     {
         var exception = await Assert.ThrowsAsync<ModuleFailedException>(RunModule<Module_UsingCancellationToken>);
@@ -115,6 +122,7 @@ public class ModuleTimeoutTests : TestBase
         await Assert.That(timeoutException!.WasCancellationTokenRespected).IsTrue();
     }
 
+    [Test]
     public async Task Timeout_Exception_Indicates_Token_Was_Not_Respected_When_Module_Ignores_Token()
     {
         var exception = await Assert.ThrowsAsync<ModuleFailedException>(RunModule<Module_NotUsingCancellationToken>);
@@ -124,6 +132,7 @@ public class ModuleTimeoutTests : TestBase
         await Assert.That(timeoutException!.WasCancellationTokenRespected).IsFalse();
     }
 
+    [Test]
     public async Task Timeout_Exception_Message_Includes_Warning_When_Token_Ignored()
     {
         var exception = await Assert.ThrowsAsync<ModuleFailedException>(RunModule<Module_NotUsingCancellationToken>);

@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Context;
+using ModularPipelines.Context;
 using ModularPipelines.DotNet.Extensions;
 using ModularPipelines.DotNet.Options;
 using ModularPipelines.Extensions;
@@ -36,6 +36,7 @@ public class DotNetTests : TestBase
         }
     }
 
+    [Test]
     [Skip("Flaky on CI - dotnet list package on full solution times out")]
     public async Task Has_Not_Errored()
     {
@@ -44,6 +45,7 @@ public class DotNetTests : TestBase
         await ModuleResultAssertions.AssertSuccessWithValue(moduleResult);
     }
 
+    [Test]
     [Skip("Temporarily disabled")]
     public async Task Format_Has_Not_Errored()
     {

@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -72,6 +72,7 @@ public class SecretMaskingTests
 
     #region Case Sensitivity Tests
 
+    [Test]
     public async Task CaseSensitive_DoesNotMaskDifferentCase()
     {
         var stringBuilder = new StringBuilder();
@@ -95,6 +96,7 @@ public class SecretMaskingTests
         await Assert.That(output).Contains("**********");
     }
 
+    [Test]
     public async Task CaseInsensitive_MasksAllCaseVariants()
     {
         var stringBuilder = new StringBuilder();
@@ -122,6 +124,7 @@ public class SecretMaskingTests
 
     #region Minimum Length Tests
 
+    [Test]
     public async Task MinimumLength_ShortSecretsAreNotMasked_WhenConfigured()
     {
         var stringBuilder = new StringBuilder();
@@ -144,6 +147,7 @@ public class SecretMaskingTests
         await Assert.That(output).Contains($"API Key: {shortSecret}");
     }
 
+    [Test]
     public async Task MinimumLength_SecretsAtMinimumAreMasked()
     {
         var stringBuilder = new StringBuilder();
@@ -166,6 +170,7 @@ public class SecretMaskingTests
         await Assert.That(output).DoesNotContain(exactLengthSecret);
     }
 
+    [Test]
     public async Task MinimumLength_DefaultMasksAllSecrets()
     {
         var stringBuilder = new StringBuilder();
@@ -192,6 +197,7 @@ public class SecretMaskingTests
 
     #region Custom Mask Value Tests
 
+    [Test]
     public async Task CustomMaskValue_UsesProvidedMask()
     {
         var stringBuilder = new StringBuilder();
@@ -219,6 +225,7 @@ public class SecretMaskingTests
 
     #region Programmatic Secret Registration Tests
 
+    [Test]
     public async Task DynamicSecretRegistration_MasksDynamicallyAddedSecrets()
     {
         var stringBuilder = new StringBuilder();
@@ -243,6 +250,7 @@ public class SecretMaskingTests
 
     #region Edge Cases Tests
 
+    [Test]
     public async Task MultipleSecrets_AllAreMasked()
     {
         var stringBuilder = new StringBuilder();
@@ -269,6 +277,7 @@ public class SecretMaskingTests
         await Assert.That(output).DoesNotContain(password);
     }
 
+    [Test]
     public async Task OverlappingSecrets_LongerSecretTakesPrecedence()
     {
         // When a shorter secret is a substring of a longer secret,
@@ -298,6 +307,7 @@ public class SecretMaskingTests
         await Assert.That(output).DoesNotContain(longSecret);
     }
 
+    [Test]
     public async Task EmptyAndWhitespaceSecrets_AreIgnored()
     {
         var stringBuilder = new StringBuilder();
@@ -321,6 +331,7 @@ public class SecretMaskingTests
         await Assert.That(output).IsNotEmpty();
     }
 
+    [Test]
     public async Task SpecialCharactersInSecrets_AreMaskedCorrectly()
     {
         var stringBuilder = new StringBuilder();
@@ -342,6 +353,7 @@ public class SecretMaskingTests
         await Assert.That(output).Contains("**********");
     }
 
+    [Test]
     public async Task UnicodeSecrets_AreMaskedCorrectly()
     {
         var stringBuilder = new StringBuilder();

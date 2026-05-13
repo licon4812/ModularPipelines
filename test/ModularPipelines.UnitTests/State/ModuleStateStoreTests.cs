@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using Microsoft.Extensions.Time.Testing;
 using ModularPipelines.Context;
 using ModularPipelines.Engine.State;
@@ -26,6 +26,7 @@ public class ModuleStateStoreTests : TestBase
 
     #region Registration Tests
 
+    [Test]
     public async Task RegisterModule_CreatesInitialPendingState()
     {
         var module = new TestModule();
@@ -52,6 +53,7 @@ public class ModuleStateStoreTests : TestBase
         await Assert.That(pending.DependentModules.Count).IsEqualTo(1);
     }
 
+    [Test]
     public async Task RegisterModule_DuplicateRegistration_ThrowsException()
     {
         var module = new TestModule();
@@ -73,6 +75,7 @@ public class ModuleStateStoreTests : TestBase
 
     #region Get State Tests
 
+    [Test]
     public async Task GetState_ReturnsRegisteredState()
     {
         var module = new TestModule();
@@ -87,6 +90,7 @@ public class ModuleStateStoreTests : TestBase
         await Assert.That(state!.Module).IsEqualTo(module);
     }
 
+    [Test]
     public async Task GetState_UnknownModule_ReturnsNull()
     {
         var state = _store.GetState(typeof(string));
@@ -98,6 +102,7 @@ public class ModuleStateStoreTests : TestBase
 
     #region Transition Tests
 
+    [Test]
     public async Task TransitionToQueued_FromPendingWithNoDependencies_Succeeds()
     {
         _store.RegisterModule(
@@ -111,6 +116,7 @@ public class ModuleStateStoreTests : TestBase
         await Assert.That(result!.Phase).IsTypeOf<ModuleExecutionPhase.Queued>();
     }
 
+    [Test]
     public async Task TransitionToQueued_FromPendingWithDependencies_ReturnsNull()
     {
         _store.RegisterModule(
@@ -123,6 +129,7 @@ public class ModuleStateStoreTests : TestBase
         await Assert.That(result).IsNull();
     }
 
+    [Test]
     public async Task TransitionToRunning_FromQueued_Succeeds()
     {
         _store.RegisterModule(
@@ -139,6 +146,7 @@ public class ModuleStateStoreTests : TestBase
         await Assert.That(result!.Phase).IsTypeOf<ModuleExecutionPhase.Running>();
     }
 
+    [Test]
     public async Task TransitionToCompleted_FromRunning_Succeeds()
     {
         _store.RegisterModule(
@@ -157,6 +165,7 @@ public class ModuleStateStoreTests : TestBase
         await Assert.That(result.IsSuccessful).IsTrue();
     }
 
+    [Test]
     public async Task TransitionToFailed_FromRunning_Succeeds()
     {
         _store.RegisterModule(
@@ -178,6 +187,7 @@ public class ModuleStateStoreTests : TestBase
         await Assert.That(failed.Exception.Message).IsEqualTo("Test failure");
     }
 
+    [Test]
     public async Task TransitionToSkipped_FromPending_Succeeds()
     {
         _store.RegisterModule(
@@ -193,6 +203,7 @@ public class ModuleStateStoreTests : TestBase
         await Assert.That(result!.Phase).IsTypeOf<ModuleExecutionPhase.Skipped>();
     }
 
+    [Test]
     public async Task RevertToPending_FromQueued_Succeeds()
     {
         _store.RegisterModule(
@@ -211,6 +222,7 @@ public class ModuleStateStoreTests : TestBase
 
     #region Dependency Resolution Tests
 
+    [Test]
     public async Task ResolveDependency_RemovesDependencyFromPending()
     {
         _store.RegisterModule(
@@ -226,6 +238,7 @@ public class ModuleStateStoreTests : TestBase
         await Assert.That(pending.UnresolvedDependencies.Contains(typeof(int))).IsTrue();
     }
 
+    [Test]
     public async Task ResolveDependency_AllResolved_BecomesReadyToQueue()
     {
         _store.RegisterModule(
@@ -243,6 +256,7 @@ public class ModuleStateStoreTests : TestBase
 
     #region Query Tests
 
+    [Test]
     public async Task GetReadyModules_ReturnsOnlyReadyPendingModules()
     {
         // Module with no dependencies (ready)
@@ -263,6 +277,7 @@ public class ModuleStateStoreTests : TestBase
         await Assert.That(ready[0].ModuleType).IsEqualTo(typeof(TestModule));
     }
 
+    [Test]
     public async Task GetStateCounts_ReturnsCorrectCounts()
     {
         _store.RegisterModule(
@@ -289,6 +304,7 @@ public class ModuleStateStoreTests : TestBase
 
     #region State Changed Event Tests
 
+    [Test]
     public async Task StateChanged_FiresOnTransition()
     {
         var eventFired = false;
@@ -318,6 +334,7 @@ public class ModuleStateStoreTests : TestBase
 
     #region Status Compatibility Tests
 
+    [Test]
     public async Task Status_ReturnsCorrectEnumForEachPhase()
     {
         _store.RegisterModule(

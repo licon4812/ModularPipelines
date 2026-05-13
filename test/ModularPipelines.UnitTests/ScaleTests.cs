@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Context;
 using ModularPipelines.Extensions;
@@ -163,6 +163,7 @@ public class ScaleTests : TestBase
     /// - All modules complete successfully
     /// - The pipeline status is successful
     /// </remarks>
+    [Test]
     public async Task Pipeline_With100IndependentModules_CompletesSuccessfully()
     {
         // Arrange
@@ -295,6 +296,7 @@ public class ScaleTests : TestBase
     /// - Modules execute in dependency order
     /// - No deadlocks occur with long chains
     /// </remarks>
+    [Test]
     public async Task Pipeline_With50ModuleDeepChain_CompletesInOrder()
     {
         // Arrange
@@ -433,6 +435,7 @@ public class ScaleTests : TestBase
     /// - Dependent modules can execute in parallel after the root completes
     /// - No race conditions with many modules depending on one
     /// </remarks>
+    [Test]
     public async Task Pipeline_With1ModuleAnd50Dependents_CompletesSuccessfully()
     {
         // Arrange
@@ -568,6 +571,7 @@ public class ScaleTests : TestBase
     /// - Independent modules can execute in parallel
     /// - No race conditions with one module depending on many
     /// </remarks>
+    [Test]
     public async Task Pipeline_With50ModulesAndOneFinalModule_CompletesSuccessfully()
     {
         // Arrange

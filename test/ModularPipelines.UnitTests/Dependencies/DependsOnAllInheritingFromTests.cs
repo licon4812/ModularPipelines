@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Time.Testing;
 using ModularPipelines.Attributes;
 using ModularPipelines.Context;
@@ -89,6 +89,7 @@ public class DependsOnAllInheritingFromTests : TestBase
         }
     }
 
+    [Test]
     public async Task No_Exception_Thrown_When_Dependent_Module_Present()
     {
         var timeProvider = new FakeTimeProvider();
@@ -118,6 +119,7 @@ public class DependsOnAllInheritingFromTests : TestBase
         await Assert.That(result4.ModuleStart).IsGreaterThanOrEqualTo(result3.ModuleEnd);
     }
 
+    [Test]
     public async Task DependsOnAllModulesInheritingFrom_Works_With_Open_Generic_Types()
     {
         // Regression test for Issue #1337

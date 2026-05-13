@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Configuration;
+using ModularPipelines.Configuration;
 using ModularPipelines.Context;
 using ModularPipelines.Modules;
 
@@ -23,6 +23,7 @@ public class ModuleConfigureTests
             => Task.FromResult<string?>("test");
     }
 
+    [Test]
     public async Task Module_DefaultConfiguration_ReturnsDefault()
     {
         var module = new TestModule();
@@ -31,6 +32,7 @@ public class ModuleConfigureTests
         await Assert.That(config).IsSameReferenceAs(ModuleConfiguration.Default);
     }
 
+    [Test]
     public async Task Module_OverriddenConfigure_ReturnsCustomConfig()
     {
         var module = new ConfiguredModule();
@@ -40,6 +42,7 @@ public class ModuleConfigureTests
         await Assert.That(config.AlwaysRun).IsTrue();
     }
 
+    [Test]
     public async Task Module_Configuration_IsCached()
     {
         var module = new ConfiguredModule();

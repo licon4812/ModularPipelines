@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Exceptions;
 using ModularPipelines.Plugins;
 
@@ -7,6 +7,7 @@ namespace ModularPipelines.UnitTests.Plugins;
 [TUnit.Core.NotInParallel(nameof(PluginIntegrationTests))]
 public class PluginIntegrationTests
 {
+    [Test]
     public async Task ApplyPluginServices_CallsConfigureServicesOnAllPlugins()
     {
         using var _ = PluginTestHelper.IsolatedRegistry();
@@ -22,6 +23,7 @@ public class PluginIntegrationTests
         await Assert.That(plugin2.ConfigureServicesCalled).IsTrue();
     }
 
+    [Test]
     public async Task ApplyPluginServices_ThrowsPluginInitializationException_WhenPluginFails()
     {
         using var _ = PluginTestHelper.IsolatedRegistry();
@@ -36,6 +38,7 @@ public class PluginIntegrationTests
         await Assert.That(exception.PluginName).IsEqualTo("FailingPlugin");
     }
 
+    [Test]
     public async Task ApplyPluginConfiguration_CallsConfigurePipelineOnAllPlugins()
     {
         using var _ = PluginTestHelper.IsolatedRegistry();
@@ -51,6 +54,7 @@ public class PluginIntegrationTests
         await Assert.That(plugin2.ConfigurePipelineCalled).IsTrue();
     }
 
+    [Test]
     public async Task ApplyPluginConfiguration_ThrowsPluginInitializationException_WhenPluginFails()
     {
         using var _ = PluginTestHelper.IsolatedRegistry();
@@ -65,6 +69,7 @@ public class PluginIntegrationTests
         await Assert.That(exception.PluginName).IsEqualTo("FailingPlugin");
     }
 
+    [Test]
     public async Task ApplyPluginServices_AppliesInPriorityOrder()
     {
         using var _ = PluginTestHelper.IsolatedRegistry();
@@ -85,6 +90,7 @@ public class PluginIntegrationTests
         await Assert.That(callOrder).IsEquivalentTo(new[] { "High", "Default", "Low" });
     }
 
+    [Test]
     public async Task Plugins_CanRegisterServices()
     {
         using var _ = PluginTestHelper.IsolatedRegistry();

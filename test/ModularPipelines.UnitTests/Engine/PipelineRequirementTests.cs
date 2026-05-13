@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Context;
 using ModularPipelines.Engine;
 using ModularPipelines.Exceptions;
@@ -13,6 +13,7 @@ namespace ModularPipelines.UnitTests.Engine;
 
 public class PipelineRequirementTests
 {
+    [Test]
     public async Task When_Requirement_Succeeds_Then_No_Error()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -27,6 +28,7 @@ public class PipelineRequirementTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task When_Requirement_Fails_Then_Error()
     {
         var executePipelineDelegate = () => TestPipelineHostBuilder.Create()
@@ -39,6 +41,7 @@ public class PipelineRequirementTests
             .And.HasMessageEqualTo("Requirements failed:\r\nFailingRequirement");
     }
 
+    [Test]
     public async Task When_Requirement_Fails_With_Reason_Then_Error_With_Reason()
     {
         var executePipelineDelegate = () => TestPipelineHostBuilder.Create()

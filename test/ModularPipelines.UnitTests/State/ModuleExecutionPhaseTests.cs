@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using ModularPipelines.Engine.State;
 using ModularPipelines.Models;
 using ModularPipelines.TestHelpers;
@@ -12,6 +12,7 @@ public class ModuleExecutionPhaseTests : TestBase
 {
     #region Pending Phase Tests
 
+    [Test]
     public async Task Pending_WithNoDependencies_IsReadyToQueue()
     {
         var pending = new ModuleExecutionPhase.Pending
@@ -23,6 +24,7 @@ public class ModuleExecutionPhaseTests : TestBase
         await Assert.That(pending.IsReadyToQueue).IsTrue();
     }
 
+    [Test]
     public async Task Pending_WithDependencies_IsNotReadyToQueue()
     {
         var pending = new ModuleExecutionPhase.Pending
@@ -34,6 +36,7 @@ public class ModuleExecutionPhaseTests : TestBase
         await Assert.That(pending.IsReadyToQueue).IsFalse();
     }
 
+    [Test]
     public async Task Pending_RemovingDependency_CreatesNewInstance()
     {
         var original = new ModuleExecutionPhase.Pending
@@ -55,6 +58,7 @@ public class ModuleExecutionPhaseTests : TestBase
 
     #region Queued Phase Tests
 
+    [Test]
     public async Task Queued_HasCorrectTimestamps()
     {
         var now = DateTimeOffset.UtcNow;
@@ -73,6 +77,7 @@ public class ModuleExecutionPhaseTests : TestBase
 
     #region Running Phase Tests
 
+    [Test]
     public async Task Running_HasStartedAt()
     {
         var now = DateTimeOffset.UtcNow;
@@ -94,6 +99,7 @@ public class ModuleExecutionPhaseTests : TestBase
 
     #region Completed Phase Tests
 
+    [Test]
     public async Task Completed_CalculatesDuration()
     {
         var startTime = DateTimeOffset.UtcNow;
@@ -114,6 +120,7 @@ public class ModuleExecutionPhaseTests : TestBase
 
     #region Failed Phase Tests
 
+    [Test]
     public async Task Failed_CalculatesDuration()
     {
         var startTime = DateTimeOffset.UtcNow;
@@ -137,6 +144,7 @@ public class ModuleExecutionPhaseTests : TestBase
 
     #region Skipped Phase Tests
 
+    [Test]
     public async Task Skipped_HasSkipDecision()
     {
         var skipDecision = SkipDecision.Skip("Test skip reason");
@@ -157,6 +165,7 @@ public class ModuleExecutionPhaseTests : TestBase
 
     #region Cancelled Phase Tests
 
+    [Test]
     public async Task Cancelled_PreservesPreviousPhase()
     {
         var previousPhase = new ModuleExecutionPhase.Running

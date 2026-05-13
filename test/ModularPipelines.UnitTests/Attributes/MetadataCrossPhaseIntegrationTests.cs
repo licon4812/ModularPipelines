@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Attributes.Events;
+using ModularPipelines.Attributes.Events;
 using ModularPipelines.Context;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
@@ -82,6 +82,7 @@ public class MetadataCrossPhaseIntegrationTests : TestBase
         EventLog.Clear();
     }
 
+    [Test]
     public async Task Metadata_SetDuringRegistration_AvailableDuringLifecycleEvents()
     {
         var result = await TestPipelineHostBuilder.Create()

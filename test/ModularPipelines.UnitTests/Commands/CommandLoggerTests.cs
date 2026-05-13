@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ModularPipelines.Context;
@@ -12,6 +12,7 @@ namespace ModularPipelines.UnitTests.Commands;
 
 public class CommandLoggerTests : TestBase
 {
+    [Test]
     [MatrixDataSource]
     public async Task Logs_As_Expected_With_Options(
         [Matrix(true, false)] bool logInput,
@@ -114,6 +115,7 @@ public class CommandLoggerTests : TestBase
         return file;
     }
 
+    [Test]
     public async Task Silent_Verbosity_Logs_Nothing()
     {
         var file = await RunPowershellCommandWithLoggingOptions(
@@ -130,6 +132,7 @@ public class CommandLoggerTests : TestBase
         await Assert.That(logFile).DoesNotContain("Working Directory:");
     }
 
+    [Test]
     public async Task Minimal_Verbosity_Logs_Only_Input()
     {
         var file = await RunPowershellCommandWithLoggingOptions(
@@ -146,6 +149,7 @@ public class CommandLoggerTests : TestBase
         await Assert.That(Regex.IsMatch(logFile, @"\[\d+m?s")).IsFalse();
     }
 
+    [Test]
     public async Task Normal_Verbosity_Logs_Input_And_Output()
     {
         var file = await RunPowershellCommandWithLoggingOptions(
@@ -162,6 +166,7 @@ public class CommandLoggerTests : TestBase
         await Assert.That(Regex.IsMatch(logFile, @"\[\d+m?s")).IsFalse();
     }
 
+    [Test]
     public async Task Detailed_Verbosity_Logs_Input_Output_ExitCode_Duration()
     {
         var file = await RunPowershellCommandWithLoggingOptions(
@@ -178,6 +183,7 @@ public class CommandLoggerTests : TestBase
         await Assert.That(Regex.IsMatch(logFile, @"\[\d+m?s")).IsTrue();
     }
 
+    [Test]
     public async Task Diagnostic_Verbosity_Logs_Everything_Including_WorkingDirectory()
     {
         var file = await RunPowershellCommandWithLoggingOptions(

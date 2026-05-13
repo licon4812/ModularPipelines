@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Context;
+using ModularPipelines.Context;
 using ModularPipelines.Modules;
 using ModularPipelines.TestHelpers;
 
@@ -6,6 +6,7 @@ namespace ModularPipelines.UnitTests.Execution;
 
 public class AsyncDisposableModuleTests
 {
+    [Test]
     public async Task SuccessfullyDisposed()
     {
         var pipelineSummary = await TestPipelineHostBuilder.Create()

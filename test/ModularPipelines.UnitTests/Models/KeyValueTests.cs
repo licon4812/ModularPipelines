@@ -4,6 +4,7 @@ namespace ModularPipelines.UnitTests.Models;
 
 public class KeyValueTests
 {
+    [Test]
     public async Task ImplicitOperator1()
     {
         KeyValue keyValue = ("one", "two");
@@ -15,6 +16,7 @@ public class KeyValueTests
         }
     }
 
+    [Test]
     public async Task ImplicitOperator2()
     {
         KeyValue keyValue = new Tuple<string, string>("one", "two");
@@ -26,6 +28,7 @@ public class KeyValueTests
         }
     }
 
+    [Test]
     public async Task ImplicitOperator3()
     {
         KeyValue keyValue = new KeyValuePair<string, string>("one", "two");

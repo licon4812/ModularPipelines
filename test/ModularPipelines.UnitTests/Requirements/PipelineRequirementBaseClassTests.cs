@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Context;
 using ModularPipelines.Engine;
 using ModularPipelines.Exceptions;
@@ -13,6 +13,7 @@ namespace ModularPipelines.UnitTests.Requirements;
 
 public class PipelineRequirementBaseClassTests
 {
+    [Test]
     public async Task Sync_Requirement_With_Pass_Succeeds()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -27,6 +28,7 @@ public class PipelineRequirementBaseClassTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task Sync_Requirement_With_Fail_Throws()
     {
         var executePipelineDelegate = () => TestPipelineHostBuilder.Create()
@@ -39,6 +41,7 @@ public class PipelineRequirementBaseClassTests
             .And.HasMessageContaining("Sync requirement failed");
     }
 
+    [Test]
     public async Task Async_Requirement_With_Pass_Succeeds()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -53,6 +56,7 @@ public class PipelineRequirementBaseClassTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task Async_Requirement_With_Fail_Throws()
     {
         var executePipelineDelegate = () => TestPipelineHostBuilder.Create()
@@ -65,6 +69,7 @@ public class PipelineRequirementBaseClassTests
             .And.HasMessageContaining("Async requirement failed");
     }
 
+    [Test]
     public async Task When_Helper_With_True_Passes()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -79,6 +84,7 @@ public class PipelineRequirementBaseClassTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task When_Helper_With_False_Fails()
     {
         var executePipelineDelegate = () => TestPipelineHostBuilder.Create()
@@ -91,6 +97,7 @@ public class PipelineRequirementBaseClassTests
             .And.HasMessageContaining("When condition failed");
     }
 
+    [Test]
     public async Task Custom_Order_Is_Respected()
     {
         var requirement = new CustomOrderRequirement();

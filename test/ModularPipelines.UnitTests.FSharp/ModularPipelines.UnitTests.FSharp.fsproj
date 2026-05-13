@@ -29,26 +29,10 @@
 
 	<ItemGroup>
 		<Compile Include="TestConstants.fs" />
-		<Compile Include="CSharpTestWrapper.fs" />
 		<None Include="Data\**" />
 		<Compile Include="GlobalTestSetup.fs" />
 		<Compile Include="GlobalDummyModule.fs" />
-		<Compile Include="Builders\**" />
-		<Compile Include="Commands\**" />
-		<Compile Include="Configuration\**" />
-		<Compile Include="Console\**" />
-		<Compile Include="Context\**" />
-		<Compile Include="Dependencies\**" />
-		<Compile Include="Engine\**" />
-		<Compile Include="Execution\**" />
-		<Compile Include="Extensions\**" />
-		<Compile Include="FileSystem\**" />
-		<Compile Include="Helpers\**" />
-		<Compile Include="Hooks\**" />
-		<Compile Include="Logging\**" />
 		<Compile Include="Models\**" />
-		<Compile Include="Plugins\**" />
-		<Compile Include="Registration\**" />
 		<Compile Include="State\**" />
 		<Compile Include="Validation\**" />
 		<Compile Include="Requirements\**" />
@@ -79,7 +63,6 @@
 		<ProjectReference Include="..\..\src\ModularPipelines.TeamCity\ModularPipelines.TeamCity.csproj" />
 		<ProjectReference Include="..\..\src\ModularPipelines.Terraform\ModularPipelines.Terraform.csproj" />
 		<ProjectReference Include="..\..\src\ModularPipelines\ModularPipelines.csproj" />
-		<ProjectReference Include="..\ModularPipelines.UnitTests\ModularPipelines.UnitTests.csproj" />
 		<ProjectReference Include="..\ModularPipelines.TestHelpers\ModularPipelines.TestHelpers.csproj" />
 	</ItemGroup>
 

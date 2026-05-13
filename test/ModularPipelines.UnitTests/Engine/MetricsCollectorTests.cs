@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Context;
+using ModularPipelines.Context;
 using ModularPipelines.Enums;
 using ModularPipelines.Modules;
 using ModularPipelines.TestHelpers;
@@ -35,6 +35,7 @@ public class MetricsCollectorTests : TestBase
         }
     }
 
+    [Test]
     public async Task PipelineSummary_ContainsMetrics()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -47,6 +48,7 @@ public class MetricsCollectorTests : TestBase
         await Assert.That(result.Metrics).IsNotNull();
     }
 
+    [Test]
     public async Task PipelineMetrics_HasParallelismFactor()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -58,6 +60,7 @@ public class MetricsCollectorTests : TestBase
         await Assert.That(result.Metrics!.ParallelismFactor).IsGreaterThanOrEqualTo(0);
     }
 
+    [Test]
     public async Task PipelineMetrics_HasPeakConcurrency()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -70,6 +73,7 @@ public class MetricsCollectorTests : TestBase
         await Assert.That(result.Metrics!.PeakConcurrency).IsGreaterThanOrEqualTo(1);
     }
 
+    [Test]
     public async Task PipelineMetrics_HasAverageConcurrency()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -81,6 +85,7 @@ public class MetricsCollectorTests : TestBase
         await Assert.That(result.Metrics!.AverageConcurrency).IsGreaterThanOrEqualTo(0);
     }
 
+    [Test]
     public async Task PipelineMetrics_HasEfficiency()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -92,6 +97,7 @@ public class MetricsCollectorTests : TestBase
         await Assert.That(result.Metrics!.Efficiency).IsLessThanOrEqualTo(1);
     }
 
+    [Test]
     public async Task PipelineMetrics_HasModuleCounts()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -106,6 +112,7 @@ public class MetricsCollectorTests : TestBase
         await Assert.That(result.Metrics!.FailedModules).IsEqualTo(0);
     }
 
+    [Test]
     public async Task PipelineMetrics_HasTimingData()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -117,6 +124,7 @@ public class MetricsCollectorTests : TestBase
         await Assert.That(result.Metrics!.TotalModuleExecutionTime).IsGreaterThanOrEqualTo(TimeSpan.Zero);
     }
 
+    [Test]
     public async Task PipelineSummary_ContainsModuleTimelines()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -129,6 +137,7 @@ public class MetricsCollectorTests : TestBase
         await Assert.That(result.ModuleTimelines!.Count).IsEqualTo(2);
     }
 
+    [Test]
     public async Task ModuleTimeline_ContainsModuleName()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -140,6 +149,7 @@ public class MetricsCollectorTests : TestBase
         await Assert.That(result.ModuleTimelines![0].ModuleName).IsEqualTo("QuickModule1");
     }
 
+    [Test]
     public async Task ModuleTimeline_ContainsTimingData()
     {
         var result = await TestPipelineHostBuilder.Create()

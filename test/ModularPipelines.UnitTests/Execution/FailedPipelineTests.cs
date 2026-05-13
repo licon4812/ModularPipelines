@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Attributes;
+using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.Modules;
 using ModularPipelines.Options;
@@ -37,6 +37,7 @@ public class FailedPipelineTests : TestBase
         }
     }
 
+    [Test]
     [Arguments(ExecutionMode.StopOnFirstException)]
     [Arguments(ExecutionMode.WaitForAllModules)]
     public async Task Given_Failing_Module_With_Dependent_Module_When_Fail_Fast_Then_Failures_Propagate(ExecutionMode executionMode)
@@ -51,6 +52,7 @@ public class FailedPipelineTests : TestBase
             ;
     }
 
+    [Test]
     [Arguments(ExecutionMode.StopOnFirstException)]
     [Arguments(ExecutionMode.WaitForAllModules)]
     public async Task Given_Failing_Module_When_Fail_Fast_Then_Failures_Propagate(ExecutionMode executionMode)
@@ -64,6 +66,7 @@ public class FailedPipelineTests : TestBase
             ThrowsException();
     }
 
+    [Test]
     [Arguments(ExecutionMode.StopOnFirstException)]
     [Arguments(ExecutionMode.WaitForAllModules)]
     public async Task Given_No_Failing_Module_Then_No_Exceptions(ExecutionMode executionMode)

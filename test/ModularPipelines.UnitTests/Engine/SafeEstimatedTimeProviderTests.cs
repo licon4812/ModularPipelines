@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Context;
 using ModularPipelines.Engine;
 using ModularPipelines.Extensions;
@@ -11,6 +11,7 @@ namespace ModularPipelines.UnitTests.Engine;
 
 public class SafeEstimatedTimeProviderTests
 {
+    [Test]
     public async Task When_EstimatedTimeProvider_Succeeds_Then_No_Error()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -25,6 +26,7 @@ public class SafeEstimatedTimeProviderTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task When_EstimatedTimeProvider_Fails_Receiving_Time_Then_Still_No_Error()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -39,6 +41,7 @@ public class SafeEstimatedTimeProviderTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task When_EstimatedTimeProvider_Fails_Saving_Time_Then_Still_No_Error()
     {
         var host = await TestPipelineHostBuilder.Create()

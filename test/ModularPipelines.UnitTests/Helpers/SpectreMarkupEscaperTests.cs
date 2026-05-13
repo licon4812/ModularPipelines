@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Helpers;
+using ModularPipelines.Helpers;
 
 namespace ModularPipelines.UnitTests.Helpers;
 
@@ -7,6 +7,7 @@ namespace ModularPipelines.UnitTests.Helpers;
 /// </summary>
 public class SpectreMarkupEscaperTests
 {
+    [Test]
     public async Task Escape_WithNullInput_ReturnsEmptyString()
     {
         // Act
@@ -16,6 +17,7 @@ public class SpectreMarkupEscaperTests
         await Assert.That(result).IsEqualTo(string.Empty);
     }
 
+    [Test]
     public async Task Escape_WithEmptyString_ReturnsEmptyString()
     {
         // Act
@@ -25,6 +27,7 @@ public class SpectreMarkupEscaperTests
         await Assert.That(result).IsEqualTo(string.Empty);
     }
 
+    [Test]
     public async Task Escape_WithNoSpecialCharacters_ReturnsSameString()
     {
         // Arrange
@@ -37,6 +40,7 @@ public class SpectreMarkupEscaperTests
         await Assert.That(result).IsEqualTo(input);
     }
 
+    [Test]
     public async Task Escape_WithOpenBracket_EscapesBracket()
     {
         // Arrange
@@ -50,6 +54,7 @@ public class SpectreMarkupEscaperTests
         await Assert.That(result).IsEqualTo(expected);
     }
 
+    [Test]
     public async Task Escape_WithCloseBracket_EscapesBracket()
     {
         // Arrange
@@ -63,6 +68,7 @@ public class SpectreMarkupEscaperTests
         await Assert.That(result).IsEqualTo(expected);
     }
 
+    [Test]
     public async Task Escape_WithMultipleBrackets_EscapesAll()
     {
         // Arrange
@@ -76,6 +82,7 @@ public class SpectreMarkupEscaperTests
         await Assert.That(result).IsEqualTo(expected);
     }
 
+    [Test]
     public async Task Escape_WithSpectreMarkupLikeSyntax_EscapesProperly()
     {
         // This simulates a module name that looks like Spectre markup
@@ -90,6 +97,7 @@ public class SpectreMarkupEscaperTests
         await Assert.That(result).IsEqualTo(expected);
     }
 
+    [Test]
     public async Task Escape_WithGenericTypeSyntax_EscapesProperly()
     {
         // Generic type names might have angle brackets but no square brackets

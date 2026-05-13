@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ModularPipelines.Http;
 using ModularPipelines.Options;
@@ -12,6 +12,7 @@ namespace ModularPipelines.UnitTests.Context;
 
 public class HttpTests : TestBase
 {
+    [Test]
     public async Task Can_Send_Request_With_String_To_Request_Implicit_Conversion()
     {
         var result = await GetService<IHttp>((context, collection) => { });
@@ -21,6 +22,7 @@ public class HttpTests : TestBase
         await http.SendAsync(new Uri("https://thomhurst.github.io/TUnit"));
     }
 
+    [Test]
     public async Task When_Log_Request_False_Then_Do_Not_Log_Request()
     {
         var file = Path.Combine(TestContext.WorkingDirectory, Guid.NewGuid().ToString("N") + ".txt");
@@ -50,6 +52,7 @@ public class HttpTests : TestBase
         await Assert.That(logFile).Contains("Server: GitHub.com");
     }
 
+    [Test]
     public async Task When_Log_Response_False_Then_Do_Not_Log_Response()
     {
         var file = Path.Combine(TestContext.WorkingDirectory, Guid.NewGuid().ToString("N") + ".txt");
@@ -79,6 +82,7 @@ public class HttpTests : TestBase
         await Assert.That(logFile).DoesNotContain("Server: GitHub.com");
     }
 
+    [Test]
     [Arguments(true)]
     [Arguments(false)]
     public async Task Assert_LoggingHttpClient_Logs_As_Expected(bool customHttpClient)

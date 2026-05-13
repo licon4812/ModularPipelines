@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Attributes;
+using ModularPipelines.Attributes;
 using ModularPipelines.Attributes.Events;
 using ModularPipelines.Context;
 using ModularPipelines.Enums;
@@ -116,6 +116,7 @@ public class ModuleReadyEventTests : TestBase
         EventLog.Clear();
     }
 
+    [Test]
     public async Task ReadyEvent_IsFired_WhenModuleIsReady()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -126,6 +127,7 @@ public class ModuleReadyEventTests : TestBase
         await Assert.That(EventLog).Contains("Ready:SimpleModuleWithReadyEvent");
     }
 
+    [Test]
     public async Task ReadyEvent_ProvidesValidContext()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -136,6 +138,7 @@ public class ModuleReadyEventTests : TestBase
         await Assert.That(EventLog.Any(e => e.Contains("Ready:ModuleWithTimingCheck:ElapsedTime:True"))).IsTrue();
     }
 
+    [Test]
     public async Task ReadyEvent_FiresBeforeStartEvent()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -152,6 +155,7 @@ public class ModuleReadyEventTests : TestBase
         await Assert.That(readyIndex).IsLessThan(startIndex);
     }
 
+    [Test]
     public async Task ReadyEvent_IsFired_WhenDependenciesComplete()
     {
         var result = await TestPipelineHostBuilder.Create()
@@ -163,6 +167,7 @@ public class ModuleReadyEventTests : TestBase
         await Assert.That(EventLog).Contains("Ready:DependentModuleWithReadyEvent");
     }
 
+    [Test]
     public async Task ReadyEvent_WithContinueOnError_DoesNotFailPipeline()
     {
         var result = await TestPipelineHostBuilder.Create()

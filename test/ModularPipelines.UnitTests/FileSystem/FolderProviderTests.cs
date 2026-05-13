@@ -1,10 +1,11 @@
-﻿using ModularPipelines.FileSystem;
+using ModularPipelines.FileSystem;
 using Moq;
 
 namespace ModularPipelines.UnitTests.FileSystem;
 
 public class FolderProviderTests
 {
+    [Test]
     public async Task Create_UsesProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -16,6 +17,7 @@ public class FolderProviderTests
         mockProvider.Verify(p => p.CreateDirectory(It.IsAny<string>()), Times.Once);
     }
 
+    [Test]
     public async Task Delete_UsesProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -26,6 +28,7 @@ public class FolderProviderTests
         mockProvider.Verify(p => p.DeleteDirectory(It.IsAny<string>(), true), Times.Once);
     }
 
+    [Test]
     public async Task GetFile_ReturnsFileWithSameProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -39,6 +42,7 @@ public class FolderProviderTests
         mockProvider.Verify(p => p.DeleteFile(It.IsAny<string>()), Times.Once);
     }
 
+    [Test]
     public async Task GetFolder_ReturnsSubfolderWithSameProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -52,6 +56,7 @@ public class FolderProviderTests
         mockProvider.Verify(p => p.CreateDirectory(It.IsAny<string>()), Times.Once);
     }
 
+    [Test]
     public async Task MoveTo_ReturnsNewFolderWithProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -66,6 +71,7 @@ public class FolderProviderTests
         mockProvider.Verify(p => p.DeleteDirectory(It.IsAny<string>(), true), Times.Once);
     }
 
+    [Test]
     public async Task DefaultConstructor_UsesSystemProvider()
     {
         var tempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
@@ -78,6 +84,7 @@ public class FolderProviderTests
         await Assert.That(true).IsTrue(); // If we got here, it worked
     }
 
+    [Test]
     public async Task CreateAsync_UsesProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -88,6 +95,7 @@ public class FolderProviderTests
         mockProvider.Verify(p => p.CreateDirectory(It.IsAny<string>()), Times.Once);
     }
 
+    [Test]
     public async Task DeleteAsync_UsesProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -98,6 +106,7 @@ public class FolderProviderTests
         mockProvider.Verify(p => p.DeleteDirectory(It.IsAny<string>(), true), Times.Once);
     }
 
+    [Test]
     public async Task MoveToAsync_ReturnsNewFolderWithProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -112,6 +121,7 @@ public class FolderProviderTests
         mockProvider.Verify(p => p.DeleteDirectory(It.IsAny<string>(), true), Times.Once);
     }
 
+    [Test]
     public async Task CreateFolder_UsesProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -124,6 +134,7 @@ public class FolderProviderTests
         mockProvider.Verify(p => p.CreateDirectory(It.IsAny<string>()), Times.Once);
     }
 
+    [Test]
     public async Task CreateFile_UsesProvider()
     {
         var mockProvider = new Mock<IFileSystemProvider>();
@@ -138,6 +149,7 @@ public class FolderProviderTests
         mockProvider.Verify(p => p.Create(It.IsAny<string>()), Times.Once);
     }
 
+    [Test]
     public async Task CopyTo_UsesProviderAndReturnsFolderWithProvider()
     {
         // Use real temp directories because CopyTo sets DirectoryInfo.Attributes
@@ -182,6 +194,7 @@ public class FolderProviderTests
         }
     }
 
+    [Test]
     public async Task CopyToAsync_UsesProviderAndReturnsFolderWithProvider()
     {
         // Use real temp directories because CopyToAsync sets DirectoryInfo.Attributes

@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Attributes;
+using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.DependencyInjection;
 using ModularPipelines.Modules;
@@ -11,6 +11,7 @@ namespace ModularPipelines.UnitTests.Api;
 /// </summary>
 public class FlexibleDependencyApiExportTests
 {
+    [Test]
     public async Task IDependencyContext_IsAccessibleFromContextNamespace()
     {
         // Verify IDependencyContext is in ModularPipelines.Context namespace
@@ -21,6 +22,7 @@ public class FlexibleDependencyApiExportTests
         await Assert.That(type.IsInterface).IsTrue();
     }
 
+    [Test]
     public async Task DependsOnBaseAttribute_IsAccessibleFromAttributesNamespace()
     {
         // Verify DependsOnBaseAttribute is in ModularPipelines.Attributes namespace
@@ -32,6 +34,7 @@ public class FlexibleDependencyApiExportTests
         await Assert.That(type.IsSubclassOf(typeof(Attribute))).IsTrue();
     }
 
+    [Test]
     public async Task ModuleTagAttribute_IsAccessibleFromAttributesNamespace()
     {
         // Verify ModuleTagAttribute is in ModularPipelines.Attributes namespace
@@ -43,6 +46,7 @@ public class FlexibleDependencyApiExportTests
         await Assert.That(type.IsSubclassOf(typeof(Attribute))).IsTrue();
     }
 
+    [Test]
     public async Task ModuleCategoryAttribute_IsAccessibleFromAttributesNamespace()
     {
         // Verify ModuleCategoryAttribute is in ModularPipelines.Attributes namespace
@@ -54,6 +58,7 @@ public class FlexibleDependencyApiExportTests
         await Assert.That(type.IsSubclassOf(typeof(Attribute))).IsTrue();
     }
 
+    [Test]
     public async Task DependsOnModulesWithTagAttribute_IsAccessibleFromAttributesNamespace()
     {
         // Verify DependsOnModulesWithTagAttribute is in ModularPipelines.Attributes namespace
@@ -65,6 +70,7 @@ public class FlexibleDependencyApiExportTests
         await Assert.That(type.IsSubclassOf(typeof(DependsOnBaseAttribute))).IsTrue();
     }
 
+    [Test]
     public async Task DependsOnModulesInCategoryAttribute_IsAccessibleFromAttributesNamespace()
     {
         // Verify DependsOnModulesInCategoryAttribute is in ModularPipelines.Attributes namespace
@@ -76,6 +82,7 @@ public class FlexibleDependencyApiExportTests
         await Assert.That(type.IsSubclassOf(typeof(DependsOnBaseAttribute))).IsTrue();
     }
 
+    [Test]
     public async Task DependsOnModulesWithAttributeAttribute_IsAccessibleFromAttributesNamespace()
     {
         // Verify DependsOnModulesWithAttributeAttribute<T> is in ModularPipelines.Attributes namespace
@@ -90,6 +97,7 @@ public class FlexibleDependencyApiExportTests
         await Assert.That(closedType.IsSubclassOf(typeof(DependsOnBaseAttribute))).IsTrue();
     }
 
+    [Test]
     public async Task ITaggedModule_IsAccessibleFromModulesNamespace()
     {
         // Verify ITaggedModule is in ModularPipelines.Modules namespace
@@ -100,6 +108,7 @@ public class FlexibleDependencyApiExportTests
         await Assert.That(type.IsInterface).IsTrue();
     }
 
+    [Test]
     public async Task IModuleRegistrationBuilder_IsAccessibleFromDependencyInjectionNamespace()
     {
         // Verify IModuleRegistrationBuilder is in ModularPipelines.DependencyInjection namespace
@@ -110,6 +119,7 @@ public class FlexibleDependencyApiExportTests
         await Assert.That(type.IsInterface).IsTrue();
     }
 
+    [Test]
     public async Task AllFlexibleDependencyAttributes_HaveCorrectAttributeUsage()
     {
         // Verify all dependency attributes allow multiple usage and inheritance
@@ -133,6 +143,7 @@ public class FlexibleDependencyApiExportTests
         }
     }
 
+    [Test]
     public async Task ModuleCategoryAttribute_DoesNotAllowMultiple()
     {
         // Verify ModuleCategoryAttribute does NOT allow multiple (only one category per module)
@@ -146,6 +157,7 @@ public class FlexibleDependencyApiExportTests
         await Assert.That(usage.Inherited).IsTrue();
     }
 
+    [Test]
     public async Task IDependencyContext_HasExpectedMethods()
     {
         // Verify IDependencyContext has all required methods for dependency resolution
@@ -159,6 +171,7 @@ public class FlexibleDependencyApiExportTests
         await Assert.That(methods.Any(m => m.Name == "GetAttributes")).IsTrue();
     }
 
+    [Test]
     public async Task ITaggedModule_HasExpectedProperties()
     {
         // Verify ITaggedModule has all required properties
@@ -169,6 +182,7 @@ public class FlexibleDependencyApiExportTests
         await Assert.That(properties.Any(p => p.Name == "Category")).IsTrue();
     }
 
+    [Test]
     public async Task IModuleRegistrationBuilder_HasExpectedMembers()
     {
         // Verify IModuleRegistrationBuilder has all required members

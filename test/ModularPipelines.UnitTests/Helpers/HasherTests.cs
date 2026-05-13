@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Context;
+using ModularPipelines.Context;
 using ModularPipelines.TestHelpers;
 
 namespace ModularPipelines.UnitTests.Helpers;
@@ -12,6 +12,7 @@ public class HasherTests : TestBase
 {
     private const string TestInput = TestConstants.TestString;
 
+    [Test]
     [DisplayName("Hash algorithm '$algorithm' produces correct output")]
     [Arguments("Md5", "b9c291e3274aa5c8010a7c5c22a4e6dd")]
     [Arguments("Sha1", "cc3626c5ad2e3aff0779dc63e80555c463fd99dc")]

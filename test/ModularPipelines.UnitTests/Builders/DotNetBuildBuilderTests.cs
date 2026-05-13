@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Context;
+using ModularPipelines.Context;
 using ModularPipelines.DotNet.Builders;
 using ModularPipelines.DotNet.Options;
 using ModularPipelines.Models;
@@ -33,6 +33,7 @@ public class DotNetBuildBuilderTests : TestBase
 
     #region Tool-Specific Options Tests
 
+    [Test]
     public async Task ForProject_SetsProjectPath()
     {
         var mockCommand = CreateMockCommand();
@@ -44,6 +45,7 @@ public class DotNetBuildBuilderTests : TestBase
         await Assert.That(toolOptions.ProjectSolution).IsEqualTo("MyProject.csproj");
     }
 
+    [Test]
     public async Task WithConfiguration_SetsConfiguration()
     {
         var mockCommand = CreateMockCommand();
@@ -55,6 +57,7 @@ public class DotNetBuildBuilderTests : TestBase
         await Assert.That(toolOptions.Configuration).IsEqualTo("Release");
     }
 
+    [Test]
     public async Task WithFramework_SetsFramework()
     {
         var mockCommand = CreateMockCommand();
@@ -66,6 +69,7 @@ public class DotNetBuildBuilderTests : TestBase
         await Assert.That(toolOptions.Framework).IsEqualTo("net8.0");
     }
 
+    [Test]
     public async Task WithRuntime_SetsRuntime()
     {
         var mockCommand = CreateMockCommand();
@@ -77,6 +81,7 @@ public class DotNetBuildBuilderTests : TestBase
         await Assert.That(toolOptions.Runtime).IsEqualTo("win-x64");
     }
 
+    [Test]
     public async Task WithOutput_SetsOutput()
     {
         var mockCommand = CreateMockCommand();
@@ -88,6 +93,7 @@ public class DotNetBuildBuilderTests : TestBase
         await Assert.That(toolOptions.Output).IsEqualTo("/output/path");
     }
 
+    [Test]
     public async Task WithNoRestore_EnablesNoRestore()
     {
         var mockCommand = CreateMockCommand();
@@ -99,6 +105,7 @@ public class DotNetBuildBuilderTests : TestBase
         await Assert.That(toolOptions.NoRestore).IsTrue();
     }
 
+    [Test]
     public async Task WithNoIncremental_EnablesNoIncremental()
     {
         var mockCommand = CreateMockCommand();
@@ -110,6 +117,7 @@ public class DotNetBuildBuilderTests : TestBase
         await Assert.That(toolOptions.NoIncremental).IsTrue();
     }
 
+    [Test]
     public async Task WithNoLogo_EnablesNoLogo()
     {
         var mockCommand = CreateMockCommand();
@@ -121,6 +129,7 @@ public class DotNetBuildBuilderTests : TestBase
         await Assert.That(toolOptions.Nologo).IsTrue();
     }
 
+    [Test]
     public async Task WithProperty_AddsProperty()
     {
         var mockCommand = CreateMockCommand();
@@ -135,6 +144,7 @@ public class DotNetBuildBuilderTests : TestBase
         await Assert.That(toolOptions.Properties!.First().Value).IsEqualTo("1.0.0");
     }
 
+    [Test]
     public async Task WithProperty_AddsMultipleProperties()
     {
         var mockCommand = CreateMockCommand();
@@ -153,6 +163,7 @@ public class DotNetBuildBuilderTests : TestBase
 
     #region Execution Options Tests
 
+    [Test]
     public async Task WithWorkingDirectory_SetsWorkingDirectory()
     {
         var mockCommand = CreateMockCommand();
@@ -164,6 +175,7 @@ public class DotNetBuildBuilderTests : TestBase
         await Assert.That(execOptions.WorkingDirectory).IsEqualTo("/project/dir");
     }
 
+    [Test]
     public async Task WithTimeout_SetsTimeout()
     {
         var mockCommand = CreateMockCommand();
@@ -176,6 +188,7 @@ public class DotNetBuildBuilderTests : TestBase
         await Assert.That(execOptions.ExecutionTimeout).IsEqualTo(timeout);
     }
 
+    [Test]
     public async Task WithEnvironmentVariable_AddsVariable()
     {
         var mockCommand = CreateMockCommand();
@@ -188,6 +201,7 @@ public class DotNetBuildBuilderTests : TestBase
         await Assert.That(execOptions.EnvironmentVariables!["DOTNET_CLI_TELEMETRY_OPTOUT"]).IsEqualTo("1");
     }
 
+    [Test]
     public async Task WithThrowOnError_SetsThrowOnError()
     {
         var mockCommand = CreateMockCommand();
@@ -203,6 +217,7 @@ public class DotNetBuildBuilderTests : TestBase
 
     #region Chaining Tests
 
+    [Test]
     public async Task FluentChaining_SetsAllOptions()
     {
         var mockCommand = CreateMockCommand();
@@ -230,6 +245,7 @@ public class DotNetBuildBuilderTests : TestBase
         await Assert.That(execOptions.ExecutionTimeout).IsEqualTo(TimeSpan.FromMinutes(15));
     }
 
+    [Test]
     public async Task FluentChaining_ReturnsSameBuilderInstance()
     {
         var mockCommand = CreateMockCommand();
@@ -248,6 +264,7 @@ public class DotNetBuildBuilderTests : TestBase
 
     #region ExecuteAsync Tests
 
+    [Test]
     public async Task ExecuteAsync_CallsCommandExecuteWithOptions()
     {
         var mockCommand = CreateMockCommand();
@@ -267,6 +284,7 @@ public class DotNetBuildBuilderTests : TestBase
             It.IsAny<CancellationToken>()), Times.Once);
     }
 
+    [Test]
     public async Task ExecuteAsync_PassesExecutionOptions()
     {
         var mockCommand = CreateMockCommand();
@@ -304,6 +322,7 @@ public class DotNetBuildBuilderTests : TestBase
 
     #region Initial Options Tests
 
+    [Test]
     public async Task InitialOptions_UsesProvidedOptions()
     {
         var mockCommand = CreateMockCommand();
@@ -316,6 +335,7 @@ public class DotNetBuildBuilderTests : TestBase
         await Assert.That(toolOptions.Framework).IsEqualTo("net7.0");
     }
 
+    [Test]
     public async Task InitialOptions_CanBeOverridden()
     {
         var mockCommand = CreateMockCommand();

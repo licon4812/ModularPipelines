@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ModularPipelines.Configuration;
 using ModularPipelines.Context;
@@ -237,6 +237,7 @@ public class SubModuleTests : TestBase
         }
     }
 
+    [Test]
     public async Task Submodule_With_Progress()
     {
         var host = await TestPipelineHostBuilder.Create(new TestHostSettings { ShowProgressInConsole = true })
@@ -252,6 +253,7 @@ public class SubModuleTests : TestBase
         }
     }
 
+    [Test]
     public async Task Submodule_With_Return_Type_Does_Not_Fail_And_Runs_Once()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -267,6 +269,7 @@ public class SubModuleTests : TestBase
         }
     }
 
+    [Test]
     public async Task Submodule_Without_Return_Type_Does_Not_Fail_And_Runs_Once()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -282,6 +285,7 @@ public class SubModuleTests : TestBase
         }
     }
 
+    [Test]
     public async Task Submodule_With_Return_Type_Does_Not_Fail_Synchronous_And_Runs_Once()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -297,6 +301,7 @@ public class SubModuleTests : TestBase
         }
     }
 
+    [Test]
     public async Task Submodule_Without_Return_Type_Does_Not_Fail_Synchronous_And_Runs_Once()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -312,6 +317,7 @@ public class SubModuleTests : TestBase
         }
     }
 
+    [Test]
     public async Task Failing_Submodule_With_Return_Type_Fails()
     {
         var moduleFailedException = await Assert.ThrowsAsync<ModuleFailedException>(async () =>
@@ -326,6 +332,7 @@ public class SubModuleTests : TestBase
         }
     }
 
+    [Test]
     public async Task Failing_Submodule_Without_Return_Type_Fails()
     {
         var exception = await Assert.ThrowsAsync<ModuleFailedException>(async () =>
@@ -350,6 +357,7 @@ public class SubModuleTests : TestBase
         }
     }
 
+    [Test]
     public async Task Failing_Submodule_With_Return_Type_Fails_Synchronous()
     {
         var moduleFailedException = await Assert.ThrowsAsync<ModuleFailedException>(async () =>
@@ -364,6 +372,7 @@ public class SubModuleTests : TestBase
         }
     }
 
+    [Test]
     public async Task Failing_Submodule_Without_Return_Type_Fails_Synchronous()
     {
         var moduleFailedException = await Assert.ThrowsAsync<ModuleFailedException>(async () =>
@@ -378,6 +387,7 @@ public class SubModuleTests : TestBase
         }
     }
 
+    [Test]
     public async Task Module_With_Retry_Policy_Retries_Entire_Execution()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -399,6 +409,7 @@ public class SubModuleTests : TestBase
         }
     }
 
+    [Test]
     public async Task Module_With_Retry_Policy_Retries_Entire_Execution_With_Return_Type()
     {
         var host = await TestPipelineHostBuilder.Create()

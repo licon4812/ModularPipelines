@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Context;
 using ModularPipelines.Engine;
 using ModularPipelines.Exceptions;
@@ -13,6 +13,7 @@ namespace ModularPipelines.UnitTests.Requirements;
 
 public class RequireFactoryTests
 {
+    [Test]
     public async Task Require_That_With_True_Condition_Passes()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -27,6 +28,7 @@ public class RequireFactoryTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task Require_That_With_False_Condition_Fails()
     {
         const string reason = "Custom failure reason";
@@ -40,6 +42,7 @@ public class RequireFactoryTests
             .And.HasMessageContaining(reason);
     }
 
+    [Test]
     public async Task Require_ThatAsync_With_True_Condition_Passes()
     {
         var host = await TestPipelineHostBuilder.Create()
@@ -58,6 +61,7 @@ public class RequireFactoryTests
         await Assert.That(result.ModuleStatus).IsEqualTo(Status.Successful);
     }
 
+    [Test]
     public async Task Require_ThatAsync_With_False_Condition_Fails()
     {
         const string reason = "Async failure reason";
@@ -75,6 +79,7 @@ public class RequireFactoryTests
             .And.HasMessageContaining(reason);
     }
 
+    [Test]
     public async Task Require_EnvironmentVariable_When_Set_Passes()
     {
         const string varName = "TEST_REQUIREMENT_VAR";
@@ -98,6 +103,7 @@ public class RequireFactoryTests
         }
     }
 
+    [Test]
     public async Task Require_EnvironmentVariable_When_Not_Set_Fails()
     {
         const string varName = "UNLIKELY_TO_EXIST_VAR_12345";
@@ -113,6 +119,7 @@ public class RequireFactoryTests
             .And.HasMessageContaining(varName);
     }
 
+    [Test]
     public async Task Require_EnvironmentVariable_With_Custom_Reason()
     {
         const string varName = "UNLIKELY_TO_EXIST_VAR_67890";
@@ -129,6 +136,7 @@ public class RequireFactoryTests
             .And.HasMessageContaining(customReason);
     }
 
+    [Test]
     public async Task DelegateRequirement_Respects_Order()
     {
         var requirement = Require.That(_ => true, "test", order: 5);

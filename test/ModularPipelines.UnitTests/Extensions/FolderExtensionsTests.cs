@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using ModularPipelines.Extensions;
 using ModularPipelines.FileSystem;
 
@@ -6,6 +6,7 @@ namespace ModularPipelines.UnitTests.Extensions;
 
 public class FolderExtensionsTests
 {
+    [Test]
     public async Task EnumerablePaths()
     {
         var folders = new List<Folder>
@@ -24,6 +25,7 @@ public class FolderExtensionsTests
         });
     }
 
+    [Test]
     public async Task ListPaths()
     {
         var folders = new List<Folder>

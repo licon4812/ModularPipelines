@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.Plugins;
 
 namespace ModularPipelines.UnitTests.Plugins;
@@ -6,6 +6,7 @@ namespace ModularPipelines.UnitTests.Plugins;
 [TUnit.Core.NotInParallel(nameof(PluginRegistryTests))]
 public class PluginRegistryTests
 {
+    [Test]
     public async Task Register_AddsPluginToRegistry()
     {
         using var _ = PluginTestHelper.IsolatedRegistry();
@@ -16,6 +17,7 @@ public class PluginRegistryTests
         await Assert.That(PluginRegistry.Plugins).Contains(plugin);
     }
 
+    [Test]
     public async Task Register_DuplicateName_ThrowsInvalidOperationException()
     {
         using var _ = PluginTestHelper.IsolatedRegistry();
@@ -30,6 +32,7 @@ public class PluginRegistryTests
         await Assert.That(exception.Message).Contains("already registered");
     }
 
+    [Test]
     public async Task Register_NullPlugin_ThrowsArgumentNullException()
     {
         using var _ = PluginTestHelper.IsolatedRegistry();
@@ -38,6 +41,7 @@ public class PluginRegistryTests
             .Throws<ArgumentNullException>();
     }
 
+    [Test]
     public async Task Plugins_ReturnsOrderedByPriority()
     {
         using var _ = PluginTestHelper.IsolatedRegistry();
@@ -57,6 +61,7 @@ public class PluginRegistryTests
         await Assert.That(plugins[2].Name).IsEqualTo("Low");
     }
 
+    [Test]
     public async Task Clear_RemovesAllPlugins()
     {
         using var _ = PluginTestHelper.IsolatedRegistry();
@@ -68,6 +73,7 @@ public class PluginRegistryTests
         await Assert.That(PluginRegistry.Plugins).IsEmpty();
     }
 
+    [Test]
     public async Task IsolatedRegistry_RestoresOriginalPlugins()
     {
         // Register a plugin outside the isolated scope

@@ -1,4 +1,4 @@
-﻿using ModularPipelines.Attributes;
+using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.Exceptions;
 using ModularPipelines.Modules;
@@ -8,6 +8,7 @@ namespace ModularPipelines.UnitTests.Dependencies;
 
 public class DirectCollisionTests
 {
+    [Test]
     public async Task Modules_Dependent_On_Each_Other_Throws_Exception()
     {
         await Assert.That(() => TestPipelineHostBuilder.Create()
