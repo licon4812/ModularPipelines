@@ -70,7 +70,7 @@ type ModuleStateStoreTests() =
                 executionType = ExecutionType.Default
             )
 
-        do! check(Assert.That(obj.ReferenceEquals(state.Module, m)).IsTrue())
+        do! check(Assert.That(LanguagePrimitives.PhysicalEquality state.Module m).IsTrue())
         do! check(Assert.That(state.ModuleType = moduleType).IsTrue())
         do! check(Assert.That(state.Phase).IsTypeOf<ModuleExecutionPhase.Pending>())
 
@@ -135,7 +135,7 @@ type ModuleStateStoreTests() =
         let state = _store.GetState(typeof<StoreTestModule>)
 
         do! check(Assert.That(state).IsNotNull())
-        do! check(Assert.That(obj.ReferenceEquals(state.Module, m)).IsTrue())
+        do! check(Assert.That(LanguagePrimitives.PhysicalEquality state.Module m).IsTrue())
     }
 
     [<Test>]
@@ -438,8 +438,10 @@ type ModuleStateStoreTests() =
         )
         |> ignore
 
-        _store.TransitionToQueued(typeof<StoreTestModule>) |> ignore
-        _store.remove_StateChanged(handler)
+        try
+            _store.TransitionToQueued(typeof<StoreTestModule>) |> ignore
+        finally
+            _store.remove_StateChanged(handler)
 
         do! check(Assert.That(eventFired).IsTrue())
         do! check(Assert.That(oldState.Phase).IsTypeOf<ModuleExecutionPhase.Pending>())
