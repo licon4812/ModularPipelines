@@ -5,6 +5,7 @@ open ModularPipelines.Attributes
 open ModularPipelines.Context
 open ModularPipelines.Enums
 open ModularPipelines.Exceptions
+open ModularPipelines.Extensions
 open ModularPipelines.Modules
 open ModularPipelines.TestHelpers
 open TUnit.Assertions

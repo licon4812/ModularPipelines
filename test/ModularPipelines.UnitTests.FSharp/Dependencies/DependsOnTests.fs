@@ -131,7 +131,7 @@ type DependsOnTests() =
             |> Async.AwaitTask
 
         do! check(Assert.That(pipelineSummary.Status).IsEqualTo(Status.Successful))
-        do! check(Assert.That(Seq.length pipelineSummary.Modules).IsEqualTo(2))
+        do! check(IntEqualsAssertionExtensions.IsEqualTo(Assert.That(Seq.length pipelineSummary.Modules), 2))
     }
 
     [<Test>]
@@ -143,7 +143,7 @@ type DependsOnTests() =
             |> Async.AwaitTask
 
         do! check(Assert.That(pipelineSummary.Status).IsEqualTo(Status.Successful))
-        do! check(Assert.That(Seq.length pipelineSummary.Modules).IsEqualTo(1))
+        do! check(IntEqualsAssertionExtensions.IsEqualTo(Assert.That(Seq.length pipelineSummary.Modules), 1))
     }
 
     [<Test>]
@@ -204,8 +204,7 @@ type DependsOnTests() =
             ()
         with :? InvalidModuleTypeException as ex ->
             message <- ex.Message
-
-        do! check(Assert.That(message).IsEqualTo("ModularPipelines.Exceptions.ModuleFailedException is not a Module (does not implement IModule)"))
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(message), "ModularPipelines.Exceptions.ModuleFailedException is not a Module (does not implement IModule)"))
     }
 
     [<Test>]

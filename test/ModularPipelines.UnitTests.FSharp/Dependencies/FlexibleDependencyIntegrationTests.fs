@@ -30,10 +30,6 @@ module FlexibleDependencyIntegrationTestsData =
     type CriticalAttribute() =
         inherit Attribute()
 
-    [<AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)>]
-    type DependsOnCriticalModulesAttribute() =
-        inherit DependsOnModulesWithAttributeAttribute<CriticalAttribute>()
-
     [<ModuleTag("database")>]
     type DatabaseModuleA() =
         inherit Module<string>()
@@ -204,7 +200,7 @@ module FlexibleDependencyIntegrationTestsData =
                 return "DerivedCritical"
             }
 
-    [<DependsOnCriticalModules>]
+    [<DependsOnModulesWithAttribute<CriticalAttribute>>]
     type AfterCriticalModule() =
         inherit Module<string>()
         override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) =
@@ -503,7 +499,7 @@ type FlexibleDependencyIntegrationTests() =
             TestPipelineHostBuilder.Create()
                 .ConfigureServices(fun _ services ->
                     services.AddModule<FlexibleDependencyIntegrationTestsData.DatabaseModuleA>().WithTags("slow") |> ignore)
-                .AddModule<FlexibleDependencyIntegrationTestsData.AfterSlowModule>()
+                .AddModule<FlexibleDependencyIntegrationTestsData.AfterSlowModule>>
                 .ExecutePipelineAsync()
             |> Async.AwaitTask
 

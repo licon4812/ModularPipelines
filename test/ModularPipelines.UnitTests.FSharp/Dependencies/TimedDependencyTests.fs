@@ -7,6 +7,7 @@ open Microsoft.Extensions.Time.Testing
 open ModularPipelines.Attributes
 open ModularPipelines.Context
 open ModularPipelines.Engine
+open ModularPipelines.Extensions
 open ModularPipelines.Modules
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
@@ -15,8 +16,8 @@ open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
 module TimedDependencyTestModules =
-    let longModuleDelay = TimeSpan.FromMilliseconds(100)
-    let shortModuleDelay = TimeSpan.FromMilliseconds(20)
+    let longModuleDelay = TimeSpan.FromMilliseconds(100:int64)
+    let shortModuleDelay = TimeSpan.FromMilliseconds(20:int64)
 
     type FiveSecondModule() =
         inherit Module<bool>()
@@ -55,7 +56,7 @@ type TimedDependencyTests() =
         let fiveSecondResult = resultRegistry.GetResult(typeof<TimedDependencyTestModules.FiveSecondModule>)
         let oneSecondResult = resultRegistry.GetResult(typeof<TimedDependencyTestModules.OneSecondModuleDependentOnFiveSecondModule>)
 
-        do! check(Assert.That(oneSecondResult.ModuleDuration >= TimedDependencyTestModules.shortModuleDelay.Add(TimeSpan.FromMilliseconds(-10))).IsTrue())
-        do! check(Assert.That(oneSecondResult.ModuleEnd >= fiveSecondResult.ModuleStart + TimedDependencyTestModules.longModuleDelay + TimedDependencyTestModules.shortModuleDelay.Add(TimeSpan.FromMilliseconds(-20))).IsTrue())
+        do! check(Assert.That(oneSecondResult.ModuleDuration >= TimedDependencyTestModules.shortModuleDelay.Add(TimeSpan.FromMilliseconds(-10:int64))).IsTrue())
+        do! check(Assert.That(oneSecondResult.ModuleEnd >= fiveSecondResult.ModuleStart + TimedDependencyTestModules.longModuleDelay + TimedDependencyTestModules.shortModuleDelay.Add(TimeSpan.FromMilliseconds(-20:int64))).IsTrue())
         do! check(Assert.That(oneSecondResult.ModuleStart >= fiveSecondResult.ModuleEnd).IsTrue())
     }

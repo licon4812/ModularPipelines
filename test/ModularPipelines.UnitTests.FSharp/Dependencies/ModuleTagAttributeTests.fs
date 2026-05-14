@@ -12,7 +12,7 @@ type ModuleTagAttributeTests() =
     [<Test>]
     member _.Constructor_WithValidTag_SetsTagProperty() = async {
         let attr = ModuleTagAttribute("database")
-        do! check(Assert.That(attr.Tag).IsEqualTo("database"))
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(attr.Tag), "database"))
     }
 
     [<Test>]

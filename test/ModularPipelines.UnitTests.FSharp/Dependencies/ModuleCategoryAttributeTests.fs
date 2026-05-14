@@ -12,7 +12,7 @@ type ModuleCategoryAttributeTests() =
     [<Test>]
     member _.Constructor_WithValidCategory_SetsCategoryProperty() = async {
         let attr = ModuleCategoryAttribute("infrastructure")
-        do! check(Assert.That(attr.Category).IsEqualTo("infrastructure"))
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(attr.Category), "infrastructure"))
     }
 
     [<Test>]

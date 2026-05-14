@@ -5,12 +5,15 @@ open System.Threading
 open System.Threading.Tasks
 open ModularPipelines.Context
 open ModularPipelines.Enums
+open ModularPipelines.Extensions
 open ModularPipelines.Modules
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
 open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
+open TUnit.Assertions.Sources
+open ModularPipelines.Models
 
 type private QuickModule1() =
     inherit Module<string>()
@@ -124,9 +127,9 @@ type MetricsCollectorTests() =
 
         let metrics = result.Metrics
         do! check(Assert.That(metrics).IsNotNull())
-        do! check(Assert.That(metrics.TotalModules).IsEqualTo(3))
-        do! check(Assert.That(metrics.SuccessfulModules).IsEqualTo(3))
-        do! check(Assert.That(metrics.FailedModules).IsEqualTo(0))
+        do! check(IntEqualsAssertionExtensions.IsEqualTo(Assert.That(metrics.TotalModules), 3))
+        do! check(IntEqualsAssertionExtensions.IsEqualTo(Assert.That(metrics.SuccessfulModules), 3))
+        do! check(IntEqualsAssertionExtensions.IsEqualTo(Assert.That(metrics.FailedModules), 0))
     }
 
     [<Test>]
@@ -153,8 +156,8 @@ type MetricsCollectorTests() =
             |> Async.AwaitTask
 
         do! check(Assert.That(result.Status).IsEqualTo(Status.Successful))
-        do! check(Assert.That(result.ModuleTimelines).IsNotNull())
-        do! check(Assert.That(result.ModuleTimelines.Count).IsEqualTo(2))
+        do! check(Assert.That<ModuleTimeline>(result.ModuleTimelines).IsNotNull())
+        do! check(IntEqualsAssertionExtensions.IsEqualTo(Assert.That(result.ModuleTimelines.Count), 2))
     }
 
     [<Test>]
@@ -165,8 +168,8 @@ type MetricsCollectorTests() =
                 .ExecutePipelineAsync()
             |> Async.AwaitTask
 
-        do! check(Assert.That(result.ModuleTimelines).IsNotNull())
-        do! check(Assert.That(result.ModuleTimelines.Count).IsEqualTo(1))
+        do! check(Assert.That<ModuleTimeline>(result.ModuleTimelines).IsNotNull())
+        do! check(IntEqualsAssertionExtensions.IsEqualTo(Assert.That(result.ModuleTimelines.Count), 1))
         do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(result.ModuleTimelines[0].ModuleName), "QuickModule1"))
     }
 
@@ -178,7 +181,7 @@ type MetricsCollectorTests() =
                 .ExecutePipelineAsync()
             |> Async.AwaitTask
 
-        do! check(Assert.That(result.ModuleTimelines).IsNotNull())
+        do! check(Assert.That<ModuleTimeline>(result.ModuleTimelines).IsNotNull())
 
         let timeline = result.ModuleTimelines[0]
         do! check(Assert.That(timeline.StartTime).IsNotNull())

@@ -12,6 +12,7 @@ open TUnit.Assertions
 open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
+open ModularPipelines.Extensions
 
 [<ModularPipelines.Attributes.DependsOn(typeof<Module1>, Optional = true)>]
 type Module2WithOptionalDep() =
@@ -71,9 +72,8 @@ type ModuleNotRegisteredExceptionTests() =
                 .AddModule<Module2WithRequiredDep>()
                 .ExecutePipelineAsync()
             |> Async.AwaitTask
-
         do! check(Assert.That(pipelineSummary.Status).IsEqualTo(Status.Successful))
-        do! check(Assert.That(pipelineSummary.Modules |> Seq.length).IsEqualTo(2))
+        do! check(IntEqualsAssertionExtensions.IsEqualTo(Assert.That(pipelineSummary.Modules |> Seq.length), 2))
     }
 
     [<Test>]

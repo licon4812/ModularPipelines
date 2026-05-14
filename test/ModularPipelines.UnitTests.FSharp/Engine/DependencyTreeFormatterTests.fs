@@ -8,6 +8,7 @@ open ModularPipelines.Models
 open ModularPipelines.Modules
 open Spectre.Console
 open TUnit.Assertions
+open TUnit.Assertions.Extensions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
 
@@ -43,7 +44,7 @@ module private DependencyTreeFormatterTestHelpers =
         writer.ToString()
 
     let createModel<'T when 'T :> IModule and 'T : (new: unit -> 'T)> () =
-        ModuleDependencyModel('T())
+        ModuleDependencyModel(Activator.CreateInstance<'T>())
 
 type DependencyTreeFormatterTests() =
     [<Test>]
@@ -151,6 +152,6 @@ type DependencyTreeFormatterTests() =
         let tree = formatter.FormatTree([| moduleA; moduleA |])
         let output = renderToString tree
         let count = output.Split([| "ModuleA" |], StringSplitOptions.None).Length - 1
-
-        do! check(Assert.That(count).IsEqualTo(1))
+        
+        do! check(IntEqualsAssertionExtensions.IsEqualTo(Assert.That(count), 1))
     }

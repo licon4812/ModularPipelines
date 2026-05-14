@@ -418,8 +418,7 @@ type DynamicDependencyDeclarationTests() =
         let declaration = DependencyDeclaration()
         declaration.DependsOn<DynamicDependencyDeclarationTestsData.BaseModule>() |> ignore
         let deps = declaration.Dependencies
-
-        do! check(Assert.That(deps.Count).IsEqualTo(1))
+        do! check(IntEqualsAssertionExtensions.IsEqualTo(Assert.That(deps.Count), 1))
         do! check(Assert.That(deps.[0].Kind).IsEqualTo(DependencyType.Required))
         do! check(Assert.That(deps.[0].IsOptional).IsEqualTo(false))
     }
@@ -429,8 +428,7 @@ type DynamicDependencyDeclarationTests() =
         let declaration = DependencyDeclaration()
         declaration.DependsOnOptional<DynamicDependencyDeclarationTestsData.BaseModule>() |> ignore
         let deps = declaration.Dependencies
-
-        do! check(Assert.That(deps.Count).IsEqualTo(1))
+        do! check(IntEqualsAssertionExtensions.IsEqualTo(Assert.That(deps.Count), 1))
         do! check(Assert.That(deps.[0].Kind).IsEqualTo(DependencyType.Optional))
         do! check(Assert.That(deps.[0].IsOptional).IsEqualTo(true))
     }
@@ -441,7 +439,7 @@ type DynamicDependencyDeclarationTests() =
         declaration.DependsOnLazy<DynamicDependencyDeclarationTestsData.BaseModule>() |> ignore
         let deps = declaration.Dependencies
 
-        do! check(Assert.That(deps.Count).IsEqualTo(1))
+        do! check(IntEqualsAssertionExtensions.IsEqualTo(Assert.That(deps.Count), 1))
         do! check(Assert.That(deps.[0].Kind).IsEqualTo(DependencyType.Lazy))
         do! check(Assert.That(deps.[0].IsOptional).IsEqualTo(true))
     }
@@ -452,7 +450,7 @@ type DynamicDependencyDeclarationTests() =
         declaration.DependsOnIf<DynamicDependencyDeclarationTestsData.BaseModule>(true) |> ignore
         let deps = declaration.Dependencies
 
-        do! check(Assert.That(deps.Count).IsEqualTo(1))
+        do! check(IntEqualsAssertionExtensions.IsEqualTo(Assert.That(deps.Count), 1))
         do! check(Assert.That(deps.[0].Kind).IsEqualTo(DependencyType.Conditional))
         do! check(Assert.That(deps.[0].IsOptional).IsEqualTo(false))
     }
@@ -462,6 +460,5 @@ type DynamicDependencyDeclarationTests() =
         let declaration = DependencyDeclaration()
         declaration.DependsOnIf<DynamicDependencyDeclarationTestsData.BaseModule>(false) |> ignore
         let deps = declaration.Dependencies
-
-        do! check(Assert.That(deps.Count).IsEqualTo(0))
+        do! check(IntEqualsAssertionExtensions.IsEqualTo(Assert.That(deps.Count), 0))
     }

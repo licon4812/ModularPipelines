@@ -43,6 +43,5 @@ type DirectCollisionTests() =
             ()
         with :? DependencyCollisionException as ex ->
             message <- ex.Message
-
-        do! check(Assert.That(message).IsEqualTo("Dependency collision detected: **DependencyConflictModule1** -> DependencyConflictModule2 -> **DependencyConflictModule1**"))
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(message), "Dependency collision detected: **DependencyConflictModule1** -> DependencyConflictModule2 -> **DependencyConflictModule1**"))
     }

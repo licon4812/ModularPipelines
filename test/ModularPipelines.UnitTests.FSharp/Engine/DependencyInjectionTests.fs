@@ -4,6 +4,7 @@ open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open ModularPipelines.Context
+open ModularPipelines.Extensions
 open ModularPipelines.DependencyInjection
 open ModularPipelines.Modules
 open ModularPipelines.TestHelpers
@@ -11,6 +12,7 @@ open Moq
 open TUnit.Assertions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
+open TUnit.Assertions.Extensions
 
 type private DependencyInjectionModule() =
     inherit Module<bool>()

@@ -4,6 +4,7 @@ open System.Threading.Tasks
 open ModularPipelines.Attributes
 open ModularPipelines.Context
 open ModularPipelines.Exceptions
+open ModularPipelines.Extensions
 open ModularPipelines.Modules
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
@@ -51,6 +52,5 @@ type NestedCollisionTests() =
             ()
         with :? DependencyCollisionException as ex ->
             message <- ex.Message
-
-        do! check(Assert.That(message).IsEqualTo("Dependency collision detected: **DependencyConflictModule2** -> DependencyConflictModule3 -> DependencyConflictModule4 -> DependencyConflictModule5 -> **DependencyConflictModule2**"))
+        do! check(StringEqualsAssertionExtensions.IsEqualTo(Assert.That(message), "Dependency collision detected: **DependencyConflictModule2** -> DependencyConflictModule3 -> DependencyConflictModule4 -> DependencyConflictModule5 -> **DependencyConflictModule2**"))
     }

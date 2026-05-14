@@ -4,6 +4,7 @@ open System.Threading.Tasks
 open ModularPipelines.Attributes
 open ModularPipelines.Context
 open ModularPipelines.Enums
+open ModularPipelines.Extensions
 open ModularPipelines.Modules
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
