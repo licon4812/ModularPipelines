@@ -37,6 +37,7 @@
 		<Compile Include="Configuration\**" />
 		<Compile Include="Console\**" />
 		<Compile Include="Context\**" />
+		<Compile Include="Dependencies\MockDependencyContext.fs" />
 		<Compile Include="Dependencies\**" />
 		<Compile Include="Engine\**" />
 		<Compile Include="Execution\**" />
