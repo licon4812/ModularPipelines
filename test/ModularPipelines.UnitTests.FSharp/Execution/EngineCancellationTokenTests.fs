@@ -9,19 +9,22 @@ open ModularPipelines.Configuration
 open ModularPipelines.Context
 open ModularPipelines.Engine
 open ModularPipelines.Enums
+open ModularPipelines.Extensions
 open ModularPipelines.Modules
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
-
-let private waitForCancellationDelay = TimeSpan.FromMilliseconds(100)
+open TUnit.Assertions.Extensions
+[<AutoOpen>]
+module private Internal =
+    let waitForCancellationDelay = TimeSpan.FromMilliseconds(100:int64)
 
 type private BadModule() =
     inherit ThrowingTestModule<bool>()
 
 [<DependsOn(typeof<BadModule>)>]
-type private Module1() =
+type private Module1CancellationTest() =
     inherit SimpleTestModule<bool>()
     override _.Result = true
 
@@ -42,7 +45,7 @@ type private LongRunningModuleWithoutCancellation() =
     let taskCompletionSource = TaskCompletionSource<bool>()
 
     override _.Configure() =
-        ModuleConfiguration.Create().WithTimeout(TimeSpan.FromSeconds(10)).Build()
+        ModuleConfiguration.Create().WithTimeout(TimeSpan.FromSeconds(10:int64)).Build()
 
     override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) =
         task {
@@ -56,7 +59,7 @@ type EngineCancellationTokenTests() =
 
     [<Test>]
     member _.When_Cancel_Engine_Token_With_DependsOn_Then_Modules_Cancel() = async {
-        let builder = TestPipelineHostBuilder.Create().AddModule<BadModule>().AddModule<Module1>()
+        let builder = TestPipelineHostBuilder.Create().AddModule<BadModule>().AddModule<Module1CancellationTest>()
         builder.Options.ThrowOnPipelineFailure <- true
 
         let! host = builder.BuildHostAsync() |> Async.AwaitTask
@@ -69,7 +72,7 @@ type EngineCancellationTokenTests() =
         with _ ->
             threw <- true
 
-        let module1Result = resultRegistry.GetResult(typeof<Module1>)
+        let module1Result = resultRegistry.GetResult(typeof<Module1CancellationTest>)
 
         do! check(Assert.That(threw).IsTrue())
         do! check(Assert.That(module1Result).IsNotNull())
@@ -99,7 +102,7 @@ type EngineCancellationTokenTests() =
         do! check(Assert.That(threw).IsTrue())
         do! check(Assert.That(longRunningModuleResult).IsNotNull())
         do! check(Assert.That(longRunningModuleResult.ModuleStatus).IsEqualTo(Status.PipelineTerminated))
-        do! check(Assert.That(longRunningModuleResult.ModuleDuration).IsLessThan(TimeSpan.FromSeconds(5)))
+        do! check(Assert.That(longRunningModuleResult.ModuleDuration).IsLessThan(TimeSpan.FromSeconds(5:int64)))
     }
 
     [<Test>]

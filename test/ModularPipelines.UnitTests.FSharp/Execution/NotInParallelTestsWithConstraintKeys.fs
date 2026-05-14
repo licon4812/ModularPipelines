@@ -1,6 +1,7 @@
 namespace ModularPipelines.UnitTests.FSharp.Execution
 
 open System.Collections.Generic
+open ModularPipelines.Extensions
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
 open TUnit.Assertions.Extensions
@@ -41,13 +42,13 @@ type NotInParallelTestsWithConstraintKeys() =
     member _.NotInParallel_If_Same_ConstraintKey() = async {
         NotInParallelTestsWithConstraintKeysData.tracker.Reset()
 
-        do! TestPipelineHostBuilder.Create()
-                .AddModule<ModuleWithAConstraintKey1>()
-                .AddModule<ModuleWithAConstraintKey2>()
-                .AddModule<ModuleWithBConstraintKey1>()
-                .AddModule<ModuleWithBConstraintKey2>()
-                .ExecutePipelineAsync()
-            |> Async.AwaitTask
+        let! _ = TestPipelineHostBuilder.Create()
+                    .AddModule<ModuleWithAConstraintKey1>()
+                    .AddModule<ModuleWithAConstraintKey2>()
+                    .AddModule<ModuleWithBConstraintKey1>()
+                    .AddModule<ModuleWithBConstraintKey2>()
+                    .ExecutePipelineAsync()
+                |> Async.AwaitTask
 
-        do! check(CollectionEqualToAssertionExtensions.IsEmpty(Assert.That(NotInParallelTestsWithConstraintKeysData.tracker.Violations)))
+        do! check(Assert.That<string>(NotInParallelTestsWithConstraintKeysData.tracker.Violations).IsEmpty())
     }

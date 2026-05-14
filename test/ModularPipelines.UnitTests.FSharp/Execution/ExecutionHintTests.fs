@@ -6,36 +6,39 @@ open System.Threading.Tasks
 open ModularPipelines.Attributes
 open ModularPipelines.Context
 open ModularPipelines.Enums
+open ModularPipelines.Extensions
 open ModularPipelines.Modules
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
+open TUnit.Assertions.Extensions
 
-let private cpuModulesExecuting = ConcurrentBag<string>()
-let private cpuViolations = ConcurrentBag<string>()
-let mutable private maxCpuConcurrency = 0
+module private SharedState =
+    let cpuModulesExecuting = ConcurrentBag<string>()
+    let cpuViolations = ConcurrentBag<string>()
+    let mutable maxCpuConcurrency = 0
 
 [<ExecutionHint(ExecutionType.CpuIntensive)>]
 type private CpuIntensiveModule1() =
     inherit Module<string>()
 
-    override _.ExecuteAsync(_: IModuleContext, cancellationToken: CancellationToken) =
+    override this.ExecuteAsync(_: IModuleContext, cancellationToken: CancellationToken) =
         task {
-            let moduleName = _.GetType().Name
-            cpuModulesExecuting.Add(moduleName)
+            let moduleName = this.GetType().Name
+            SharedState.cpuModulesExecuting.Add(moduleName.ToString())
 
-            let currentCount = cpuModulesExecuting.Count
-            if currentCount > maxCpuConcurrency then
-                Interlocked.Exchange(&maxCpuConcurrency, currentCount) |> ignore
+            let currentCount = SharedState.cpuModulesExecuting.Count
+            if currentCount > SharedState.maxCpuConcurrency then
+                Interlocked.Exchange(&SharedState.maxCpuConcurrency, currentCount) |> ignore
 
             do! Task.Delay(50, cancellationToken)
 
-            if cpuModulesExecuting.Count > 2 then
-                cpuViolations.Add($"{moduleName}: {cpuModulesExecuting.Count} concurrent CPU-intensive modules")
+            if SharedState.cpuModulesExecuting.Count > 2 then
+                SharedState.cpuViolations.Add($"{moduleName}: {SharedState.cpuModulesExecuting.Count} concurrent CPU-intensive modules")
 
             let mutable ignored = Unchecked.defaultof<string>
-            cpuModulesExecuting.TryTake(&ignored) |> ignore
+            SharedState.cpuModulesExecuting.TryTake(&ignored) |> ignore
             return moduleName
         }
 
@@ -43,19 +46,19 @@ type private CpuIntensiveModule1() =
 type private CpuIntensiveModule2() =
     inherit Module<string>()
 
-    override _.ExecuteAsync(_: IModuleContext, cancellationToken: CancellationToken) =
+    override this.ExecuteAsync(_: IModuleContext, cancellationToken: CancellationToken) =
         task {
-            let moduleName = _.GetType().Name
-            cpuModulesExecuting.Add(moduleName)
+            let moduleName = this.GetType().Name
+            SharedState.cpuModulesExecuting.Add(moduleName)
 
-            let currentCount = cpuModulesExecuting.Count
-            if currentCount > maxCpuConcurrency then
-                Interlocked.Exchange(&maxCpuConcurrency, currentCount) |> ignore
+            let currentCount = SharedState.cpuModulesExecuting.Count
+            if currentCount > SharedState.maxCpuConcurrency then
+                Interlocked.Exchange(&SharedState.maxCpuConcurrency, currentCount) |> ignore
 
             do! Task.Delay(50, cancellationToken)
 
             let mutable ignored = Unchecked.defaultof<string>
-            cpuModulesExecuting.TryTake(&ignored) |> ignore
+            SharedState.cpuModulesExecuting.TryTake(&ignored) |> ignore
             return moduleName
         }
 
@@ -63,19 +66,19 @@ type private CpuIntensiveModule2() =
 type private CpuIntensiveModule3() =
     inherit Module<string>()
 
-    override _.ExecuteAsync(_: IModuleContext, cancellationToken: CancellationToken) =
+    override this.ExecuteAsync(_: IModuleContext, cancellationToken: CancellationToken) =
         task {
-            let moduleName = _.GetType().Name
-            cpuModulesExecuting.Add(moduleName)
+            let moduleName = this.GetType().Name
+            SharedState.cpuModulesExecuting.Add(moduleName)
 
-            let currentCount = cpuModulesExecuting.Count
-            if currentCount > maxCpuConcurrency then
-                Interlocked.Exchange(&maxCpuConcurrency, currentCount) |> ignore
+            let currentCount = SharedState.cpuModulesExecuting.Count
+            if currentCount > SharedState.maxCpuConcurrency then
+                Interlocked.Exchange(&SharedState.maxCpuConcurrency, currentCount) |> ignore
 
             do! Task.Delay(50, cancellationToken)
 
             let mutable ignored = Unchecked.defaultof<string>
-            cpuModulesExecuting.TryTake(&ignored) |> ignore
+            SharedState.cpuModulesExecuting.TryTake(&ignored) |> ignore
             return moduleName
         }
 
@@ -104,12 +107,12 @@ type ExecutionHintTests() =
     [<Before(HookType.Test)>]
     member _.ClearState() =
         let mutable executingItem = Unchecked.defaultof<string>
-        while cpuModulesExecuting.TryTake(&executingItem) do ()
+        while SharedState.cpuModulesExecuting.TryTake(&executingItem) do ()
 
         let mutable violationItem = Unchecked.defaultof<string>
-        while cpuViolations.TryTake(&violationItem) do ()
+        while SharedState.cpuViolations.TryTake(&violationItem) do ()
 
-        maxCpuConcurrency <- 0
+        SharedState.maxCpuConcurrency <- 0
 
     [<Test>]
     member _.ExecutionHintAttribute_CanBeAppliedToModule() = async {
@@ -155,5 +158,5 @@ type ExecutionHintTests() =
             |> Async.AwaitTask
 
         do! check(Assert.That(result.Status).IsEqualTo(Status.Successful))
-        do! check(Assert.That(maxCpuConcurrency).IsLessThanOrEqualTo(2))
+        do! check(Assert.That(SharedState.maxCpuConcurrency).IsLessThanOrEqualTo(2))
     }

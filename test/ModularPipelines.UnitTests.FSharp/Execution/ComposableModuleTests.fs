@@ -8,6 +8,7 @@ open Microsoft.Extensions.DependencyInjection
 open ModularPipelines.Configuration
 open ModularPipelines.Context
 open ModularPipelines.Engine
+open ModularPipelines.Extensions
 open ModularPipelines.Enums
 open ModularPipelines.Modules
 open ModularPipelines.Models
@@ -15,6 +16,7 @@ open ModularPipelines.TestHelpers
 open TUnit.Assertions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
+open TUnit.Assertions.Extensions
 
 type private AlwaysSkippedModule() =
     inherit Module<string>()
@@ -40,7 +42,7 @@ type private TimeoutableModule() =
     inherit Module<string>()
 
     override _.Configure() =
-        ModuleConfiguration.Create().WithTimeout(TimeSpan.FromSeconds(5)).Build()
+        ModuleConfiguration.Create().WithTimeout(TimeSpan.FromSeconds(5:int64)).Build()
 
     override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) = Task.FromResult("Executed with timeout")
 
@@ -58,7 +60,7 @@ type private MultiBehaviorModule() =
 
     override _.Configure() =
         ModuleConfiguration.Create()
-            .WithTimeout(TimeSpan.FromMinutes(1))
+            .WithTimeout(TimeSpan.FromMinutes(1:int64))
             .WithSkipWhen(Func<SkipDecision>(fun () -> SkipDecision.DoNotSkip))
             .WithBeforeExecute(Func<IModuleContext, Task>(fun _ -> task { beforeHookCalled <- true }))
             .WithAfterExecute(Func<IModuleContext, Task>(fun _ -> task { afterHookCalled <- true }))
@@ -87,7 +89,7 @@ type ComposableModuleTests() =
         let moduleResult = resultRegistry.GetResult(typeof<AlwaysSkippedModule>)
 
         do! check(Assert.That(moduleResult.SkipDecisionOrDefault.ShouldSkip).IsTrue())
-        do! check(Assert.That(moduleResult.SkipDecisionOrDefault.Reason).IsEqualTo("Skipped via composition"))
+        do! check(Assert.That<SkipDecision>(moduleResult.SkipDecisionOrDefault.Reason).IsEqualTo(SkipDecision.Skip("Skipped via composition")))
     }
 
     [<Test>]

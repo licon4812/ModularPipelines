@@ -8,12 +8,14 @@ open ModularPipelines.Attributes
 open ModularPipelines.Configuration
 open ModularPipelines.Context
 open ModularPipelines.Engine
+open ModularPipelines.Extensions
 open ModularPipelines.Enums
 open ModularPipelines.Modules
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
+open TUnit.Assertions.Extensions
 
 type private MyModule1() =
     inherit ThrowingTestModule<bool>()

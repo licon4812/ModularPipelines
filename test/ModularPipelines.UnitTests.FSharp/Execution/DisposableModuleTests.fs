@@ -5,11 +5,13 @@ open System.Threading
 open System.Threading.Tasks
 open System.Linq
 open ModularPipelines.Context
+open ModularPipelines.Extensions
 open ModularPipelines.Modules
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
+open TUnit.Assertions.Extensions
 
 type private DisposableModule() =
     inherit Module<bool>()

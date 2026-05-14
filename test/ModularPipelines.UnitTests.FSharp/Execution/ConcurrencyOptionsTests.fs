@@ -1,35 +1,40 @@
 namespace ModularPipelines.UnitTests.FSharp.Execution
 
+open System
+open System.Threading
+open System.Threading.Tasks
 open ModularPipelines.Context
 open ModularPipelines.Enums
+open ModularPipelines.Extensions
 open ModularPipelines.Modules
 open ModularPipelines.Options
 open ModularPipelines.TestHelpers
 open TUnit.Assertions
 open TUnit.Assertions.FSharp.Operations
 open TUnit.Core
+open TUnit.Assertions.Extensions
 
-[<NotInParallel(nameof ConcurrencyOptionsTests)>]
-type private SimpleModule() =
+type SimpleModule() =
     inherit Module<string>()
-    override _.ExecuteAsync(_: IModuleContext, _: System.Threading.CancellationToken) = System.Threading.Tasks.Task.FromResult("Done")
+    override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) =
+        Task.FromResult("Done")
 
-[<NotInParallel(nameof ConcurrencyOptionsTests)>]
-type private SimpleModule2() =
+type SimpleModule2() =
     inherit Module<string>()
-    override _.ExecuteAsync(_: IModuleContext, _: System.Threading.CancellationToken) = System.Threading.Tasks.Task.FromResult("Done")
+    override _.ExecuteAsync(_: IModuleContext, _: CancellationToken) =
+        Task.FromResult("Done")
 
-[<NotInParallel(nameof ConcurrencyOptionsTests)>]
+[<NotInParallel("ConcurrencyOptionsTests")>]
 type ConcurrencyOptionsTests() =
     inherit TestBase()
 
     [<Test>]
     member _.ConcurrencyOptions_HasCorrectDefaultValues() = async {
         let options = ConcurrencyOptions()
-        let expectedMaxParallelism = System.Environment.ProcessorCount * 4
+        let expectedMaxParallelism = Environment.ProcessorCount * 4
 
-        do! check(Assert.That(options.MaxParallelism).IsEqualTo(expectedMaxParallelism))
-        do! check(Assert.That(options.MaxCpuIntensiveModules).IsEqualTo(System.Environment.ProcessorCount))
+        do! check(IntEqualsAssertionExtensions.IsEqualTo(Assert.That(options.MaxParallelism), expectedMaxParallelism))
+        do! check(Assert.That(options.MaxCpuIntensiveModules).IsEqualTo(Environment.ProcessorCount))
         do! check(Assert.That(options.MaxIoIntensiveModules).IsNull())
     }
 
@@ -39,7 +44,9 @@ type ConcurrencyOptionsTests() =
             TestPipelineHostBuilder.Create()
                 .AddModule<SimpleModule>()
                 .AddModule<SimpleModule2>()
-                .ConfigurePipelineOptions(fun _ options -> options.Concurrency.MaxParallelism <- 2)
+                .ConfigurePipelineOptions(fun _ options ->
+                    options.Concurrency.MaxParallelism <- 2
+                )
                 .ExecutePipelineAsync()
             |> Async.AwaitTask
 
@@ -51,7 +58,9 @@ type ConcurrencyOptionsTests() =
         let! result =
             TestPipelineHostBuilder.Create()
                 .AddModule<SimpleModule>()
-                .ConfigurePipelineOptions(fun _ options -> options.Concurrency.MaxCpuIntensiveModules <- 1)
+                .ConfigurePipelineOptions(fun _ options ->
+                    options.Concurrency.MaxCpuIntensiveModules <- 1
+                )
                 .ExecutePipelineAsync()
             |> Async.AwaitTask
 
@@ -63,7 +72,9 @@ type ConcurrencyOptionsTests() =
         let! result =
             TestPipelineHostBuilder.Create()
                 .AddModule<SimpleModule>()
-                .ConfigurePipelineOptions(fun _ options -> options.Concurrency.MaxIoIntensiveModules <- System.Nullable 10)
+                .ConfigurePipelineOptions(fun _ options ->
+                    options.Concurrency.MaxIoIntensiveModules <- Nullable 10
+                )
                 .ExecutePipelineAsync()
             |> Async.AwaitTask
 
